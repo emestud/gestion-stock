@@ -35,12 +35,12 @@ store.addCategory({
     name: "Produit végétaux",
     items: [{
         name:"Tomate",
-        quantity: 1,
+        quantity: 0,
         container: "Bac 1/6 profond"
     },
     {
         name: "Avocat",
-        quantity: 2,
+        quantity: 0,
         container: "Barquettes"
     }]
 })
