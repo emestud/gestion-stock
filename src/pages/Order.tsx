@@ -10,7 +10,7 @@ const Order = () => {
 
     return (
         <div>
-            <ol className="w-11/12 max-w-screen-md">
+            <ol className="w-11/12 max-w-screen-md flex flex-col gap-8 pb-8">
                 {listCategory}
             </ol>
         </div>
