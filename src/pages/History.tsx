@@ -1,4 +1,4 @@
-const Historique = () => {
+const History = () => {
     return (
         <>
             <h1>Historique</h1>
@@ -6,4 +6,4 @@ const Historique = () => {
     )
 }
 
-export default Historique
+export default History

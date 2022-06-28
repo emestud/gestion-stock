@@ -3,8 +3,8 @@ import { Routes, Route } from 'react-router-dom'
 import NavBar from "./components/Navbar"
 
 import Admin from './pages/Admin'
-import Commande from './pages/Commande'
-import Historique from './pages/Historique'
+import Order from './pages/Order'
+import History from './pages/History'
 import Statistiques from './pages/Statistiques'
 
 const App = () => {
@@ -14,9 +14,9 @@ const App = () => {
       <NavBar />
       <main className="pt-20">
         <Routes>
-          <Route path="/" element={ <Commande /> }></Route>
+          <Route path="/" element={ <Order /> }></Route>
           <Route path="admin" element={ <Admin /> }></Route>
-          <Route path="historique" element={ <Historique /> }></Route>
+          <Route path="history" element={ <History /> }></Route>
           <Route path="statistiques" element={ <Statistiques /> }></Route>
         </Routes>
       </main>

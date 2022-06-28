@@ -1,6 +1,6 @@
 import Item from './Item'
 
-const Categorie = (props: any) => {
+const Category = (props: any) => {
 
     let { categoryName, listItems } = props
 
@@ -22,4 +22,4 @@ const Categorie = (props: any) => {
 }
 
 
-export default Categorie
+export default Category
