@@ -14,13 +14,27 @@ type Category = {
 
 }
 
-type Status = "Ordered" | "In preperation" | "Prepared" | "In delivery" | "Delivered" | "Received"
+type User = {
+    name: string,
+    role: Role
+}
+
+type Status = "On order" | "Ordered" | "In preperation" | "Prepared" | "In delivery" | "Delivered" | "Received"
+
+type Role = "Admin" | "Manager" | "Labo" | "Livreur" | "Anon"
 
 class Store {
 
     categories: Array<Category> = []
     order: Array<Item> = []
     orderStatus: Status = "Ordered"
+
+    date: string = "DD/MM/YYYY"
+    restaurant: String = "Restaurant 1"
+    user: User = {
+        name: "Anon",
+        role: "Anon"
+    }
 
     constructor() {
         makeAutoObservable(this)

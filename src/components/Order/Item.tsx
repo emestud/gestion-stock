@@ -26,11 +26,11 @@ const Item = (props: any) => {
 
     return (
         <div className="flex justify-center">
-            <p className="w-1/3 border border-black border-solid overflow-hidden">{name}</p>
-            <input className="w-1/3 border border-black border-solid" value={quantity} type="number" min="0"
+            <p className="w-1/3 border border-black border-solid truncate">{name}</p>
+            <input className="w-1/3 border border-black border-solid" value={quantity} type="number" min="0" disabled={store.orderStatus!=="On order"}
                     onChange={(event)=>handleQuantityChange(parseInt(event.target.value))} />
             <select className="w-1/3 border border-black border-solid" name="Container" id="container-select" defaultValue={containerProp}
-                    onChange={(event)=>handleContainerChange(event.target.value)}>
+                    onChange={(event)=>handleContainerChange(event.target.value)} disabled={store.orderStatus!=="On order"}>
                 <optgroup label="Bacs">
                     <option value="Grand Bac 1/1" >Grand Bac 1/1</option>
                     <option value="Bac bleu 1/2">Bac bleu 1/2</option>
