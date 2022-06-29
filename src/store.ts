@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx"
 
+import { supabase } from './supabaseClient'
+
 type Item = {
     name: string,
     quantity: number,
@@ -68,6 +70,11 @@ class Store {
 
 }
 
+let { data: item, error } = await supabase
+  .from('item')
+  .select('*')
+
+console.log(item)
 
 const store = new Store
 
