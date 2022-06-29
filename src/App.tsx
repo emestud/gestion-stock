@@ -7,6 +7,8 @@ import Order from './pages/Order'
 import History from './pages/History'
 import Statistiques from './pages/Statistiques'
 
+import store from './store'
+
 const App = () => {
 
   return (

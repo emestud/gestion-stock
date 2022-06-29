@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx"
-import Category from "./components/Order/Category"
 
-import { supabase } from './supabaseClient'
+import { supabase }  from './supabaseClient'
+
 
 type Item = {
     name: string,
@@ -44,8 +44,11 @@ class Store {
 
     date: string = "DD/MM/YYYY"
     restaurant: String = "Restaurant 1"
+    
+    isLoggedIn = false
+
     user: User = {
-        name: "Anon",
+        name: "",
         role: "Anon"
     }
 
@@ -158,7 +161,6 @@ class Store {
      * @param category This is the ContainerCategory that we want to add to the store
      */
      addContainerCategory(category: ContainerCategory) {
-        console.log(category)
         this.containerCategories.push(category)
     }
 
