@@ -14,7 +14,9 @@ const logIn = async (username: string, password: string) => {
 
     let errorMessage = ""
 
-    if (user === null) {
+    if (user === null) user = [] // hacky thingy to prevent typescript from being a pain in the arm
+
+    if (user.length === 0) {
         errorMessage = "User doesn't exist"
         return [null, errorMessage]
     } 

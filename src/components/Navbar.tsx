@@ -16,7 +16,7 @@ const Burger = (props: any) => {
     )
 }
 
-const NavBar = () => {
+const NavBar = ({setLogOut}:any) => {
 
     const [isActive, setIsActive]:any = useState(false)
 
@@ -29,6 +29,7 @@ const NavBar = () => {
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/history">Historique</NavLink>
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/admin">Admin</NavLink>
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/statistiques">Statistiques</NavLink>
+                    <p onClick={()=>{setLogOut(); setIsActive(false)}}>Deconnexion</p>
                 </ol>
             </div>
         </>

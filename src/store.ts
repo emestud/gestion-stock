@@ -26,7 +26,7 @@ type ContainerCategory = {
 
 
 type User = {
-    name: string,
+    username: string,
     role: Role
 }
 
@@ -48,7 +48,7 @@ class Store {
     isLoggedIn = false
 
     user: User = {
-        name: "",
+        username: "Anon",
         role: "Anon"
     }
 
@@ -191,6 +191,29 @@ class Store {
             })
         }
 
+    }
+
+    /**
+     * This function is used to update the store's data when a user logs in
+     * @param user Logged-in user's information
+     */
+    logIn(user: any) {
+        this.isLoggedIn = true
+        this.user = {
+            username: user.username,
+            role: user.role
+        }
+    }
+
+    /**
+     * This function updates the store's data when a user logs out
+     */
+    louOut() {
+        this.isLoggedIn = false
+        this.user = {
+            username: "Anon",
+            role: "Anon"
+        }
     }
 
 }
