@@ -34,13 +34,18 @@ const LogInModal = ({ setLogIn }:any) => {
     }
 
     return (
-        <div className="fixed w-screen h-screen text-xl">
-            <div className="absolute w-full h-full z-10 bg-black"></div>
-            <form className="absolute bg-white z-20 w-10/12 m-[8.8%] h-5/6 flex flex-col p-4 gap-8" onSubmit={e => e.preventDefault()}>
-                <input type="text" placeholder="Username" onChange={updateUsername}/>
-                <input type="text" placeholder="Password" onChange={updatePassword}/>
-                <button onClick={()=>tryLogIn(username, password)}>Log-In</button>
-                <p className={`p-4 border border-red-500 border-solid text-center ${errorMessage==="" ? 'hidden' : 'block'}`}>{errorMessage}</p>
+        <div className="fixed w-screen h-screen text-xl flex justify-center">
+            <div className="absolute w-full h-full z-10 bg-black opacity-80"></div>
+            <form className="absolute flex flex-col bg-white z-20 w-10/12 mx-auto h-5/6 my-[5%] p-4 pt-24 gap-16 max-w-4xl items-center rounded-3xl" 
+                onSubmit={e => e.preventDefault()}
+            >
+                <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="text" placeholder="Username" onChange={updateUsername}/>
+                <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="text" placeholder="Password" onChange={updatePassword}/>
+                <button className="w-full sm:w-1/2 shadow-2xl text-2xl p-4 border border-solid border-black" 
+                        onClick={()=>tryLogIn(username, password)}>
+                            Log-In
+                </button>
+                <p className={`w-full sm:w-1/2 p-4 border border-red-500 border-solid text-center ${errorMessage==="" ? 'hidden' : 'block'}`}>{errorMessage}</p>
             </form>
         </div>
     )
