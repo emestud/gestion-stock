@@ -8,13 +8,11 @@ import { useState } from 'react'
 
 const Order = () => {
 
-    let listCategory = store.categories.map(category=>
+    let listCategory = store.itemCategories.map(category=>
         <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>  
     )
     
     let [isOrdered, setIsOrdered] = useState(false)
-
-    console.log(store.orderStatus)
 
     return (
         <div className='flex flex-col gap-8 pb-8'>
@@ -26,7 +24,7 @@ const Order = () => {
             <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                 {listCategory}
             </ol>
-            {isOrdered ? <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <CancelButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
+            {isOrdered ? <CancelButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
     )
 }

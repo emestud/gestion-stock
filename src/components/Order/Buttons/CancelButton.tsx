@@ -4,7 +4,7 @@ const CancelButton = (props:any) => {
 
     let {isOrdered, setIsOrdered} = props
 
-    const sendOrder = () => {
+    const cancelOrder = () => {
         store.orderStatus = "On order"
         setIsOrdered(!isOrdered)
     }
@@ -14,7 +14,7 @@ const CancelButton = (props:any) => {
                                 active:bg-red-500 active:border border-white border-solid 
                                 focus:bg-red-500 focus:border
                                 md:w-2/3 lg:w-1/2 max-w-2xl" 
-                onClick={sendOrder}>
+                onClick={cancelOrder}>
             Annuler la commande
         </button>
     )

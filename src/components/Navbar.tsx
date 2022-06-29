@@ -26,7 +26,7 @@ const NavBar = () => {
                 <Burger isActive={isActive} setIsActive={setIsActive}> </Burger>
                 <ol className={`h-full w-full flex flex-col text-2xl justify-start items-center gap-10 pt-24 ${isActive ? '' : '-translate-x-20 opacity-0'}`}>
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/">Commande</NavLink>
-                    <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/historique">Historique</NavLink>
+                    <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/history">Historique</NavLink>
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/admin">Admin</NavLink>
                     <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/statistiques">Statistiques</NavLink>
                 </ol>
