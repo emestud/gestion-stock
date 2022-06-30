@@ -78,9 +78,16 @@ const Lab = () => {
         })
     })
 
+    /* TODO 
+        - Régler le bug qui m'empêche d'accceder aux données
+        - Trier les items par catégories, pour avoir une affichage semi-similaire à celui de la page "Order"
+        - Regrouper les item qui ont le même nom et récipients (mais des restaurants/quanitités différentes)
+    */
+
     return (
         <div>
-
+            <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
+            </ol>
         </div>
     )
 
