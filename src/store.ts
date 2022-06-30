@@ -4,9 +4,11 @@ import { supabase }  from './supabaseClient'
 
 
 type Item = {
+    id: string,
     name: string,
     quantity: number,
-    container: string
+    container: string,
+    container_id: string
 
 }
 
@@ -17,7 +19,10 @@ type ItemCategory = {
 
 }
 
-type Container = string
+type Container = {
+    name: string,
+    id: string
+}
 
 type ContainerCategory = {
     name: string,
@@ -26,8 +31,16 @@ type ContainerCategory = {
 
 
 type User = {
+    id: string,
     username: string,
-    role: Role
+    role: Role,
+    restaurant_id: string
+}
+
+type Restaurant = {
+    id: string,
+    name: string,
+    address: string
 }
 
 type Status = "On order" | "Ordered" | "In preperation" | "Prepared" | "In delivery" | "Delivered" | "Received"
@@ -41,15 +54,23 @@ class Store {
 
     order: Array<Item> = []
     orderStatus: Status = "On order"
+    orderId: string = ""
 
     date: string = "DD/MM/YYYY"
-    restaurant: String = "Restaurant 1"
     
     isLoggedIn = false
 
+    restaurant: Restaurant = {
+        id: "",
+        name: "",
+        address: ""
+    }
+
     user: User = {
+        id: "",
         username: "Anon",
-        role: "Anon"
+        role: "Anon",
+        restaurant_id: ""
     }
 
     constructor() {
@@ -90,6 +111,7 @@ class Store {
 
             categoryItems?.forEach(item=>{
                 products.push({
+                    id: item.id,
                     name: item.name,
                     quantity: 0,
                     container: "Bac 1/6 profond"
@@ -145,7 +167,10 @@ class Store {
             let containersList:Array<Container> = []
 
             categoryContainers?.forEach(container=>{
-                containersList.push(container.name)
+                containersList.push({
+                    name: container.name,
+                    id: container.id
+                })
             })
 
             store.addContainerCategory({
@@ -171,13 +196,14 @@ class Store {
      * @param quantity amount needed
      * @param container type of container needed
      */
-    updateOrder(name: string, quantity: number, container: string) {
+    updateOrder(id:string, name: string, quantity: number, container: Container) {
 
         let hasUpdated: boolean = false
 
         this.order.forEach((item: Item)=>{
             if (item.name === name) {
-                item.container = container
+                item.container = container.name,
+                item.container_id = container.id,
                 item.quantity = quantity
                 hasUpdated = true
             }
@@ -185,34 +211,99 @@ class Store {
 
         if (!hasUpdated) { // item is not in the array
             this.order.push({
+                id: id,
                 name: name,
                 quantity: quantity,
-                container: container
+                container: container.name,
+                container_id: container.id
             })
         }
 
     }
 
     /**
+     * This function sends the order to the database
+     */
+    async sendOrder() {
+        const { data: order, orderError } = await supabase
+            .from('order')
+            .insert([
+                {
+                    created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
+                    restaurant_id: this.restaurant.id,
+                    created_by: this.user.id
+                },
+            ])
+
+            let orderArray:Array<any> = []
+
+            if (order !== null && order.length > 0)
+            {
+
+                this.orderId = order[0].id 
+
+                this.order.forEach((item:Item)=>{
+                    orderArray.push({
+                        canceled_by_lab: false,
+                        item_id: item.id,
+                        container_id: item.container_id,
+                        order_id: order[0].id
+                    })
+                })
+                
+                const { data:orderItems, orderItemsError } = await supabase
+                    .from('order-item-container')
+                    .insert(orderArray)
+
+            }
+    }
+
+    /**
      * This function is used to update the store's data when a user logs in
      * @param user Logged-in user's information
      */
-    logIn(user: any) {
+    async logIn(user: any) {
         this.isLoggedIn = true
         this.user = {
+            id:user.id,
             username: user.username,
-            role: user.role
+            role: user.role,
+            restaurant_id: user.restaurant_id || ""
+        } // logging in the user
+
+
+        // updating the restaurant (if the user is a manager)
+        if (this.user.role === "Manager") {
+            let {data: restaurant, error} = await supabase
+                .from('restaurant')
+                .select('*')
+                .eq('id', user.restaurant_id)
+
+            if (restaurant?.length === 0 && restaurant != null) // restaurant is an array
+                this.restaurant = {
+                    id: restaurant[0].id,
+                    name: restaurant[0].name,
+                    address: restaurant[0].address
+                }
         }
     }
 
     /**
      * This function updates the store's data when a user logs out
      */
-    louOut() {
+    logOut() {
         this.isLoggedIn = false
         this.user = {
+            id:"",
             username: "Anon",
-            role: "Anon"
+            role: "Anon",
+            restaurant_id: ""
+        }
+
+        this.restaurant = {
+            id: "",
+            name: "",
+            address: ""
         }
     }
 

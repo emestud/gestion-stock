@@ -4,9 +4,11 @@ const OrderButton = (props:any) => {
 
     let {isOrdered, setIsOrdered} = props
 
-    const sendOrder = () => {
+    const sendOrder = async () => {
         store.orderStatus = "Ordered"
         setIsOrdered(!isOrdered)
+
+        await store.sendOrder()
     }
 
     return (

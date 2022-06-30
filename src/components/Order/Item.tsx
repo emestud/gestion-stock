@@ -2,9 +2,23 @@ import { useState } from "react"
 import store from "../../store"
 
 
+const getContainerID = (containerName: string):string => {
+
+    let container_id = ""
+
+    store.containerCategories.forEach(((category: any)=>{
+        category.containers.forEach((container:any)=>{
+            if (container.name===containerName)
+            container_id = container.id
+        })  
+    }))
+    return container_id
+}
+
+
 const Item = (props: any) => {
 
-    let {name, containerProp} = props 
+    let {id, name, containerProp} = props 
 
     let [quantity, setQuantity] = useState(0)
     let [container, setContainer] = useState(containerProp)
@@ -13,15 +27,15 @@ const Item = (props: any) => {
         setQuantity(newQuantity)
         
         if (newQuantity !== 0) {
-            store.updateOrder(name, newQuantity, container)
+            store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)})
         }
     }
 
-    const handleContainerChange = (newContainer: any) => {
+    const handleContainerChange = (newContainer: string) => {
         setContainer(newContainer)
         
         if (quantity !== 0) {
-            store.updateOrder(name, quantity, newContainer)
+            store.updateOrder(id, name, quantity, {name: newContainer, id:getContainerID(newContainer)})
         }
     }
 
@@ -36,8 +50,8 @@ const Item = (props: any) => {
                 {store.containerCategories.map(category=>
                     <optgroup label={category.name}>
                         {category.containers.map(container=>
-                            <option value="container">
-                                {container}
+                            <option value={container.name}>
+                                {container.name}
                             </option>
                         )}
                     </optgroup>

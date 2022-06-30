@@ -1,5 +1,4 @@
 import { useState } from "react"
-import store from "../../store"
 import { logIn } from "../../supabaseClient"
 
 const LogInModal = ({ setLogIn }:any) => {
@@ -34,9 +33,9 @@ const LogInModal = ({ setLogIn }:any) => {
     }
 
     return (
-        <div className="fixed w-screen h-screen text-xl flex justify-center">
-            <div className="absolute w-full h-full z-10 bg-black opacity-80"></div>
-            <form className="absolute flex flex-col bg-white z-20 w-10/12 mx-auto h-5/6 my-[5%] p-4 pt-24 gap-16 max-w-4xl items-center rounded-3xl" 
+        <div className="fixed w-screen h-screen text-xl flex justify-center z-20">
+            <div className="absolute w-full h-full bg-black opacity-80"></div>
+            <form className="absolute flex flex-col bg-white w-10/12 mx-auto h-5/6 my-[5%] p-4 pt-24 gap-16 max-w-4xl items-center rounded-3xl" 
                 onSubmit={e => e.preventDefault()}
             >
                 <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="text" placeholder="Username" onChange={updateUsername}/>
