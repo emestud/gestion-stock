@@ -247,7 +247,8 @@ class Store {
                         canceled_by_lab: false,
                         item_id: item.id,
                         container_id: item.container_id,
-                        order_id: order[0].id
+                        order_id: order[0].id,
+                        quantity:item.quantity
                     })
                 })
                 

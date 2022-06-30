@@ -28,14 +28,14 @@ const NavBar = ({setLogOut}:any) => {
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/lab">Labo</NavLink>
         else if (store.user.role === 'Livreur')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/delivery">Livraison</NavLink>
-    })();
+    });
 
     return (
         <>
             <div className={`fixed z-10 h-screen bg-amber-100 w-5/6 duration-300 ${isActive ? 'md:w-1/2 lg:w-1/6': 'w-0'}`}>
                 <Burger isActive={isActive} setIsActive={setIsActive}> </Burger>
                 <ol className={`h-full w-full flex flex-col text-2xl justify-start items-center gap-10 pt-24 ${isActive ? '' : '-translate-x-20 opacity-0'}`}>
-                    <li>{userMainPageLink}</li>
+                    <li>{userMainPageLink()}</li>
                     <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/history">Historique</NavLink></li>
                     <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/admin">Admin</NavLink></li>
                     <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/statistiques">Statistiques</NavLink></li>
