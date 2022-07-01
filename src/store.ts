@@ -47,15 +47,30 @@ type Status = "On order" | "Ordered" | "In preperation" | "Prepared" | "In deliv
 
 type Role = "Admin" | "Manager" | "Labo" | "Livreur" | "Anon"
 
+type Order = {
+    id: string,
+    items: Array<Item>,
+    status: Status,
+    comment: string
+
+}
+
 class Store {
 
     itemCategories: Array<ItemCategory> = []
     containerCategories: Array<ContainerCategory> = []
 
-    order: Array<Item> = []
+    //order: Array<Item> = []
     orderStatus: Status = "On order"
     orderId: string = ""
     orderComment: string = ""
+
+    order: Order = {
+        id: "",
+        items: [],
+        status: "On order",
+        comment: ""
+    }
 
     date: string = "DD/MM/YYYY"
     
@@ -115,7 +130,8 @@ class Store {
                     id: item.id,
                     name: item.name,
                     quantity: 0,
-                    container: "Bac 1/6 profond"
+                    container: "Bac 1/6 profond",
+                    container_id: "" // TODO modify later, maybe items having a default container (name+id) would be nice
                 })
             })
 
@@ -201,7 +217,7 @@ class Store {
 
         let hasUpdated: boolean = false
 
-        this.order.forEach((item: Item)=>{
+        this.order.items.forEach((item: Item)=>{
             if (item.name === name) {
                 item.container = container.name,
                 item.container_id = container.id,
@@ -211,7 +227,7 @@ class Store {
         })
 
         if (!hasUpdated) { // item is not in the array
-            this.order.push({
+            this.order.items.push({
                 id: id,
                 name: name,
                 quantity: quantity,
@@ -233,18 +249,18 @@ class Store {
                     created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
                     restaurant_id: this.restaurant.id,
                     created_by: this.user.id,
-                    comment: this.orderComment
+                    comment: this.order.comment
                 },
             ])
 
-            let orderArray:Array<any> = []
+            let orderArray:Array<any> = [] // array containing the (order-item-containers) 3-tuple
 
             if (order !== null && order.length > 0)
             {
 
-                this.orderId = order[0].id 
+                this.order.id = order[0].id 
 
-                this.order.forEach((item:Item)=>{
+                this.order.items.forEach((item:Item)=>{
                     orderArray.push({
                         canceled_by_lab: false,
                         item_id: item.id,
@@ -254,6 +270,7 @@ class Store {
                     })
                 })
                 
+                // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
                     .from('order-item-container')
                     .insert(orderArray)
@@ -266,7 +283,7 @@ class Store {
      * @param comment This string is the comment that was left by the manager
      */
     updateOrderComment(comment: string) {
-        this.orderComment = comment
+        this.order.comment = comment
     }
 
 

@@ -47,6 +47,7 @@ const Lab = () => {
 
     console.log(orderItemsArray) /* array of size one is displayed in the console, but I get "undefined" when I 
                                        replace this line by console.log(orderItemsArray[0]) */
+    console.log(orderItemsArray[0])
 
     orderItemsArray.forEach(orderItem=>{
         console.log(orderItem)
