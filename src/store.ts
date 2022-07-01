@@ -55,6 +55,7 @@ class Store {
     order: Array<Item> = []
     orderStatus: Status = "On order"
     orderId: string = ""
+    orderComment: string = ""
 
     date: string = "DD/MM/YYYY"
     
@@ -231,7 +232,8 @@ class Store {
                 {
                     created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
                     restaurant_id: this.restaurant.id,
-                    created_by: this.user.id
+                    created_by: this.user.id,
+                    comment: this.orderComment
                 },
             ])
 
@@ -260,6 +262,15 @@ class Store {
     }
 
     /**
+     * This function updates the comment on the order
+     * @param comment This string is the comment that was left by the manager
+     */
+    updateOrderComment(comment: string) {
+        this.orderComment = comment
+    }
+
+
+    /**
      * This function is used to update the store's data when a user logs in
      * @param user Logged-in user's information
      */
@@ -280,13 +291,14 @@ class Store {
                 .select('*')
                 .eq('id', user.restaurant_id)
 
-            if (restaurant?.length === 0 && restaurant != null) // restaurant is an array
+            if (restaurant?.length !== 0 && restaurant !== null) // restaurant is an array
                 this.restaurant = {
                     id: restaurant[0].id,
                     name: restaurant[0].name,
                     address: restaurant[0].address
                 }
         }
+
     }
 
     /**

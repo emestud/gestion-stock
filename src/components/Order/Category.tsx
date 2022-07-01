@@ -11,7 +11,7 @@ const Category = (props: any) => {
     )
 
     return (
-        <div className="ml-5">
+        <div>
             <h2 className="text-xl font-bold">{categoryName}</h2>
             <ol>
                 {list}

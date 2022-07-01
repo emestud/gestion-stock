@@ -23,6 +23,7 @@ const logIn = async (username: string, password: string) => {
     else {
         let userSingle = user[0] // user is an array of size 1
         if (userSingle.password === password) {
+            //console.log(userSingle)
             return [userSingle, errorMessage]
         }
         else {

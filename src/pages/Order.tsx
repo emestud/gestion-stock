@@ -14,8 +14,12 @@ const Order = () => {
     
     let [isOrdered, setIsOrdered] = useState(false)
 
+    const updateComment = (event:any) => {
+        store.updateOrderComment(event.target.value)
+    }
+
     return (
-        <div className='flex flex-col gap-8 pb-8'>
+        <div className='flex flex-col gap-8 pb-8 justify-center items-center'>
             <div className="w-fit m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
                 <p>{store.date}</p>
                 <p>|</p>
@@ -24,6 +28,7 @@ const Order = () => {
             <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                 {listCategory}
             </ol>
+            <textarea className="w-11/12 border border-solid border-black" placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
             {isOrdered ? <CancelButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
     )
