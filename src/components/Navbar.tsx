@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom"
 
 import { useState } from "react"
-import store from "../store"
+import store from "../stores/store"
 
 
 const Burger = (props: any) => {

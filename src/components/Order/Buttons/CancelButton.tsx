@@ -1,4 +1,4 @@
-import store from "../../../store"
+import store from "../../../stores/store"
 
 const CancelButton = (props:any) => {
 
@@ -10,16 +10,16 @@ const CancelButton = (props:any) => {
     }
 
     return (
-        <button className="flex text-white justify-center w-fit m-auto text-2xl px-4 py-2 shadow-xl bg-red-400 hover:bg-red-500 
-                                active:bg-red-500 active:border border-white border-solid 
+        <button className="flex text-white justify-center w-fit m-auto text-2xl px-4 py-2 shadow-xl bg-red-400 hover:bg-red-500
+                                active:bg-red-500 active:border border-white border-solid
                                 focus:bg-red-500 focus:border
-                                md:w-2/3 lg:w-1/2 max-w-2xl" 
+                                md:w-2/3 lg:w-1/2 max-w-2xl"
                 onClick={cancelOrder}>
             Annuler la commande
         </button>
     )
 
-} 
+}
 
 
 export default CancelButton

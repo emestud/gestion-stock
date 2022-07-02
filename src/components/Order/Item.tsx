@@ -1,5 +1,5 @@
 import { useState } from "react"
-import store from "../../store"
+import store from "../../stores/store"
 
 
 const getContainerID = (containerName: string):string => {
@@ -10,7 +10,7 @@ const getContainerID = (containerName: string):string => {
         category.containers.forEach((container:any)=>{
             if (container.name===containerName)
             container_id = container.id
-        })  
+        })
     }))
     return container_id
 }
@@ -18,14 +18,14 @@ const getContainerID = (containerName: string):string => {
 
 const Item = (props: any) => {
 
-    let {id, name, containerProp} = props 
+    let {id, name, containerProp} = props
 
     let [quantity, setQuantity] = useState(0)
     let [container, setContainer] = useState(containerProp)
 
     const handleQuantityChange = (newQuantity: number) => {
         setQuantity(newQuantity)
-        
+
         if (newQuantity !== 0) {
             store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)})
         }
@@ -33,13 +33,13 @@ const Item = (props: any) => {
 
     const handleContainerChange = (newContainer: string) => {
         setContainer(newContainer)
-        
+
         if (quantity !== 0) {
             store.updateOrder(id, name, quantity, {name: newContainer, id:getContainerID(newContainer)})
         }
     }
 
-    
+
     return (
         <div className="flex justify-center">
             <p className="w-1/3 border border-black border-solid truncate">{name}</p>

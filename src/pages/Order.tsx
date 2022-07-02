@@ -3,15 +3,15 @@ import Category from '../components/Order/Category'
 import CancelButton from '../components/Order/Buttons/CancelButton'
 import OrderButton from '../components/Order/Buttons/OrderButton'
 
-import store from '../store'
+import store from '../stores/store'
 import { useState } from 'react'
 
 const Order = () => {
 
     let listCategory = store.itemCategories.map(category=>
-        <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>  
+        <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>
     )
-    
+
     let [isOrdered, setIsOrdered] = useState(false)
 
     const updateComment = (event:any) => {

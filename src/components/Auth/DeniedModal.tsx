@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import store from "../../store"
+import store from "../../stores/store"
 
 const DeniedModal = () => {
 
@@ -34,7 +34,7 @@ const DeniedModal = () => {
         updateIsAccessible(role, location.pathname)
     }, [location.pathname])
 
-    
+
 
     return (
         <div className={`${isAccessible ? 'hidden' : 'fixed'}  w-screen h-screen bg-white opacity-80 backdroup-blur-lg flex justify-center items-center`}>
