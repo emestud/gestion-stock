@@ -41,12 +41,12 @@ const Item = (props: any) => {
 
 
     return (
-        <div className="flex justify-center">
-            <p className="w-1/3 border border-black border-solid truncate">{name}</p>
-            <input className="w-1/3 border border-black border-solid" value={quantity} type="number" min="0" disabled={store.orderStatus!=="On order"}
+        <div className="flex justify-center gap-1">
+            <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg">{name}</p>
+            <input className="w-1/3 input input-bordered" type="number" min="0" placeholder="0" disabled={store.order.status!=="On order"}
                     onChange={(event)=>handleQuantityChange(parseInt(event.target.value))} />
-            <select className="w-1/3 border border-black border-solid" name="Container" id="container-select" defaultValue={containerProp}
-                    onChange={(event)=>handleContainerChange(event.target.value)} disabled={store.orderStatus!=="On order"}>
+            <select className="w-1/3 select select-bordered" name="Container" id="container-select" defaultValue={containerProp}
+                    onChange={(event)=>handleContainerChange(event.target.value)} disabled={store.order.status!=="On order"}>
                 {store.containerCategories.map(category=>
                     <optgroup label={category.name}>
                         {category.containers.map(container=>

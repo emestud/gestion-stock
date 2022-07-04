@@ -10,17 +10,14 @@ class Store {
     itemCategories: Array<ItemCategory> = [];
     containerCategories: Array<ContainerCategory> = [];
 
-    //order: Array<Item> = []
-    orderStatus: Status = "On order";
-    orderId: string = "";
-    orderComment: string = "";
     orderStore: OrderStore;
 
     order: Order = {
         id: "",
         items: [],
         status: "On order",
-        comment: ""
+        comment: "", 
+        created_at: ""
     };
 
     date: string = "DD/MM/YYYY";
@@ -119,19 +116,21 @@ class Store {
 
         let listCategories:Array<string> = [];
 
-        categories?.forEach((category:any)=>{
-        if (!listCategories.includes(category.category))
-            listCategories.push(category.category);
-        })
+        if (categories !== null)
+            for (const category of categories){
+                if (!listCategories.includes(category.category))
+                    listCategories.push(category.category);
+            }
 
         for (const category of listCategories) {
 
-            let categoryContainers:Array<any> = [];
-            containers?.forEach((container:any)=>{
-                if (container.category===category) {
-                    categoryContainers.push(container);
+            let categoryContainers:Array<Container> = [];
+            if (containers !== null)
+                for (let container of containers){
+                    if (container.category===category) {
+                        categoryContainers.push(container);
+                    }
                 }
-            });
 
             let containersList:Array<Container> = [];
 
@@ -212,7 +211,7 @@ class Store {
 
                 this.order.id = order[0].id;
 
-                this.order.items.forEach((item:Item)=>{
+                for (let item of this.order.items) {
                     orderArray.push({
                         canceled_by_lab: false,
                         item_id: item.id,
@@ -220,7 +219,7 @@ class Store {
                         order_id: order[0].id,
                         quantity:item.quantity
                     });
-                });
+                }
 
                 // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
@@ -228,6 +227,18 @@ class Store {
                     .insert(orderArray);
 
             }
+    }
+
+    async modifyOrder() {
+        for (let item of this.order.items) {
+            let {data, error} = await supabase
+                .from('order-item-container')
+                .update({
+                    container_id: item.container_id,
+                    quantity: item.quantity
+                })
+                .eq('order_id', store.order.id).eq('item_id', item.id)
+        }
     }
 
     /**
@@ -243,7 +254,7 @@ class Store {
      * This function is used to update the store's data when a user logs in
      * @param user Logged-in user's information
      */
-    async logIn(user: any) {
+    async logIn(user: User) {
         this.isLoggedIn = true;
         this.user = {
             id:user.id,

@@ -9,7 +9,7 @@ const Burger = (props: any) => {
     let { isActive, setIsActive } = props;
 
     return (
-        <div className={`flex flex-col w-16 gap-2 mt-6 ml-6 p-4 duration-300 ${isActive? 'bg-amber-100' : 'bg-white' }`} onClick={()=>setIsActive(!isActive)}>
+        <div className={`flex flex-col w-16 gap-2 mt-6 ml-6 p-4 duration-300 ${isActive? 'bg-amber-100' : 'bg-white' } shadow-xl`} onClick={()=>setIsActive(!isActive)}>
             <div className={`w-8 h-0.5 bg-black duration-300 ${isActive ? 'rotate-45 translate-y-2.5' : ''}`}></div>
             <div className={`w-8 h-0.5 bg-black duration-300 ${isActive ? '-translate-x-20 opacity-0' : ''}`}></div>
             <div className={`w-8 h-0.5 bg-black duration-300 ${isActive ? '-rotate-45 -translate-y-2.5' : ''}`}></div>
@@ -28,6 +28,7 @@ const NavBar = ({setLogOut}:any) => {
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/lab">Labo</NavLink>;
         else if (store.user.role === 'Livreur')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/delivery">Livraison</NavLink>;
+    
     });
 
     return (

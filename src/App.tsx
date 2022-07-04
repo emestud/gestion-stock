@@ -34,7 +34,7 @@ const App = () => {
   return (
     <div>
       <NavBar setLogOut={setLogOut} />
-      {isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  };
+      {isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  }
       <DeniedModal />
       <main className="pt-20">
         <Routes>

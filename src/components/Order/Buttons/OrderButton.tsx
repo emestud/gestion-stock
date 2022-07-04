@@ -5,17 +5,23 @@ const OrderButton = (props:any) => {
     let {isOrdered, setIsOrdered} = props;
 
     const sendOrder = async () => {
-        store.orderStatus = "Ordered";
+
+        if (store.order.items.length <= 0) {
+            return; // Cannot send the order, at least one item needs to be ordered
+        }
+
+        store.order.status = "Ordered";
         setIsOrdered(!isOrdered);
 
-        await store.sendOrder();
+        if (store.order.id === "") // order has not been sent yet
+            await store.sendOrder();
+        else {
+            await store.modifyOrder();
+        }
     }
 
     return (
-        <button className="flex justify-center w-fit m-auto text-2xl px-4 py-2 shadow-xl bg-white hover:bg-slate-200
-                                active:bg-slate-300 active:border border-black border-solid
-                                focus:bg-slate-300 focus:border
-                                md:w-2/3 lg:w-1/2 max-w-2xl"
+        <button className="flex justify-center w-fit m-auto text-2xl btn md:w-2/3 lg:w-1/2 max-w-2xl"
                 onClick={sendOrder}>
             Valider la commande
         </button>
