@@ -16,7 +16,8 @@ class Store {
         id: "",
         items: [],
         status: "On order",
-        comment: ""
+        comment: "", 
+        created_at: ""
     };
 
     date: string = "DD/MM/YYYY";

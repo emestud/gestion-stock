@@ -46,5 +46,5 @@ export type Order = {
   items: Array<Item>,
   status: Status,
   comment: string
-
+  created_at: string
 };
