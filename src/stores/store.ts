@@ -1,59 +1,9 @@
-import { makeAutoObservable } from "mobx"
+import {makeAutoObservable} from "mobx";
 
-import { supabase }  from './supabaseClient'
+import {supabase} from "../supabaseClient";
+import {Container, ContainerCategory, Item, ItemCategory, Order, Restaurant, Status, User} from "../types";
+import {OrderStore} from "./order-store";
 
-
-type Item = {
-    id: string,
-    name: string,
-    quantity: number,
-    container: string,
-    container_id: string
-
-}
-
-type ItemCategory = {
-
-    name: string,
-    items: Array<Item>
-
-}
-
-type Container = {
-    name: string,
-    id: string
-}
-
-type ContainerCategory = {
-    name: string,
-    containers: Array<Container>
-}
-
-
-type User = {
-    id: string,
-    username: string,
-    role: Role,
-    restaurant_id: string
-}
-
-type Restaurant = {
-    id: string,
-    name: string,
-    address: string
-}
-
-type Status = "On order" | "Ordered" | "In preperation" | "Prepared" | "In delivery" | "Delivered" | "Received"
-
-type Role = "Admin" | "Manager" | "Labo" | "Livreur" | "Anon"
-
-type Order = {
-    id: string,
-    items: Array<Item>,
-    status: Status,
-    comment: string
-
-}
 
 class Store {
 
@@ -64,6 +14,7 @@ class Store {
     orderStatus: Status = "On order"
     orderId: string = ""
     orderComment: string = ""
+    orderStore: OrderStore;
 
     order: Order = {
         id: "",
@@ -73,7 +24,7 @@ class Store {
     }
 
     date: string = "DD/MM/YYYY"
-    
+
     isLoggedIn = false
 
     restaurant: Restaurant = {
@@ -90,7 +41,8 @@ class Store {
     }
 
     constructor() {
-        makeAutoObservable(this)
+        this.orderStore = new OrderStore();
+        makeAutoObservable(this);
     }
 
     /**
@@ -102,7 +54,7 @@ class Store {
         let { data: categories, errorCategories } = await supabase
         .from('item')
         .select('category')
-        
+
         let { data: items, errorItems } = await supabase
             .from('item')
             .select('*')
@@ -115,14 +67,14 @@ class Store {
         })
 
         for (const category of listCategories) {
-            
+
             let categoryItems:Array<any> = []
             items?.forEach((item:any)=>{
                 if (item.category===category) {
                     categoryItems.push(item)
                 }
             })
-            
+
             let products:Array<Item> = []
 
             categoryItems?.forEach(item=>{
@@ -160,7 +112,7 @@ class Store {
         let { data: categories, errorCategories } = await supabase
         .from('container')
         .select('category')
-        
+
         let { data: containers, errorItems } = await supabase
             .from('container')
             .select('*')
@@ -173,14 +125,14 @@ class Store {
         })
 
         for (const category of listCategories) {
-            
+
             let categoryContainers:Array<any> = []
             containers?.forEach((container:any)=>{
                 if (container.category===category) {
                     categoryContainers.push(container)
                 }
             })
-            
+
             let containersList:Array<Container> = []
 
             categoryContainers?.forEach(container=>{
@@ -258,7 +210,7 @@ class Store {
             if (order !== null && order.length > 0)
             {
 
-                this.order.id = order[0].id 
+                this.order.id = order[0].id
 
                 this.order.items.forEach((item:Item)=>{
                     orderArray.push({
@@ -269,7 +221,7 @@ class Store {
                         quantity:item.quantity
                     })
                 })
-                
+
                 // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
                     .from('order-item-container')
@@ -339,7 +291,8 @@ class Store {
 
 }
 
-const store = new Store
+const store = new Store();
+const orderStore = new OrderStore();
 
 await store.addItems()
 await store.addContainers()

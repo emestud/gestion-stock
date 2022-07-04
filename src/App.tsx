@@ -14,7 +14,7 @@ import Statistiques from './pages/Statistiques'
 import LogInModal from './components/Auth/LogInModal'
 import DeniedModal from './components/Auth/DeniedModal'
 
-import store from './store'
+import store from './stores/store'
 import { useState } from 'react'
 
 const App = () => {
@@ -29,13 +29,13 @@ const App = () => {
   const setLogOut = () => {
     setIsLoggedIn(false)
     store.logOut()
-  } 
+  }
 
   return (
     <div>
       <NavBar setLogOut={setLogOut} />
-      {isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  }
-      <DeniedModal />
+      {/*{isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  }*/}
+      {/*<DeniedModal />*/}
       <main className="pt-20">
         <Routes>
           <Route path="/order" element={ <Order /> }></Route>
