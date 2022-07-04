@@ -13,7 +13,11 @@ const OrderButton = (props:any) => {
         store.order.status = "Ordered";
         setIsOrdered(!isOrdered);
 
-        await store.sendOrder();
+        if (store.order.id === "") // order has not been sent yet
+            await store.sendOrder();
+        else {
+            await store.modifyOrder();
+        }
     }
 
     return (
