@@ -13,7 +13,7 @@ const Category = (props: any) => {
     return (
         <div>
             <h2 className="text-xl font-bold">{categoryName}</h2>
-            <ol>
+            <ol className="flex flex-col gap-1">
                 {list}
             </ol>
         </div>
