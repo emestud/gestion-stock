@@ -39,7 +39,7 @@ const LogInModal = ({ setLogIn }:any) => {
                 onSubmit={e => e.preventDefault()}
             >
                 <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="text" placeholder="Username" onChange={updateUsername}/>
-                <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="text" placeholder="Password" onChange={updatePassword}/>
+                <input className="w-full sm:w-1/2 border-dotted border border-black p-2" type="password" placeholder="Password" onChange={updatePassword}/>
                 <button className="w-full sm:w-1/2 shadow-2xl text-2xl p-4 border border-solid border-black" 
                         onClick={()=>tryLogIn(username, password)}>
                             Log-In
