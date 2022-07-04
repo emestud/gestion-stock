@@ -5,7 +5,12 @@ const OrderButton = (props:any) => {
     let {isOrdered, setIsOrdered} = props;
 
     const sendOrder = async () => {
-        store.orderStatus = "Ordered";
+
+        if (store.order.items.length <= 0) {
+            return; // Cannot send the order, at least one item needs to be ordered
+        }
+
+        store.order.status = "Ordered";
         setIsOrdered(!isOrdered);
 
         await store.sendOrder();

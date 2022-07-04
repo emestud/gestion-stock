@@ -10,10 +10,6 @@ class Store {
     itemCategories: Array<ItemCategory> = [];
     containerCategories: Array<ContainerCategory> = [];
 
-    //order: Array<Item> = []
-    orderStatus: Status = "On order";
-    orderId: string = "";
-    orderComment: string = "";
     orderStore: OrderStore;
 
     order: Order = {

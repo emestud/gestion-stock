@@ -5,7 +5,7 @@ const ModifyButton = (props:any) => {
     let {isOrdered, setIsOrdered} = props;
 
     const ModifyOrder = () => {
-        store.orderStatus = "On order";
+        store.order.status = "On order";
         setIsOrdered(!isOrdered);
     }
 
