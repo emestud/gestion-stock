@@ -1,6 +1,6 @@
 import Category from '../components/Order/Category'
 
-import CancelButton from '../components/Order/Buttons/CancelButton'
+import ModifyButton from '../components/Order/Buttons/ModifyButton'
 import OrderButton from '../components/Order/Buttons/OrderButton'
 
 import store from '../stores/store'
@@ -28,8 +28,8 @@ const Order = () => {
             <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                 {listCategory}
             </ol>
-            <textarea className="w-11/12 border border-solid border-black" placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
-            {isOrdered ? <CancelButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
+            <textarea className="w-11/12 textarea textarea-accent max-w-3xl" placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
+            {isOrdered ? <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
     );
 }
