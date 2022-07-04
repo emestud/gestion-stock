@@ -22,12 +22,16 @@ const NavBar = ({setLogOut}:any) => {
     const [isActive, setIsActive]:any = useState(false);
 
     let userMainPageLink = (() => {
+        console.log(store.user.role)
         if (store.user.role === 'Manager')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/order">Commande</NavLink>;
         else if (store.user.role === 'Labo')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/lab">Labo</NavLink>;
         else if (store.user.role === 'Livreur')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/delivery">Livraison</NavLink>;
+        else 
+            return <div>Pisse au cul</div>
+    
     });
 
     return (

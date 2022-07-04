@@ -20,7 +20,7 @@ const Order = () => {
 
     return (
         <div className='flex flex-col gap-8 pb-8 justify-center items-center'>
-            <div className="w-fit m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
+            <div className="w-11/12 m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
                 <p>{store.date}</p>
                 <p>|</p>
                 <p>{store.restaurant.name}</p>
