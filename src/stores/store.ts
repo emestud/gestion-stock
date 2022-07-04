@@ -115,19 +115,21 @@ class Store {
 
         let listCategories:Array<string> = [];
 
-        categories?.forEach((category:any)=>{
-        if (!listCategories.includes(category.category))
-            listCategories.push(category.category);
-        })
+        if (categories !== null)
+            for (const category of categories){
+                if (!listCategories.includes(category.category))
+                    listCategories.push(category.category);
+            }
 
         for (const category of listCategories) {
 
-            let categoryContainers:Array<any> = [];
-            containers?.forEach((container:any)=>{
-                if (container.category===category) {
-                    categoryContainers.push(container);
+            let categoryContainers:Array<Container> = [];
+            if (containers !== null)
+                for (let container of containers){
+                    if (container.category===category) {
+                        categoryContainers.push(container);
+                    }
                 }
-            });
 
             let containersList:Array<Container> = [];
 
@@ -251,7 +253,7 @@ class Store {
      * This function is used to update the store's data when a user logs in
      * @param user Logged-in user's information
      */
-    async logIn(user: any) {
+    async logIn(user: User) {
         this.isLoggedIn = true;
         this.user = {
             id:user.id,

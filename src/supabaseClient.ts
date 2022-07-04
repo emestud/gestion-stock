@@ -17,7 +17,7 @@ const logIn = async (username: string, password: string) => {
     if (user === null) user = []; // hacky thingy to prevent typescript from being a pain in the arm
 
     if (user.length === 0) {
-        errorMessage = "User doesn't exist";
+        errorMessage = "The user name or password are incorrect";
         return [null, errorMessage];
     } 
     else {
@@ -27,7 +27,7 @@ const logIn = async (username: string, password: string) => {
             return [userSingle, errorMessage];
         }
         else {
-            errorMessage = "The password isn't correct";
+            errorMessage = "The user name or password are incorrect";
             return [null, errorMessage];
         }
     }
