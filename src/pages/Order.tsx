@@ -31,7 +31,7 @@ const Order = () => {
             <textarea className="w-11/12 border border-solid border-black" placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
             {isOrdered ? <CancelButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
-    )
+    );
 }
 
-export default Order
+export default Order;

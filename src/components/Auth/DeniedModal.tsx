@@ -4,35 +4,35 @@ import store from "../../stores/store"
 
 const DeniedModal = () => {
 
-    let [isAccessible, setIsAccessible] = useState(false)
-    let role = store.user.role
+    let [isAccessible, setIsAccessible] = useState(false);
+    let role = store.user.role;
 
-    const updateIsAccessible = (role: string, path: string)=> {
+    const updateIsAccessible = (role: string, path: string) => {
         if (role === "Manager") {
             if (path === '/order' || path === '/history')
-                setIsAccessible(true)
+                setIsAccessible(true);
             else setIsAccessible(false)
         }
         else if (role === "Livreur") {
             if (path === '/delivery')
-                setIsAccessible(true)
+                setIsAccessible(true);
             else setIsAccessible(false)
         }
         else if (role === "Labo") {
             if (path === '/lab')
-                setIsAccessible(true)
+                setIsAccessible(true);
             else setIsAccessible(false)
         }
         else if (role === "Admin") {
-            setIsAccessible(true)
+            setIsAccessible(true);
         }
     }
 
-    let location = useLocation()
+    let location = useLocation();
 
     useEffect(()=>{
-        updateIsAccessible(role, location.pathname)
-    }, [location.pathname])
+        updateIsAccessible(role, location.pathname);
+    }, [location.pathname]);
 
 
 
@@ -42,7 +42,7 @@ const DeniedModal = () => {
                 Votre rôle ({role}) ne vous permet pas d'accéder à cette page
             </div>
         </div>
-    )
+    );
 }
 
-export default DeniedModal
+export default DeniedModal;

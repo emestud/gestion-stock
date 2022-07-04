@@ -2,7 +2,7 @@ import Item from './Item'
 
 const Category = (props: any) => {
 
-    let { categoryName, listItems } = props
+    let { categoryName, listItems } = props;
 
     let list = listItems.map((item:any) => 
         <li key={item.name}>
@@ -17,9 +17,9 @@ const Category = (props: any) => {
                 {list}
             </ol>
         </div>
-    )
+    );
 
 }
 
 
-export default Category
+export default Category;

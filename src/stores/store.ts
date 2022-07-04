@@ -7,13 +7,13 @@ import {OrderStore} from "./order-store";
 
 class Store {
 
-    itemCategories: Array<ItemCategory> = []
-    containerCategories: Array<ContainerCategory> = []
+    itemCategories: Array<ItemCategory> = [];
+    containerCategories: Array<ContainerCategory> = [];
 
     //order: Array<Item> = []
-    orderStatus: Status = "On order"
-    orderId: string = ""
-    orderComment: string = ""
+    orderStatus: Status = "On order";
+    orderId: string = "";
+    orderComment: string = "";
     orderStore: OrderStore;
 
     order: Order = {
@@ -21,24 +21,24 @@ class Store {
         items: [],
         status: "On order",
         comment: ""
-    }
+    };
 
-    date: string = "DD/MM/YYYY"
+    date: string = "DD/MM/YYYY";
 
-    isLoggedIn = false
+    isLoggedIn = false;
 
     restaurant: Restaurant = {
         id: "",
         name: "",
         address: ""
-    }
+    };
 
     user: User = {
         id: "",
         username: "Anon",
         role: "Anon",
         restaurant_id: ""
-    }
+    };
 
     constructor() {
         this.orderStore = new OrderStore();
@@ -53,29 +53,29 @@ class Store {
         // Adding the items to the store
         let { data: categories, errorCategories } = await supabase
         .from('item')
-        .select('category')
+        .select('category');
 
         let { data: items, errorItems } = await supabase
             .from('item')
-            .select('*')
+            .select('*');
 
-        let listCategories:Array<string> = []
+        let listCategories:Array<string> = [];
 
         categories?.forEach((category:any)=>{
         if (!listCategories.includes(category.category))
-            listCategories.push(category.category)
-        })
+            listCategories.push(category.category);
+        });
 
         for (const category of listCategories) {
 
-            let categoryItems:Array<any> = []
+            let categoryItems:Array<any> = [];
             items?.forEach((item:any)=>{
                 if (item.category===category) {
-                    categoryItems.push(item)
+                    categoryItems.push(item);
                 }
-            })
+            });
 
-            let products:Array<Item> = []
+            let products:Array<Item> = [];
 
             categoryItems?.forEach(item=>{
                 products.push({
@@ -84,13 +84,13 @@ class Store {
                     quantity: 0,
                     container: "Bac 1/6 profond",
                     container_id: "" // TODO modify later, maybe items having a default container (name+id) would be nice
-                })
+                });
             })
 
             store.addItemCategory({
                 name: category,
                 items: products
-            })
+            });
 
         }
     }
@@ -100,7 +100,7 @@ class Store {
      * @param category This is the ItemCategory that we want to add to the store
      */
     addItemCategory(category: ItemCategory) {
-        this.itemCategories.push(category)
+        this.itemCategories.push(category);
     }
 
     /**
@@ -111,41 +111,41 @@ class Store {
         // Adding the containers to the store
         let { data: categories, errorCategories } = await supabase
         .from('container')
-        .select('category')
+        .select('category');
 
         let { data: containers, errorItems } = await supabase
             .from('container')
-            .select('*')
+            .select('*');
 
-        let listCategories:Array<string> = []
+        let listCategories:Array<string> = [];
 
         categories?.forEach((category:any)=>{
         if (!listCategories.includes(category.category))
-            listCategories.push(category.category)
+            listCategories.push(category.category);
         })
 
         for (const category of listCategories) {
 
-            let categoryContainers:Array<any> = []
+            let categoryContainers:Array<any> = [];
             containers?.forEach((container:any)=>{
                 if (container.category===category) {
-                    categoryContainers.push(container)
+                    categoryContainers.push(container);
                 }
-            })
+            });
 
-            let containersList:Array<Container> = []
+            let containersList:Array<Container> = [];
 
             categoryContainers?.forEach(container=>{
                 containersList.push({
                     name: container.name,
                     id: container.id
-                })
-            })
+                });
+            });
 
             store.addContainerCategory({
                 name: category,
                 containers: containersList
-            })
+            });
 
         }
     }
@@ -155,7 +155,7 @@ class Store {
      * @param category This is the ContainerCategory that we want to add to the store
      */
      addContainerCategory(category: ContainerCategory) {
-        this.containerCategories.push(category)
+        this.containerCategories.push(category);
     }
 
 
@@ -167,7 +167,7 @@ class Store {
      */
     updateOrder(id:string, name: string, quantity: number, container: Container) {
 
-        let hasUpdated: boolean = false
+        let hasUpdated: boolean = false;
 
         this.order.items.forEach((item: Item)=>{
             if (item.name === name) {
@@ -176,7 +176,7 @@ class Store {
                 item.quantity = quantity
                 hasUpdated = true
             }
-        })
+        });
 
         if (!hasUpdated) { // item is not in the array
             this.order.items.push({
@@ -185,7 +185,7 @@ class Store {
                 quantity: quantity,
                 container: container.name,
                 container_id: container.id
-            })
+            });
         }
 
     }
@@ -203,14 +203,14 @@ class Store {
                     created_by: this.user.id,
                     comment: this.order.comment
                 },
-            ])
+            ]);
 
-            let orderArray:Array<any> = [] // array containing the (order-item-containers) 3-tuple
+            let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
 
             if (order !== null && order.length > 0)
             {
 
-                this.order.id = order[0].id
+                this.order.id = order[0].id;
 
                 this.order.items.forEach((item:Item)=>{
                     orderArray.push({
@@ -219,13 +219,13 @@ class Store {
                         container_id: item.container_id,
                         order_id: order[0].id,
                         quantity:item.quantity
-                    })
-                })
+                    });
+                });
 
                 // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
                     .from('order-item-container')
-                    .insert(orderArray)
+                    .insert(orderArray);
 
             }
     }
@@ -235,7 +235,7 @@ class Store {
      * @param comment This string is the comment that was left by the manager
      */
     updateOrderComment(comment: string) {
-        this.order.comment = comment
+        this.order.comment = comment;
     }
 
 
@@ -244,13 +244,13 @@ class Store {
      * @param user Logged-in user's information
      */
     async logIn(user: any) {
-        this.isLoggedIn = true
+        this.isLoggedIn = true;
         this.user = {
             id:user.id,
             username: user.username,
             role: user.role,
             restaurant_id: user.restaurant_id || ""
-        } // logging in the user
+        }; // logging in the user
 
 
         // updating the restaurant (if the user is a manager)
@@ -258,14 +258,14 @@ class Store {
             let {data: restaurant, error} = await supabase
                 .from('restaurant')
                 .select('*')
-                .eq('id', user.restaurant_id)
+                .eq('id', user.restaurant_id);
 
             if (restaurant?.length !== 0 && restaurant !== null) // restaurant is an array
                 this.restaurant = {
                     id: restaurant[0].id,
                     name: restaurant[0].name,
                     address: restaurant[0].address
-                }
+                };
         }
 
     }
@@ -274,19 +274,19 @@ class Store {
      * This function updates the store's data when a user logs out
      */
     logOut() {
-        this.isLoggedIn = false
+        this.isLoggedIn = false;
         this.user = {
             id:"",
             username: "Anon",
             role: "Anon",
             restaurant_id: ""
-        }
+        };
 
         this.restaurant = {
             id: "",
             name: "",
             address: ""
-        }
+        };
     }
 
 }
@@ -294,7 +294,7 @@ class Store {
 const store = new Store();
 const orderStore = new OrderStore();
 
-await store.addItems()
-await store.addContainers()
+await store.addItems();
+await store.addContainers();
 
-export default store
+export default store;

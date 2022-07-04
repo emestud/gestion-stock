@@ -2,11 +2,11 @@ import store from "../../../stores/store"
 
 const CancelButton = (props:any) => {
 
-    let {isOrdered, setIsOrdered} = props
+    let {isOrdered, setIsOrdered} = props;
 
     const cancelOrder = () => {
-        store.orderStatus = "On order"
-        setIsOrdered(!isOrdered)
+        store.orderStatus = "On order";
+        setIsOrdered(!isOrdered);
     }
 
     return (
@@ -17,9 +17,9 @@ const CancelButton = (props:any) => {
                 onClick={cancelOrder}>
             Annuler la commande
         </button>
-    )
+    );
 
 }
 
 
-export default CancelButton
+export default CancelButton;

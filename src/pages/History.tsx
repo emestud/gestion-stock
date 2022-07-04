@@ -3,7 +3,7 @@ const History = () => {
         <>
             <h1>Historique</h1>
         </>
-    )
+    );
 }
 
-export default History
+export default History;

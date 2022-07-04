@@ -2,13 +2,13 @@ import store from "../../../stores/store"
 
 const OrderButton = (props:any) => {
 
-    let {isOrdered, setIsOrdered} = props
+    let {isOrdered, setIsOrdered} = props;
 
     const sendOrder = async () => {
-        store.orderStatus = "Ordered"
-        setIsOrdered(!isOrdered)
+        store.orderStatus = "Ordered";
+        setIsOrdered(!isOrdered);
 
-        await store.sendOrder()
+        await store.sendOrder();
     }
 
     return (
@@ -19,9 +19,9 @@ const OrderButton = (props:any) => {
                 onClick={sendOrder}>
             Valider la commande
         </button>
-    )
+    );
 
 }
 
 
-export default OrderButton
+export default OrderButton;

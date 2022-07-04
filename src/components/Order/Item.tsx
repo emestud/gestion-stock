@@ -4,27 +4,27 @@ import store from "../../stores/store"
 
 const getContainerID = (containerName: string):string => {
 
-    let container_id = ""
+    let container_id = "";
 
     store.containerCategories.forEach(((category: any)=>{
         category.containers.forEach((container:any)=>{
             if (container.name===containerName)
-            container_id = container.id
-        })
-    }))
-    return container_id
+            container_id = container.id;
+        });
+    }));
+    return container_id;
 }
 
 
 const Item = (props: any) => {
 
-    let {id, name, containerProp} = props
+    let {id, name, containerProp} = props;
 
-    let [quantity, setQuantity] = useState(0)
-    let [container, setContainer] = useState(containerProp)
+    let [quantity, setQuantity] = useState(0);
+    let [container, setContainer] = useState(containerProp);
 
     const handleQuantityChange = (newQuantity: number) => {
-        setQuantity(newQuantity)
+        setQuantity(newQuantity);
 
         if (newQuantity !== 0) {
             store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)})
@@ -58,7 +58,7 @@ const Item = (props: any) => {
                 )}
             </select>
         </div>
-    )
+    );
 }
 
-export default Item
+export default Item;

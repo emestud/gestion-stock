@@ -4,30 +4,30 @@ import { logIn } from "../../supabaseClient"
 const LogInModal = ({ setLogIn }:any) => {
 
 
-    let [username, setUsername] = useState("")
-    let [password, setPassword] = useState("")
-    let [errorMessage, setErrorMessage] = useState("")
+    let [username, setUsername] = useState("");
+    let [password, setPassword] = useState("");
+    let [errorMessage, setErrorMessage] = useState("");
 
 
     const updateUsername = (event: any) => {
-        setUsername(event.target.value)
+        setUsername(event.target.value);
     }
 
     const updatePassword = (event: any) => {
-        setPassword(event.target.value)
+        setPassword(event.target.value);
     }
 
     const tryLogIn = async (username: string, password: string) => {
 
-        let [user, error] = await logIn(username, password)
+        let [user, error] = await logIn(username, password);
         
         if (error === "") { // login is successful
-            setErrorMessage("")
-            setLogIn(user)
+            setErrorMessage("");
+            setLogIn(user);
         }
         else { // login is not successful
-            console.log(error)
-            setErrorMessage(error)
+            console.log(error);
+            setErrorMessage(error);
         }
 
     }
@@ -47,8 +47,8 @@ const LogInModal = ({ setLogIn }:any) => {
                 <p className={`w-full sm:w-1/2 p-4 border border-red-500 border-solid text-center ${errorMessage==="" ? 'hidden' : 'block'}`}>{errorMessage}</p>
             </form>
         </div>
-    )
+    );
 }
 
 
-export default LogInModal
+export default LogInModal;
