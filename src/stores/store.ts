@@ -208,7 +208,7 @@ class Store {
 
                 this.order.id = order[0].id;
 
-                this.order.items.forEach((item:Item)=>{
+                for (let item of this.order.items) {
                     orderArray.push({
                         canceled_by_lab: false,
                         item_id: item.id,
@@ -216,7 +216,7 @@ class Store {
                         order_id: order[0].id,
                         quantity:item.quantity
                     });
-                });
+                }
 
                 // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
@@ -224,6 +224,18 @@ class Store {
                     .insert(orderArray);
 
             }
+    }
+
+    async modifyOrder() {
+        for (let item of this.order.items) {
+            let {data, error} = await supabase
+                .from('order-item-container')
+                .update({
+                    container_id: item.container_id,
+                    quantity: item.quantity
+                })
+                .eq('order_id', store.order.id).eq('item_id', item.id)
+        }
     }
 
     /**

@@ -22,7 +22,6 @@ const NavBar = ({setLogOut}:any) => {
     const [isActive, setIsActive]:any = useState(false);
 
     let userMainPageLink = (() => {
-        console.log(store.user.role)
         if (store.user.role === 'Manager')
             return <NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/order">Commande</NavLink>;
         else if (store.user.role === 'Labo')
