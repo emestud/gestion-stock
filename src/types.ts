@@ -46,5 +46,6 @@ export type Order = {
   items: Array<Item>,
   status: Status,
   comment: string
-  created_at: string
+  created_at: string,
+  restaurant_id: string
 };

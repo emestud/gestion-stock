@@ -10,9 +10,9 @@ import Delivery from './pages/Delivery';
 
 import History from './pages/History';
 import Statistiques from './pages/Statistiques';
+import Unauthorized from './pages/Unauthorized';
 
 import LogInModal from './components/Auth/LogInModal';
-import DeniedModal from './components/Auth/DeniedModal';
 
 import store from './stores/store';
 import { useState } from 'react';
@@ -35,15 +35,15 @@ const App = () => {
     <div>
       <NavBar setLogOut={setLogOut} />
       {isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  }
-      <DeniedModal />
-      <main className="pt-20">
+      <main className="pt-20 h-screen w-screen overflow-scroll">
         <Routes>
-          <Route path="/order" element={ <Order /> }></Route>
-          <Route path="/lab" element={ <Lab /> }></Route>
-          <Route path="/delivery" element={ <Delivery /> }></Route>
+          <Route path="order" element={ <Order /> }></Route>
+          <Route path="lab" element={ <Lab /> }></Route>
+          <Route path="delivery" element={ <Delivery /> }></Route>
           <Route path="admin" element={ <Admin /> }></Route>
-          <Route path="history" element={ <History /> }></Route>
+          <Route path="/" element={ <History /> }></Route>
           <Route path="statistiques" element={ <Statistiques /> }></Route>
+          <Route path="unauthorized" element={ <Unauthorized /> }></Route>
         </Routes>
       </main>
     </div>

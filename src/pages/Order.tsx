@@ -5,8 +5,15 @@ import OrderButton from '../components/Order/Buttons/OrderButton'
 
 import store from '../stores/store'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Order = () => {
+
+    const navigate = useNavigate()
+
+    if (store.user.role !== "Manager" && store.user.role !== "Admin") {
+        navigate('/unauthorized');
+    }
 
     let listCategory = store.itemCategories.map(category=>
         <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>

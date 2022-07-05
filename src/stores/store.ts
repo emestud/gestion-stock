@@ -17,7 +17,8 @@ class Store {
         items: [],
         status: "On order",
         comment: "", 
-        created_at: ""
+        created_at: "",
+        restaurant_id: ""
     };
 
     date: string = "DD/MM/YYYY";
@@ -249,6 +250,20 @@ class Store {
         this.order.comment = comment;
     }
 
+
+    /**
+     * This function returns the restaurant name and adress given a restaurant ID 
+     * @param restaurant_id the ID of the restaurant
+     */
+    async getRestaurantData(restaurant_id: string) {
+
+        const {data: restaurant, error} = await supabase
+            .from('restaurant')
+            .select('name, address')
+            .eq('id', restaurant_id);
+
+        return restaurant;
+    }
 
     /**
      * This function is used to update the store's data when a user logs in

@@ -1,8 +1,15 @@
-import {supabase} from "../supabaseClient";
 import {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
+
 import store from "../stores/store";
 
 const Lab = () => {
+
+  const navigate = useNavigate()
+
+  if (store.user.role !== "Labo" && store.user.role !== "Admin") {
+    navigate('/unauthorized');
+  }
 
   const date = new Date().toISOString();
   let [orderItems, setOrderItems]: any = useState([]);
@@ -14,13 +21,6 @@ const Lab = () => {
       setOrderItems(orderItemsTmp);
     })();
   }, []);
-
-
-  /* TODO
-      - Régler le bug qui m'empêche d'accceder aux données
-      - Trier les items par catégories, pour avoir une affichage semi-similaire à celui de la page "Order"
-      - Regrouper les item qui ont le même nom et récipients (mais des restaurants/quanitités différentes)
-  */
 
   return (
     <div>
