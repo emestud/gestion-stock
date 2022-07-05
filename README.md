@@ -24,5 +24,6 @@ Il existe pour l'instant trois utilisateurs par défaut:
 |Vincent|Vincent|Manager|
 |Vincito|Vincito|Labo|
 |Vincenzo|Vincenzo|Livreur|
+|Admin|Admin|Admin|
 
 **NB:** Même avec ces crendentials, on ne peut pas se connecter sans avoir accès aux variables d'environnement citées plus haut.
