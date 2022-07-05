@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 import { logIn } from "../../supabaseClient"
 
 const LogInModal = ({ setLogIn }:any) => {
@@ -26,6 +27,8 @@ const LogInModal = ({ setLogIn }:any) => {
         if (error === "") { // login is successful
             setErrorMessage("");
             setLogIn(user);
+            let navigate = useNavigate()
+            navigate('/')
         }
         else { // login is not successful
             console.log(error);

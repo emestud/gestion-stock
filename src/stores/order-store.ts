@@ -2,13 +2,29 @@ import {supabase} from "../supabaseClient";
 
 export class OrderStore {
 
-  public async getOrders() {
+  public async getOrders(date: string | null) {
     const orders = new Array();
 
     try {
-      let {data, error} = await supabase
-        .from("order")
-        .select("*");
+      let data: any;
+      let error: any;
+      if (date !== null) {
+        let {data: dataTmp, error: errorTmp} = await supabase
+          .from("order")
+          .select("*")
+          .eq('created_at', date);
+        
+          data = dataTmp;
+          error = errorTmp;
+      }
+      else {
+        let {data: dataTmp, error: errorTmp} = await supabase
+          .from("order")
+          .select("*");
+        
+          data = dataTmp;
+          error = errorTmp;
+      }
 
       if (data?.length !== 0 && data !== null) {
         orders.push(...data);

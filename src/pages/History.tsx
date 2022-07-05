@@ -15,7 +15,7 @@ const History = () => {
     const [currentActiveTabDate, setCurrentActiveTabDate]: any = useState("")
 
     const getOrders = async () => {
-        let tmp:Array<Order> = await store.orderStore.getOrders();
+        let tmp:Array<Order> = await store.orderStore.getOrders(null);
         setOrders(tmp);
     };
 

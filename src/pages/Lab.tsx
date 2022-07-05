@@ -1,9 +1,12 @@
 import {useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import store from "../stores/store";
 
-const Lab = () => {
+const Lab = ({params}:any) => {
+
+  const location:any = useLocation();
+  const ordersDate = location.state.date;
 
   const navigate = useNavigate()
 
@@ -16,7 +19,7 @@ const Lab = () => {
 
   useEffect(() => {
     (async () => {
-      const orders = await store.orderStore.getOrders();
+      const orders = await store.orderStore.getOrders(ordersDate);
       const orderItemsTmp = await store.orderStore.prepareOrders(orders);
       setOrderItems(orderItemsTmp);
     })();

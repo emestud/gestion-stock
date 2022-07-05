@@ -4,16 +4,19 @@ import ModifyButton from '../components/Order/Buttons/ModifyButton'
 import OrderButton from '../components/Order/Buttons/OrderButton'
 
 import store from '../stores/store'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const Order = () => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location:any = useLocation();
 
-    if (store.user.role !== "Manager" && store.user.role !== "Admin") {
-        navigate('/unauthorized');
-    }
+    useEffect(()=>{
+        if (store.user.role !== "Manager" && store.user.role !== "Admin") {
+            navigate('/unauthorized');
+        }
+    }, [])
 
     let listCategory = store.itemCategories.map(category=>
         <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>
@@ -22,6 +25,8 @@ const Order = () => {
     let [isOrdered, setIsOrdered] = useState(false)
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'))
 
+    let orderID:string = location.state.order_id;
+    console.log(orderID)
 
     const updateDate = (event: any) => {
         store.order.created_at = event.target.value
