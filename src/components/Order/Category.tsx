@@ -6,7 +6,7 @@ const Category = (props: any) => {
 
     let list = listItems.map((item:any) => 
         <li key={item.name}>
-            <Item id={item.id} name={item.name} containerProp={item.container} />
+            <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} />
         </li>
     )
 

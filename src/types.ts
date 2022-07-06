@@ -9,8 +9,8 @@ export type Item = {
   name: string,
   quantity: number,
   container: string,
-  container_id: string
-
+  container_id: string,
+  priority: number
 };
 
 export type Container = {

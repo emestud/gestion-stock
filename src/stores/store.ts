@@ -165,7 +165,7 @@ class Store {
      * @param quantity amount needed
      * @param container type of container needed
      */
-    updateOrder(id:string, name: string, quantity: number, container: Container) {
+    updateOrder(id:string, name: string, quantity: number, container: Container, priority: number) {
 
         let hasUpdated: boolean = false;
 
@@ -184,7 +184,8 @@ class Store {
                 name: name,
                 quantity: quantity,
                 container: container.name,
-                container_id: container.id
+                container_id: container.id,
+                priority: priority
             });
         }
 
@@ -218,7 +219,8 @@ class Store {
                         item_id: item.id,
                         container_id: item.container_id,
                         order_id: order[0].id,
-                        quantity:item.quantity
+                        quantity:item.quantity,
+                        priority: item.priority
                     });
                 }
 

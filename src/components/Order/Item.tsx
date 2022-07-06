@@ -18,7 +18,7 @@ const getContainerID = (containerName: string):string => {
 
 const Item = (props: any) => {
 
-    let {id, name, containerProp} = props;
+    let {id, name, containerProp, priority} = props;
 
     let [quantity, setQuantity] = useState(0);
     let [container, setContainer] = useState(containerProp);
@@ -27,7 +27,7 @@ const Item = (props: any) => {
         setQuantity(newQuantity);
 
         if (newQuantity !== 0) {
-            store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)})
+            store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)}, priority)
         }
     }
 
@@ -35,7 +35,7 @@ const Item = (props: any) => {
         setContainer(newContainer)
 
         if (quantity !== 0) {
-            store.updateOrder(id, name, quantity, {name: newContainer, id:getContainerID(newContainer)})
+            store.updateOrder(id, name, quantity, {name: newContainer, id:getContainerID(newContainer)}, priority)
         }
     }
 

@@ -24,18 +24,19 @@ const Order = () => {
 
     let [isOrdered, setIsOrdered] = useState(false)
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'))
-
-    let orderID:string = location.state.order_id;
-    console.log(orderID)
+    
+    if (location.state !== null) {
+        let orderID:string = location.state.order_id;
+    }
 
     const updateDate = (event: any) => {
         store.order.created_at = event.target.value
         setDate(event.target.value)
-    }
+    };
 
     const updateComment = (event: any) => {
         store.updateOrderComment(event.target.value)
-    }
+    };
 
     return (
         <div className='flex flex-col gap-8 pb-8 justify-center items-center'>

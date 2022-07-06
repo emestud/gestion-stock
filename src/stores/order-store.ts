@@ -68,7 +68,7 @@ export class OrderStore {
 
         let {data: itemFromDB, itemError} = await supabase
           .from("item")
-          .select("name, category")
+          .select("name, category, priority")
           .eq("id", item.item_id);
 
         if (container !== null && itemFromDB != null) {
@@ -77,6 +77,7 @@ export class OrderStore {
             restaurant_name: orderItem.restaurant.name,
             itemName: itemFromDB[0].name,
             itemCategory: itemFromDB[0].category,
+            priority: itemFromDB[0].priority,
             containerName: container[0].name,
             quantity: item.quantity,
             canceled_by_lab: item.canceled_by_lab,
@@ -87,7 +88,9 @@ export class OrderStore {
       }
     }
 
-    return newItemsArray;
+    return newItemsArray.sort((a:any, b:any)=>{
+      return a.priority - b.priority
+    });
   }
 }
 

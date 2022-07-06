@@ -57,18 +57,27 @@ const History = () => {
                 }
             }) 
         }
+    }   
+
+    const newOrder = () => {
+        navigate('/order')
     }
 
     return (
         <div>
             <div>
                 <h1 className="text-2xl text-center mb-8">Historique</h1>
+                <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                    Nouvelle commande
+                </button>
                 <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
                     <thead>
-                        <th>Date</th>
-                        <th>Restaurant</th>
-                        <th>Adresse</th>
-                        <th>Status</th>
+                        <tr>
+                            <th className="absolute">Date</th>
+                            <th>Restaurant</th>
+                            <th>Adresse</th>
+                            <th>Status</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {ordersMap}
