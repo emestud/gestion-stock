@@ -14,7 +14,8 @@ const Order = () => {
 
     let [isOrdered, setIsOrdered] = useState(store.order.status!=="On order");
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
-    let [comment, setComment] = useState("");
+    let [comment, setComment]:any = useState("");
+    let [itemCategories, setItemCategories]:any = useState([]);
 
     useEffect(()=>{
         if (store.user.role !== "Manager" && store.user.role !== "Admin") {
@@ -24,11 +25,19 @@ const Order = () => {
 
     if (location.state !== null) {
         let orderID:string = location.state.order_id;
-        store.setOrder(orderID);
+        useEffect(()=>{
+            (async function awaitSetOrder() {
+                const itemCategories = await store.setOrder(orderID);
+                setItemCategories(itemCategories);
+            })();
+        }, []);
+    }
+    else {
+        store.resetOrder();
     }
 
 
-    let listCategory = store.itemCategories.map(category=>
+    let listCategory = itemCategories.map((category:any)=>
         <li><Category categoryName={category.name} listItems={category.items} isOrdered={isOrdered} key={category.name}/></li>
     )
 

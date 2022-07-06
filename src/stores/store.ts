@@ -22,8 +22,6 @@ class Store {
         restaurant_id: ""
     };
 
-    date: string = "DD/MM/YYYY";
-
     isLoggedIn = false;
 
     restaurant: Restaurant = {
@@ -254,9 +252,13 @@ class Store {
      * @param orderID the ID of the current order
      */
     async setOrder(orderID: string) {
+
+        this.resetOrder();
+
         this.order.id = orderID;
         this.order.status = "Ordered";
         //this.order.created_at = "" // TODO set created_at
+        // TODO updated restaurant info
 
         let {data: items, errorItems} = await supabase
             .from('order-item-container')
@@ -296,6 +298,36 @@ class Store {
                         }
                     }
                 }
+            }
+        }
+        return this.itemCategories;
+    }
+
+    /**
+     * This function reset the order object
+     */
+    async resetOrder() {
+        this.order = {
+            id: "",
+            items: [],
+            status: "On order",
+            comment: "", 
+            created_at: "",
+            restaurant_id: ""
+        };
+
+        this.restaurant = {
+            id: "",
+            name: "",
+            address: ""
+        };
+
+        // changing the items inside the "default" list of items 
+        for (const category of this.itemCategories) {
+            for (let itemInCat of category.items) {
+                itemInCat.quantity = 0;
+                itemInCat.container = "Bac 1/6 profond";
+                itemInCat.container_id = "56262456-d89a-4d8b-b833-be377504f88b";
             }
         }
     }
