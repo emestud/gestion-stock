@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import LogInModal from "../components/Auth/LogInModal";
 
 import {supabase} from "../supabaseClient";
 import {Container, ContainerCategory, Item, ItemCategory, Order, Restaurant, Status, User} from "../types";
@@ -81,7 +82,8 @@ class Store {
                     name: item.name,
                     quantity: 0,
                     container: "Bac 1/6 profond",
-                    container_id: "" // TODO modify later, maybe items having a default container (name+id) would be nice
+                    container_id: "56262456-d89a-4d8b-b833-be377504f88b", // TODO modify later, maybe items having a default container (name+id) would be nice,
+                    priority: item.priority
                 });
             })
 
@@ -232,6 +234,9 @@ class Store {
             }
     }
 
+    /**
+     * This function modifies the order in the database
+     */
     async modifyOrder() {
         for (let item of this.order.items) {
             let {data, error} = await supabase
@@ -241,6 +246,57 @@ class Store {
                     quantity: item.quantity
                 })
                 .eq('order_id', store.order.id).eq('item_id', item.id)
+        }
+    }
+
+    /**
+     * this function update the sotre order based on the orderID givn as parameter
+     * @param orderID the ID of the current order
+     */
+    async setOrder(orderID: string) {
+        this.order.id = orderID;
+        this.order.status = "Ordered";
+        //this.order.created_at = "" // TODO set created_at
+
+        let {data: items, errorItems} = await supabase
+            .from('order-item-container')
+            .select(`  
+                quantity, 
+                item:item_id(
+                    id,
+                    name,
+                    priority
+                ),
+                container: container_id(
+                    id,
+                    name
+                )
+            `)
+            .eq('order_id', orderID);
+        
+        if (items !== null) {
+            for (const item of items) {
+
+                let newItem:Item = {
+                    id: item.item.id,
+                    name: item.item.name,
+                    quantity: item.quantity,
+                    container: item.container.name,
+                    container_id: item.container.id,
+                    priority: item.item.priority 
+                };
+
+                this.order.items.push(newItem);
+
+                // changing the items inside the "default" list of items 
+                for (const category of this.itemCategories) {
+                    for (let itemInCat of category.items) {
+                        if (itemInCat.name === newItem.name) {
+                            itemInCat = Object.assign(itemInCat, newItem);
+                        }
+                    }
+                }
+            }
         }
     }
 

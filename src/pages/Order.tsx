@@ -12,31 +12,36 @@ const Order = () => {
     const navigate = useNavigate();
     const location:any = useLocation();
 
+    let [isOrdered, setIsOrdered] = useState(store.order.status!=="On order");
+    let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
+    let [comment, setComment] = useState("");
+
     useEffect(()=>{
         if (store.user.role !== "Manager" && store.user.role !== "Admin") {
             navigate('/unauthorized');
         }
     }, [])
 
-    let listCategory = store.itemCategories.map(category=>
-        <li><Category categoryName={category.name} listItems={category.items} key={category.name}/></li>
-    )
-
-    let [isOrdered, setIsOrdered] = useState(false)
-    let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'))
-    
     if (location.state !== null) {
         let orderID:string = location.state.order_id;
+        store.setOrder(orderID);
     }
 
+
+    let listCategory = store.itemCategories.map(category=>
+        <li><Category categoryName={category.name} listItems={category.items} isOrdered={isOrdered} key={category.name}/></li>
+    )
+
     const updateDate = (event: any) => {
-        store.order.created_at = event.target.value
-        setDate(event.target.value)
+        store.order.created_at = event.target.value;
+        setDate(event.target.value);
     };
 
     const updateComment = (event: any) => {
-        store.updateOrderComment(event.target.value)
+        setComment(event.target.value);
+        store.updateOrderComment(event.target.value);
     };
+
 
     return (
         <div className='flex flex-col gap-8 pb-8 justify-center items-center'>
@@ -48,7 +53,7 @@ const Order = () => {
             <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                 {listCategory}
             </ol>
-            <textarea className="w-11/12 textarea textarea-accent max-w-3xl" placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
+            <textarea className="w-11/12 textarea textarea-accent max-w-3xl" value={comment} placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
             {isOrdered ? <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
     );

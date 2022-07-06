@@ -37,7 +37,7 @@ const Category = ({itemsByCategory}:any) => {
                                 <td>{item.itemName}</td>
                                 <td>{item.quantity}</td>
                                 <td>{item.containerName}</td>
-                                <td><input type="checkbox" className="checkbox"     /></td>
+                                <td><input type="checkbox" className="checkbox" /></td>
                             </tr>
                         </>
                     )}
