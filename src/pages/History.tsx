@@ -12,11 +12,25 @@ const History = () => {
 
     const [orders, setOrders]:any = useState([]);
     const [currentActiveTabID, setCurrentActiveTabID]:any = useState("");
-    const [currentActiveTabDate, setCurrentActiveTabDate]: any = useState("")
+    const [currentActiveTabDate, setCurrentActiveTabDate]: any = useState("");
+
+    // this variable is true if an order has already been created for a restaurant on the current date
+    const [orderAlreadyExists, setOrderAlreadyExists]: any = useState(false);
 
     const getOrders = async () => {
         let tmp:Array<Order> = await store.orderStore.getOrders(null);
         setOrders(tmp);
+
+        for (const order of tmp) { // checking if an order has already been created for today 
+
+            let today = new Date();
+            let todayFormated = today.toLocaleDateString('en-CA');
+            if (order.restaurant_id === store.user.restaurant_id && todayFormated === order.created_at) {
+                setOrderAlreadyExists(true);
+                return;
+            }
+
+        }
     };
 
     useEffect(() => {
@@ -67,7 +81,7 @@ const History = () => {
         <div>
             <div>
                 <h1 className="text-2xl text-center mb-8">Historique</h1>
-                <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
                     Nouvelle commande
                 </button>
                 <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">

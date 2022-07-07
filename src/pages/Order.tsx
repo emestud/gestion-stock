@@ -15,7 +15,7 @@ const Order = () => {
     let [isOrdered, setIsOrdered] = useState(store.order.status!=="On order");
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
     let [comment, setComment]:any = useState("");
-    let [itemCategories, setItemCategories]:any = useState([]);
+    let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
 
     useEffect(()=>{
         if (store.user.role !== "Manager" && store.user.role !== "Admin") {
@@ -33,7 +33,9 @@ const Order = () => {
         }, []);
     }
     else {
-        store.resetOrder();
+        useEffect(()=>{
+            store.resetOrder();
+        }, []);
     }
 
 
@@ -62,7 +64,7 @@ const Order = () => {
             <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                 {listCategory}
             </ol>
-            <textarea className="w-11/12 textarea textarea-accent max-w-3xl" value={comment} placeholder='Un commentaire ?... 💬' onChange={updateComment}/>
+            <textarea className="w-11/12 textarea textarea-accent max-w-3xl" value={comment} placeholder='Un commentaire ?... 💬' onChange={updateComment} disabled={isOrdered}/>
             {isOrdered ? <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
         </div>
     );

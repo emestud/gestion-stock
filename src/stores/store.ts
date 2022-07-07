@@ -169,6 +169,8 @@ class Store {
 
         let hasUpdated: boolean = false;
 
+        console.log(`${name}: ${quantity} ${container.name}`);
+
         this.order.items.forEach((item: Item)=>{
             if (item.name === name) {
                 item.container = container.name,
@@ -208,21 +210,31 @@ class Store {
 
             let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
 
+            console.log(this.order.items.length)
+
             if (order !== null && order.length > 0)
             {
 
                 this.order.id = order[0].id;
 
                 for (let item of this.order.items) {
-                    orderArray.push({
+                    
+                    let orderItem = {
                         canceled_by_lab: false,
                         item_id: item.id,
                         container_id: item.container_id,
                         order_id: order[0].id,
                         quantity:item.quantity,
                         priority: item.priority
-                    });
+                    };
+
+                    orderArray.push(orderItem);
                 }
+
+                const { data, error } = await supabase
+                    .from('order-item-container')
+                    .delete()
+                    .eq('order_id', this.order.id);
 
                 // sending everything in one request
                 const { data:orderItems, orderItemsError } = await supabase
@@ -236,15 +248,43 @@ class Store {
      * This function modifies the order in the database
      */
     async modifyOrder() {
-        for (let item of this.order.items) {
+        
+        let newOrderItems = [];
+
+        for (let item of this.order.items) {  // TODO: maybe think of a way to avoid useless API calls
+            try {
+                let {data, error} = await supabase
+                    .from('order-item-container')
+                    .update({
+                        container_id: item.container_id,
+                        quantity: item.quantity
+                    })
+                    .eq('order_id', store.order.id).eq('item_id', item.id)
+                
+                if (error) {
+                    throw new Error(`Supabase error: ${error}`);
+                }
+            }
+            catch (err) { // item was not in the order
+                let orderItem = {
+                    canceled_by_lab: false,
+                    item_id: item.id,
+                    container_id: item.container_id,
+                    order_id: this.order.id,
+                    quantity:item.quantity,
+                    priority: item.priority
+                };
+
+                newOrderItems.push(orderItem);
+            }
+        }
+
+        if (newOrderItems.length > 0) { // pushing the new items
             let {data, error} = await supabase
                 .from('order-item-container')
-                .update({
-                    container_id: item.container_id,
-                    quantity: item.quantity
-                })
-                .eq('order_id', store.order.id).eq('item_id', item.id)
+                .insert(newOrderItems);
         }
+
     }
 
     /**
@@ -306,7 +346,7 @@ class Store {
     /**
      * This function reset the order object
      */
-    async resetOrder() {
+    resetOrder() {
         this.order = {
             id: "",
             items: [],
@@ -314,12 +354,6 @@ class Store {
             comment: "", 
             created_at: "",
             restaurant_id: ""
-        };
-
-        this.restaurant = {
-            id: "",
-            name: "",
-            address: ""
         };
 
         // changing the items inside the "default" list of items 
@@ -330,6 +364,8 @@ class Store {
                 itemInCat.container_id = "56262456-d89a-4d8b-b833-be377504f88b";
             }
         }
+
+        
     }
 
     /**
