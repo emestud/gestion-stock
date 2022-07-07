@@ -47,7 +47,7 @@ const Lab = () => {
   }
 
   return (
-    <div>
+    <div className="mt-20">
       <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
         {itemsByCategory.map((cat: any) =>
           <Category key={cat[0].id} itemsByCategory={cat} />

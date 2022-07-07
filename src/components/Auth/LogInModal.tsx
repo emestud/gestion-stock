@@ -8,7 +8,8 @@ const LogInModal = ({ setLogIn }:any) => {
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
     let [errorMessage, setErrorMessage] = useState("");
-
+    
+    let navigate = useNavigate();
 
     const updateUsername = (event: any) => {
         setUsername(event.target.value);
@@ -27,8 +28,7 @@ const LogInModal = ({ setLogIn }:any) => {
         if (error === "") { // login is successful
             setErrorMessage("");
             setLogIn(user);
-            let navigate = useNavigate()
-            useEffect(()=>navigate('/'), []);
+            navigate('/');
         }
         else { // login is not successful
             console.log(error);

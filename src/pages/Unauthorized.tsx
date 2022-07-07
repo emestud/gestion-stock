@@ -1,7 +1,7 @@
 const Unauthorized = () => {
     
     return (
-        <div>
+        <div className="text-2xl w-fit m-auto mt-20">
             You are unauthorized
         </div>
     )

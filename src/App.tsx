@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import NavBar from "./components/Navbar";
 
@@ -11,13 +11,15 @@ import Delivery from './pages/Delivery';
 import History from './pages/History';
 import Statistiques from './pages/Statistiques';
 import Unauthorized from './pages/Unauthorized';
-
-import LogInModal from './components/Auth/LogInModal';
+import LogIn from './pages/LogIn';
 
 import store from './stores/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 
 const App = () => {
+
+  const navigate = useNavigate();
 
   let [isLoggedIn, setIsLoggedIn] = useState(store.isLoggedIn);
 
@@ -29,14 +31,21 @@ const App = () => {
   const setLogOut = () => {
     setIsLoggedIn(false);
     store.logOut();
+    navigate('login')
   }
+
+  useEffect(()=>{
+    if (!isLoggedIn) {
+     navigate('login'); 
+    }
+  }, []);
 
   return (
     <div>
       <NavBar setLogOut={setLogOut} />
-      {isLoggedIn ? <></> : <LogInModal setLogIn={setLogIn} />  }
-      <main className="pt-20 h-screen w-screen overflow-scroll">
+      <main className="h-screen w-screen overflow-scroll">
         <Routes>
+          <Route path="login" element={<LogIn setLogIn={setLogIn} />}></Route>
           <Route path="order" element={ <Order /> }></Route>
           <Route path="lab" element={ <Lab /> }></Route>
           <Route path="delivery" element={ <Delivery /> }></Route>

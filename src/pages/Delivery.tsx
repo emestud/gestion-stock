@@ -56,7 +56,7 @@ const Delivery = () => {
       }, []);
 
     return (
-        <ol className="h-3/4 w-11/12 m-auto p-4 overflow-x-scroll">
+        <ol className="h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
             {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
                 <li className="flex flex-col gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
                     <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>

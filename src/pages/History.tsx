@@ -78,7 +78,7 @@ const History = () => {
     }
 
     return (
-        <div>
+        <div className="mt-20">
             <div>
                 <h1 className="text-2xl text-center mb-8">Historique</h1>
                 <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
