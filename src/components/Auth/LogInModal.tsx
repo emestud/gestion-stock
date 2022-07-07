@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
 import { logIn } from "../../supabaseClient"
 
@@ -28,7 +28,7 @@ const LogInModal = ({ setLogIn }:any) => {
             setErrorMessage("");
             setLogIn(user);
             let navigate = useNavigate()
-            navigate('/')
+            useEffect(()=>navigate('/'), []);
         }
         else { // login is not successful
             console.log(error);

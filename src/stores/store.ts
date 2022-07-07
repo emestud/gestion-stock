@@ -420,12 +420,29 @@ class Store {
                 };
         }
 
+        // pushing the log to the table
+        let {data: log, errorLog} = await supabase
+            .from('log-auth')
+            .insert({
+                user_id: user.id,
+                log_message: `User logged in` 
+            });
+
     }
 
     /**
      * This function updates the store's data when a user logs out
      */
-    logOut() {
+    async logOut() {
+
+        // pushing the log to the table
+        let {data: log, errorLog} = await supabase
+            .from('log-auth')
+            .insert({
+                user_id: this.user.id,
+                log_message: `User logged out` 
+            });
+
         this.isLoggedIn = false;
         this.user = {
             id:"",
