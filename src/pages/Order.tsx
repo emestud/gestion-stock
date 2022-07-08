@@ -29,6 +29,7 @@ const Order = () => {
             (async function awaitSetOrder() {
                 const itemCategories = await store.setOrder(orderID);
                 setItemCategories(itemCategories);
+                console.log("order set");
             })();
         }, []);
     }

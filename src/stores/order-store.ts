@@ -57,7 +57,7 @@ export class OrderStore {
 
     }
 
-    let newItemsArray: Array<any> = []; // we'll put there the items + the data about their name, container, etc
+    let newItems: Array<any> = [];
 
     for (const orderItem of orderItems) {
       for (const item of orderItem.items) {
@@ -83,14 +83,79 @@ export class OrderStore {
             canceled_by_lab: item.canceled_by_lab,
           };
 
-          newItemsArray.push(newItem);
+          newItems.push(newItem);
         }
       }
     }
 
-    return newItemsArray.sort((a:any, b:any)=>{
+    return newItems.sort((a:any, b:any)=>{
       return a.priority - b.priority
     });
+  }
+
+  public gatherItemsForLab(items: Array<any>) {
+
+    let restaurants:Array<string> = []
+    for (const item of items) {
+      if(!restaurants.includes(item.restaurant_name)) {
+        restaurants.push(item.restaurant_name);
+      }
+    }
+
+    let itemsForEachRestaurant: Array<any> = []; 
+    let itemsProcessed: Array<string> = [];
+    
+    for (const item of items) {
+      if (!itemsProcessed.includes(item.itemName)) {
+
+        let quantities:Array<any> = [];
+        let containers: Array<any> = [];
+        
+        for (const itemToFind of items) {
+          if (itemToFind.itemName === item.itemName) {
+            quantities.push({
+              quantity: itemToFind.quantity,
+              restaurant: itemToFind.restaurant_name
+            });
+            containers.push({
+              container: itemToFind.containerName,
+              restaurant: itemToFind.restaurant_name
+            });
+          }
+        }
+
+        for (const restaurant of restaurants) {
+          let isInArray:boolean = false;
+          for (const quantity of quantities) {
+            if (quantity.restaurant === restaurant) {
+              isInArray = true;
+            } 
+          }
+          if (!isInArray) {
+            quantities.push({
+              quantity: 0,
+              restaurant: restaurant
+            });
+            containers.push({
+              container: "Aucun",
+              restaurant: restaurant
+            });
+          }
+        }
+
+        itemsForEachRestaurant.push({
+          name: item.itemName,
+          quantities: quantities,
+          containers: containers,
+          priority: item.priority
+        });
+      }
+
+      itemsProcessed.push(item.itemName);
+    }
+
+    return itemsForEachRestaurant;
+
   }
 }
 

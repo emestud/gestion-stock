@@ -18,12 +18,18 @@ const Lab = () => {
   }
 
   let [orderItems, setOrderItems]: any = useState([]);
+  let [restaurants, setRestaurants]: any = useState([]);
 
   useEffect(() => {
     (async () => {
+      const restaurants = await store.getListRestaurantsName();
+
       const orders = await store.orderStore.getOrders(ordersDate);
       const orderItemsTmp = await store.orderStore.prepareOrders(orders);
-      setOrderItems(orderItemsTmp);
+      const orderItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(orderItemsTmp);
+      
+      setOrderItems(orderItemsGatheredByRestaurant);
+      setRestaurants(restaurants);
     })();
   }, []);
 
@@ -44,13 +50,13 @@ const Lab = () => {
       }
     }
     itemsByCategory.push(category);
-  }
+  } 
 
   return (
     <div className="mt-20">
-      <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
+      <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">
         {itemsByCategory.map((cat: any) =>
-          <Category key={cat[0].id} itemsByCategory={cat} />
+          <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} />
         )}
       </ol>
       <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary">Valider la commande</button>

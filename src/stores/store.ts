@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {$mobx, makeAutoObservable} from "mobx";
 import LogInModal from "../components/Auth/LogInModal";
 
 import {supabase} from "../supabaseClient";
@@ -251,7 +251,7 @@ class Store {
         
         let newOrderItems = [];
 
-        for (let item of this.order.items) {  // TODO: maybe think of a way to avoid useless API calls
+        for (let item of this.order.items) {  // TODO: maybe think of a way to avoid useless API calls => check if item is inside the order.items array
             try {
                 let {data, error} = await supabase
                     .from('order-item-container')
@@ -263,6 +263,14 @@ class Store {
                 
                 if (error) {
                     throw new Error(`Supabase error: ${error}`);
+                }
+                else {
+                    let {data:log, error} = await supabase
+                        .from('log-order')
+                        .insert({
+                           user_id: this.user.id,
+                           log: `Quantité de ${item.name} passé à ${item.quantity} ${item.container}` 
+                        });
                 }
             }
             catch (err) { // item was not in the order
@@ -276,6 +284,13 @@ class Store {
                 };
 
                 newOrderItems.push(orderItem);
+
+                let {data:log, error} = await supabase
+                        .from('log-order')
+                        .insert({
+                           user_id: this.user.id,
+                           log: `${item.name} ajouté: ${item.quantity} ${item.container}` 
+                        });
             }
         }
 
@@ -372,7 +387,7 @@ class Store {
      * This function updates the comment on the order
      * @param comment This string is the comment that was left by the manager
      */
-    updateOrderComment(comment: string) {
+    updateOrderComment(comment: string) { // TODO update comment inside the DB
         this.order.comment = comment;
     }
 
@@ -389,6 +404,21 @@ class Store {
             .eq('id', restaurant_id);
 
         return restaurant;
+    }
+
+    async getListRestaurantsName() {
+        let {data, error} = await supabase
+            .from('restaurant')
+            .select('name')
+
+        let restaurantNames:Array<string> = [];
+
+        if (data !== null)
+        for (const rest of data) {
+            restaurantNames.push(rest.name)
+        }
+
+        return restaurantNames
     }
 
     /**

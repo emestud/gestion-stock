@@ -12,23 +12,26 @@ const sortItemsByRestaurant = (orderItems:any) => {
         return [];
     }
 
-    //console.log(orderItems)
+    let restaurants:Array<string> = [];
+
+    for (const item of orderItems) {
+        if (!restaurants.includes(item.restaurant_name)) {
+            restaurants.push(item.restaurant_name);
+        }
+    }
 
     let itemsByRestaurant:Array<Array<Item>> = [];
     let restaurantItem:Array<Item> = []
-    let currRestaurant: string = orderItems[0].restaurant_name
 
-    for (const item of orderItems) {
-        if (item.restaurant_name === currRestaurant) {
-            restaurantItem.push(item);
+    for (const restaurant of restaurants) {
+        for (const item of orderItems) {
+            if (item.restaurant_name === restaurant) {
+                restaurantItem.push(item);
+            }
         }
-        else {
-            itemsByRestaurant.push(restaurantItem);
-            restaurantItem = [item];
-            currRestaurant = item.restaurant_name;
-        }
+        itemsByRestaurant.push(restaurantItem);
+        restaurantItem = [];
     }
-    itemsByRestaurant.push(restaurantItem);
 
     return itemsByRestaurant;
 }
@@ -56,9 +59,10 @@ const Delivery = () => {
       }, []);
 
     return (
-        <ol className="h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
+        <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
             {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
-                <li className="flex flex-col gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
+                <li className="flex flex-col w-fit min-w-full md:min-w-[50%] lg:min-w-[25%] gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
+                    <h2 className="text-xl text-center font-bold ">{restaurant[0].restaurant_name}</h2>
                     <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
                     <button className="btn btn-primary h-10">Valider la livraison</button>
                 </li>
