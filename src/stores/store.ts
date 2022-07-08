@@ -384,11 +384,43 @@ class Store {
     }
 
     /**
+     * This function sets the value 'cancled_by_lab' to true for every order-item-container object in the DB which ID is inside the array (param).
+     * @param itemsToCancel array of ID
+     */
+    async cancelItems(itemsToCancel:Array<string>) {
+        for (const item of itemsToCancel) {
+            const { data, error } = await supabase
+                .from('order-item-container')
+                .update({ canceled_by_lab: 'true' })
+                .eq('id', item);
+        }
+    }
+
+    /**
      * This function updates the comment on the order
      * @param comment This string is the comment that was left by the manager
      */
-    updateOrderComment(comment: string) { // TODO update comment inside the DB
+    async updateOrderComment(comment: string, order_id: string) { // TODO update comment inside the DB
         this.order.comment = comment;
+
+        let {data, error} = await supabase
+            .from('order')
+            .update({comment: comment})
+            .eq('id', order_id);
+    }
+
+    /**
+     * 
+     * 
+     * 
+     */
+    async updateOrderStatus(status: Status, order_id: string) {
+        this.order.status = status
+
+        let {data, error} = await supabase
+            .from('order')
+            .update({status: status})
+            .eq('id', order_id);
     }
 
 

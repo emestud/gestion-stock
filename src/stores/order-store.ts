@@ -114,10 +114,12 @@ export class OrderStore {
         for (const itemToFind of items) {
           if (itemToFind.itemName === item.itemName) {
             quantities.push({
+              item_order_id: itemToFind.id,
               quantity: itemToFind.quantity,
               restaurant: itemToFind.restaurant_name
             });
             containers.push({
+              item_order_id: itemToFind.id,
               container: itemToFind.containerName,
               restaurant: itemToFind.restaurant_name
             });

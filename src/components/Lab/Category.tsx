@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import Item from "./Item";
 
-const Category = ({itemsByCategory, restaurants}:any) => {
+const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
     
+
+
     return (
         <div>
             <h1 className="m-4 lg:ml-12 text-xl font-bold">{itemsByCategory[0].itemCategory}</h1>
@@ -27,8 +29,8 @@ const Category = ({itemsByCategory, restaurants}:any) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {itemsByCategory.map((item:any)=>
-                        <Item item={item}/>
+                    {itemsByCategory.map((items:any)=>
+                        <Item items={items} addItemToCancel={addItemToCancel}/>
                     )}
                 </tbody>
             </table>

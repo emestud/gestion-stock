@@ -19,6 +19,8 @@ const Lab = () => {
 
   let [orderItems, setOrderItems]: any = useState([]);
   let [restaurants, setRestaurants]: any = useState([]);
+  let [itemsToCancel, setItemsToCancel]: any = useState([]);
+
 
   useEffect(() => {
     (async () => {
@@ -27,7 +29,7 @@ const Lab = () => {
       const orders = await store.orderStore.getOrders(ordersDate);
       const orderItemsTmp = await store.orderStore.prepareOrders(orders);
       const orderItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(orderItemsTmp);
-      
+
       setOrderItems(orderItemsGatheredByRestaurant);
       setRestaurants(restaurants);
     })();
@@ -52,14 +54,43 @@ const Lab = () => {
     itemsByCategory.push(category);
   } 
 
+  /**
+   * This function adds an item to the array of items to be canceled
+   * @param isToBeCanceled boolean saying weither or not the item should be cancled
+   * @param item_id string representing the item id
+   */
+  const addItemToCancel = (isToBeCanceled: boolean, item_ids: Array<string>) => {
+    if (isToBeCanceled) { // adding the item
+      for (const item_id of item_ids) {
+        setItemsToCancel((oldArray:Array<string>)=>[...oldArray, item_id])
+      }
+    }
+    else { // removing the item
+      for (const item_id of item_ids) {
+        let itemsTmp = itemsToCancel.filter((item:string)=>item!==item_id)
+        setItemsToCancel(itemsTmp);
+      }
+    }
+  }
+
+  /**
+   * This function validate the order. It changes its status tu prepared and cancels the items that must be canceled
+   */
+  const validateOrder = () => {
+    // TODO: change order status
+    console.log(itemsToCancel)
+    store.cancelItems(itemsToCancel);
+  }
+
+
   return (
     <div className="mt-20">
       <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">
         {itemsByCategory.map((cat: any) =>
-          <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} />
+          <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} addItemToCancel={addItemToCancel}/>
         )}
       </ol>
-      <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary">Valider la commande</button>
+      <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
     </div>
   );
 };
