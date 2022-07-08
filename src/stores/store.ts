@@ -204,13 +204,12 @@ class Store {
                     created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
                     restaurant_id: this.restaurant.id,
                     created_by: this.user.id,
-                    comment: this.order.comment
+                    comment: this.order.comment,
+                    status: "Ordered"
                 },
             ]);
 
             let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
-
-            console.log(this.order.items.length)
 
             if (order !== null && order.length > 0)
             {
@@ -400,13 +399,15 @@ class Store {
      * This function updates the comment on the order
      * @param comment This string is the comment that was left by the manager
      */
-    async updateOrderComment(comment: string, order_id: string) { // TODO update comment inside the DB
+    async updateOrderComment(comment: string, orderID: string) { // TODO update comment inside the DB
         this.order.comment = comment;
 
-        let {data, error} = await supabase
-            .from('order')
-            .update({comment: comment})
-            .eq('id', order_id);
+        if (orderID !== "") {
+            let {data, error} = await supabase
+                .from('order')
+                .update({comment: comment})
+                .eq('id', order_id);
+        }
     }
 
     /**
@@ -414,13 +415,15 @@ class Store {
      * 
      * 
      */
-    async updateOrderStatus(status: Status, order_id: string) {
+    async updateOrderStatus(status: Status, orderID: string) {
         this.order.status = status
 
-        let {data, error} = await supabase
-            .from('order')
-            .update({status: status})
-            .eq('id', order_id);
+        if (orderID !== "") {
+            let {data, error} = await supabase
+                .from('order')
+                .update({status: status})
+                .eq('id', orderID);
+        }
     }
 
 

@@ -16,6 +16,7 @@ const Order = () => {
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
     let [comment, setComment]:any = useState("");
     let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
+    let [orderID, setOrderID]:any = useState("")
 
     useEffect(()=>{
         if (store.user.role !== "Manager" && store.user.role !== "Admin") {
@@ -24,12 +25,11 @@ const Order = () => {
     }, [])
 
     if (location.state !== null) {
-        let orderID:string = location.state.order_id;
+        setOrderID(location.state.order_id);
         useEffect(()=>{
             (async function awaitSetOrder() {
                 const itemCategories = await store.setOrder(orderID);
                 setItemCategories(itemCategories);
-                console.log("order set");
             })();
         }, []);
     }
@@ -51,7 +51,7 @@ const Order = () => {
 
     const updateComment = (event: any) => {
         setComment(event.target.value);
-        store.updateOrderComment(event.target.value);
+        store.updateOrderComment(event.target.value, orderID);
     };
 
 
