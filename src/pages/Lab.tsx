@@ -6,7 +6,7 @@ import { Item } from "../types";
 
 import Category from "../components/Lab/Category";
 
-import Spin from '../assets/spin.svg'
+import Spinner from "../components/Misc/Spinner";
 
 const Lab = () => {
 
@@ -89,7 +89,7 @@ const Lab = () => {
   return (
     <div className="mt-20">
       {dataLoading ? 
-      (<img src={Spin} alt="spin" className="m-auto" />)
+      (<Spinner />)
       :
       (<>
         <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">

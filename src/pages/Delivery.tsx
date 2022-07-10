@@ -6,7 +6,7 @@ import { Item } from "../types";
 
 import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
-import Spin from '../assets/spin.svg'
+import Spinner from "../components/Misc/Spinner";
 
 const sortItemsByRestaurant = (orderItems:any) => {
     
@@ -65,7 +65,7 @@ const Delivery = () => {
     return (
         <> {
             dataLoading ?
-            (<img src={Spin} alt="spin" className="m-auto mt-24 stroke-transparent"/>)
+            (<Spinner />)
             :
             (<>
                 <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">

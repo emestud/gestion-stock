@@ -6,7 +6,7 @@ import OrderHistory from "../components/History/OrderHistory";
 
 import { useNavigate } from "react-router-dom";
 
-import Spin from '../assets/spin.svg'
+import Spinner from "../components/Misc/Spinner";
 
 const History = () => {
 
@@ -84,7 +84,7 @@ const History = () => {
     return (
         <div className="mt-20">
             {dataLoading ? 
-            (<img src={Spin} alt="spin" />)
+            (<Spinner />)
             :
             (<>
                 <div>

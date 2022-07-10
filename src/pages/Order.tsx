@@ -7,7 +7,7 @@ import store from '../stores/store'
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-import Spin from '../assets/spin.svg'
+import Spinner from '../components/Misc/Spinner'
 
 const Order = () => {
 
@@ -64,7 +64,7 @@ const Order = () => {
     return (
         <div className='flex flex-col gap-8 pb-8 justify-center items-center mt-20'>
             {dataLoading ? 
-            (<img src={Spin} alt="spin" />) 
+            (<Spinner />) 
             : 
             (<>
                 <div className="w-11/12 max-w-4xl m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
