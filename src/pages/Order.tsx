@@ -25,10 +25,10 @@ const Order = () => {
     }, [])
 
     if (location.state !== null) {
-        setOrderID(location.state.order_id);
         useEffect(()=>{
             (async function awaitSetOrder() {
-                const itemCategories = await store.setOrder(orderID);
+                setOrderID(location.state.order_id);
+                const itemCategories = await store.setOrder(location.state.order_id);
                 setItemCategories(itemCategories);
             })();
         }, []);
