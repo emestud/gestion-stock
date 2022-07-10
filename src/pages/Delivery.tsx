@@ -6,6 +6,8 @@ import { Item } from "../types";
 
 import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
+import Spin from '../assets/spin.svg'
+
 const sortItemsByRestaurant = (orderItems:any) => {
     
     if (orderItems === undefined || orderItems === null || orderItems.length===0) {
@@ -48,26 +50,36 @@ const Delivery = () => {
     }
 
     let [orderItems, setOrderItems]: any = useState([]);
-    let [itemsByRestaurant, setItemsByRestaurant]: any = useState([]);
+    //let [itemsByRestaurant, setItemsByRestaurant]: any = useState([]);
+    let [dataLoading, setDataLoading]: any = useState(true);
 
     useEffect(() => {
         (async () => {
           const orders = await store.orderStore.getOrders(ordersDate);
           const orderItemsTmp = await store.orderStore.prepareOrders(orders);
           setOrderItems(orderItemsTmp);
+          setDataLoading(false);
         })();
       }, []);
 
     return (
-        <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
-            {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
-                <li className="flex flex-col w-fit min-w-full md:min-w-[50%] lg:min-w-[25%] gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
-                    <h2 className="text-xl text-center font-bold ">{restaurant[0].restaurant_name}</h2>
-                    <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
-                    <button className="btn btn-primary h-10">Valider la livraison</button>
-                </li>
-            )}
-        </ol>
+        <> {
+            dataLoading ?
+            (<img src={Spin} alt="spin" className="m-auto mt-24 stroke-transparent"/>)
+            :
+            (<>
+                <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
+                    {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
+                        <li className="flex flex-col w-fit min-w-full md:min-w-[50%] lg:min-w-[25%] gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
+                            <h2 className="text-xl text-center font-bold ">{restaurant[0].restaurant_name}</h2>
+                            <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
+                            <button className="btn btn-primary h-10">Valider la livraison</button>
+                        </li>
+                    )}
+                </ol>
+            </>)
+            }
+        </>
     );
 }
 

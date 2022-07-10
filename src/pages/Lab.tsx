@@ -6,6 +6,8 @@ import { Item } from "../types";
 
 import Category from "../components/Lab/Category";
 
+import Spin from '../assets/spin.svg'
+
 const Lab = () => {
 
   const location:any = useLocation();
@@ -20,7 +22,7 @@ const Lab = () => {
   let [orderItems, setOrderItems]: any = useState([]);
   let [restaurants, setRestaurants]: any = useState([]);
   let [itemsToCancel, setItemsToCancel]: any = useState([]);
-
+  let [dataLoading, setDataLoading]: any = useState(true)
 
   useEffect(() => {
     (async () => {
@@ -32,6 +34,7 @@ const Lab = () => {
 
       setOrderItems(orderItemsGatheredByRestaurant);
       setRestaurants(restaurants);
+      setDataLoading(false);
     })();
   }, []);
 
@@ -85,12 +88,17 @@ const Lab = () => {
 
   return (
     <div className="mt-20">
-      <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">
-        {itemsByCategory.map((cat: any) =>
-          <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} addItemToCancel={addItemToCancel}/>
-        )}
-      </ol>
-      <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
+      {dataLoading ? 
+      (<img src={Spin} alt="spin" className="m-auto" />)
+      :
+      (<>
+        <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">
+          {itemsByCategory.map((cat: any) =>
+            <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} addItemToCancel={addItemToCancel}/>
+          )}
+        </ol>
+        <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
+      </>)}
     </div>
   );
 };

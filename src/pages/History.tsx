@@ -6,6 +6,8 @@ import OrderHistory from "../components/History/OrderHistory";
 
 import { useNavigate } from "react-router-dom";
 
+import Spin from '../assets/spin.svg'
+
 const History = () => {
 
     const navigate = useNavigate();
@@ -16,6 +18,7 @@ const History = () => {
 
     // this variable is true if an order has already been created for a restaurant on the current date
     const [orderAlreadyExists, setOrderAlreadyExists]: any = useState(false);
+    const [dataLoading, setDataLoading]: any = useState(true);
 
     const getOrders = async () => {
         let tmp:Array<Order> = await store.orderStore.getOrders(null);
@@ -35,6 +38,7 @@ const History = () => {
 
     useEffect(() => {
         getOrders();
+        setDataLoading(false);
     }, []);
     
 
@@ -79,29 +83,34 @@ const History = () => {
 
     return (
         <div className="mt-20">
-            <div>
-                <h1 className="text-2xl text-center mb-8">Historique</h1>
-                <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
-                    Nouvelle commande
-                </button>
-                <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
-                    <thead>
-                        <tr>
-                            <th className="absolute">Date</th>
-                            <th>Restaurant</th>
-                            <th>Adresse</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {ordersMap}
-                    </tbody>
-                </table>
-            </div>
-            <button className={`fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary ${currentActiveTabID==="" ? 'btn-disabled':''}`} 
-                    onClick={openOrder}>
-                Ouvrir
-            </button>
+            {dataLoading ? 
+            (<img src={Spin} alt="spin" />)
+            :
+            (<>
+                <div>
+                    <h1 className="text-2xl text-center mb-8">Historique</h1>
+                    <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                        Nouvelle commande
+                    </button>
+                    <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
+                        <thead>
+                            <tr>
+                                <th className="absolute">Date</th>
+                                <th>Restaurant</th>
+                                <th>Adresse</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {ordersMap}
+                        </tbody>
+                    </table>
+                </div>
+                <button className={`fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary ${currentActiveTabID==="" ? 'btn-disabled':''}`} 
+                        onClick={openOrder}>
+                    Ouvrir
+                </button>  
+            </>)}
         </div>
     );
 }
