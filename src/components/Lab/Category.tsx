@@ -1,9 +1,34 @@
 import { useEffect, useState } from "react";
 import Item from "./Item";
 
+const restaurantIsInItemsList = (restaurant: string, itemList: Array<any>) => {
+
+    for (const item of itemList) {
+        if (item.restaurant === restaurant) {
+            return true;
+        }
+    }
+    return false;
+}
+
 const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
     
-
+    for (const item of itemsByCategory) {
+        if (item.quantities.length < restaurants.length) {
+            for (const restaurant of restaurants) {
+                if (!restaurantIsInItemsList(restaurant, item.quantities)) {
+                    item.quantities.push({
+                        quantity: 0,
+                        restaurant: restaurant
+                      });
+                    item.containers.push({
+                        container: "Aucun",
+                        restaurant: restaurant
+                    });
+                }
+            }
+        }
+    }
 
     return (
         <div>

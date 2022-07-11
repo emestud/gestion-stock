@@ -10,9 +10,11 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
 
     useEffect(()=>{
         (async ()=>{
-            let {data, error} = await store.orderStore.getOrder(orderID);
-            if (data !== null) {
-                setIsDelivered(data[0].status === 'Delivered');
+            let {data: order, error} = await store.orderStore.getOrder(orderID);
+            if (order !== null && order !== undefined) {
+                console.log(order)
+                //console.log(order[0].status);
+                setIsDelivered(order[0].status === 'Delivered');
             }
         })();
     })
@@ -27,9 +29,9 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
             <h2 className="text-xl text-center font-bold ">{restaurant_items[0].restaurant_name}</h2>
             <RestaurantDeliveryItems restaurant_items={restaurant_items} key={restaurant_items[0].restaurant_name}/>
             {isDelivered ?
-                <button className="btn btn-primary h-10" onClick={confirmDelivery}>Valider la livraison</button>
-                :
                 <button className="btn btn-disabled h-10">La commande a été livrée</button>
+                :
+                <button className="btn btn-primary h-10" onClick={confirmDelivery}>Valider la livraison</button>
             }
         </li>
     )

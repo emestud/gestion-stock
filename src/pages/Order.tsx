@@ -80,9 +80,11 @@ const Order = () => {
                 </ol>
                 <textarea className="w-11/12 textarea textarea-accent max-w-3xl" value={comment} placeholder='Un commentaire ?... 💬' onChange={updateComment} disabled={isOrdered}/>
                 {isEditable ? 
-                        <div className='btn btn-disabled'>La commande a été praparée</div>
-                    : isOrdered ? 
-                        <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
+                    isOrdered ? 
+                        <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />
+                    :
+                    <div className='btn btn-disabled'>La commande a été praparée</div>
+                    }
             </>)}
         </div>
     );

@@ -7,13 +7,13 @@ export class OrderStore {
      * @param orderID number representing the order ID
      */
    async getOrder(orderID: number){
-    let {data: order, error} = await supabase
+    let {data: order} = await supabase
         .from('order')
         .select('*')
         .eq('id', orderID);
-    
-        if (order !== null && order.length !== 0) {
-            return order[0];
+
+        if (order !== null && order.length > 0) {
+          return order[0];
         }
   }
 
@@ -55,12 +55,13 @@ export class OrderStore {
     const orderItems = new Array();
     
     for (const order of orders) {
-      let {data: products, errorProducts} = await supabase
+      let {data: products} = await supabase
         .from("order-item-container")
         .select("*")
-        .eq("order_id", order.id);
+        .eq("order_id", order.id)
+        .eq("canceled_by_lab", false);
 
-      let {data: restaurant, errorRestaurant} = await supabase
+      let {data: restaurant} = await supabase
         .from("restaurant")
         .select("name, address")
         .eq("id", order.restaurant_id);
@@ -76,12 +77,12 @@ export class OrderStore {
 
     for (const orderItem of orderItems) {
       for (const item of orderItem.items) {
-        let {data: container, containerError} = await supabase
+        let {data: container} = await supabase
           .from("container")
           .select("name")
           .eq("id", item.container_id);
 
-        let {data: itemFromDB, itemError} = await supabase
+        let {data: itemFromDB} = await supabase
           .from("item")
           .select("name, category, priority")
           .eq("id", item.item_id);

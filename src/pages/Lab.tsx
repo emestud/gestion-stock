@@ -90,8 +90,7 @@ const Lab = () => {
   /**
    * This function validate the order. It changes its status tu prepared and cancels the items that must be canceled
    */
-  const validateOrder = () => {
-    // TODO: change order status
+  const confirmOrder = () => {
     store.cancelItems(itemsToCancel);
     for (const order of orderIDs) {
       store.updateOrderStatus("Prepared", order);
@@ -113,7 +112,7 @@ const Lab = () => {
         {isDelivered ?
           <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Les commandes ont été livrées</button>
           :
-          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
+          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={confirmOrder} >Valider la commande</button>
         }
       </>)}
     </div>

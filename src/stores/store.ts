@@ -39,6 +39,9 @@ class Store {
 
     constructor() {
         this.orderStore = new OrderStore();
+        this.addItems();
+        this.addContainers();
+        
         makeAutoObservable(this);
     }
 
@@ -48,11 +51,11 @@ class Store {
     async addItems() {
 
         // Adding the items to the store
-        let { data: categories, errorCategories } = await supabase
+        let { data: categories } = await supabase
         .from('item')
         .select('category');
 
-        let { data: items, errorItems } = await supabase
+        let { data: items } = await supabase
             .from('item')
             .select('*');
 
@@ -107,11 +110,11 @@ class Store {
     async addContainers() {
 
         // Adding the containers to the store
-        let { data: categories, errorCategories } = await supabase
+        let { data: categories } = await supabase
         .from('container')
         .select('category');
 
-        let { data: containers, errorItems } = await supabase
+        let { data: containers } = await supabase
             .from('container')
             .select('*');
 
@@ -196,7 +199,7 @@ class Store {
      * This function sends the order to the database
      */
     async sendOrder() {
-        const { data: order, orderError } = await supabase
+        const { data: order } = await supabase
             .from('order')
             .insert([
                 {
@@ -235,7 +238,7 @@ class Store {
                     .eq('order_id', this.order.id);
 
                 // sending everything in one request
-                const { data:orderItems, orderItemsError } = await supabase
+                const { data:orderItems } = await supabase
                     .from('order-item-container')
                     .insert(orderArray);
 
@@ -251,7 +254,7 @@ class Store {
 
         for (let item of this.order.items) {  // TODO: maybe think of a way to avoid useless API calls => check if item is inside the order.items array
             try {
-                let {data, error} = await supabase
+                let {error} = await supabase
                     .from('order-item-container')
                     .update({
                         container_id: item.container_id,
@@ -313,7 +316,7 @@ class Store {
         //this.order.created_at = "" // TODO set created_at
         // TODO updated restaurant info
 
-        let {data: items, errorItems} = await supabase
+        let {data: items} = await supabase
             .from('order-item-container')
             .select(`  
                 quantity, 
@@ -405,7 +408,7 @@ class Store {
             let {data, error} = await supabase
                 .from('order')
                 .update({comment: comment})
-                .eq('id', order_id);
+                .eq('id', orderID);
         }
     }
 
@@ -432,7 +435,7 @@ class Store {
      */
     async getRestaurantData(restaurant_id: string) {
 
-        const {data: restaurant, error} = await supabase
+        const {data: restaurant} = await supabase
             .from('restaurant')
             .select('name, address')
             .eq('id', restaurant_id);
@@ -441,7 +444,7 @@ class Store {
     }
 
     async getListRestaurantsName() {
-        let {data, error} = await supabase
+        let {data} = await supabase
             .from('restaurant')
             .select('name')
 
@@ -471,7 +474,7 @@ class Store {
 
         // updating the restaurant (if the user is a manager)
         if (this.user.role === "Manager") {
-            let {data: restaurant, error} = await supabase
+            let {data: restaurant} = await supabase
                 .from('restaurant')
                 .select('*')
                 .eq('id', user.restaurant_id);
@@ -485,7 +488,7 @@ class Store {
         }
 
         // pushing the log to the table
-        let {data: log, errorLog} = await supabase
+        let {data: log} = await supabase
             .from('log-auth')
             .insert({
                 user_id: user.id,
@@ -500,7 +503,7 @@ class Store {
     async logOut() {
 
         // pushing the log to the table
-        let {data: log, errorLog} = await supabase
+        let {data: log} = await supabase
             .from('log-auth')
             .insert({
                 user_id: this.user.id,
@@ -525,9 +528,5 @@ class Store {
 }
 
 const store = new Store();
-const orderStore = new OrderStore();
-
-await store.addItems();
-await store.addContainers();
 
 export default store;

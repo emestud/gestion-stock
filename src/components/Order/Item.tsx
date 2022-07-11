@@ -44,7 +44,7 @@ const Item = (props: any) => {
         <div className="flex justify-center gap-1">
             <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg">{name}</p>
             <select className="w-1/3 select select-bordered" name="Container" id="container-select" defaultValue={containerProp}
-                    onChange={(event)=>handleContainerChange(event.target.value)} disabled={isOrdered || isEditable}>
+                    onChange={(event)=>handleContainerChange(event.target.value)} disabled={isOrdered || !isEditable}>
                 {store.containerCategories.map(category=>
                     <optgroup label={category.name}>
                         {category.containers.map(container=>
@@ -55,7 +55,7 @@ const Item = (props: any) => {
                     </optgroup>
                 )}
             </select>
-            <input className="w-1/3 input input-bordered" type="number" min="0" placeholder="0" value={quantity} disabled={isOrdered || isEditable}
+            <input className="w-1/3 input input-bordered" type="number" min="0" placeholder="0" value={quantity} disabled={isOrdered || !isEditable}
                     onChange={(event)=>handleQuantityChange(parseInt(event.target.value))} />
         </div>
     );
