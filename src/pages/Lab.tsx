@@ -25,6 +25,8 @@ const Lab = () => {
   let [dataLoading, setDataLoading]: any = useState(true);
   let [orderIDs, setOrderIDs]:any = useState([]);
 
+  let [isDelivered, setIsDelivered]:any = useState(false);
+
   useEffect(() => {
     (async () => {
       const restaurants = await store.getListRestaurantsName();
@@ -33,6 +35,9 @@ const Lab = () => {
 
       for (const order of orders) {
         setOrderIDs([...orderIDs, order.id]);
+        if (order.status === 'Delivered') { // if one order has alreadt been delivered, it means that the other orders are being delivered or already delivered
+          setIsDelivered(true);
+        }
       }
 
       const orderItemsTmp = await store.orderStore.prepareOrders(orders);
@@ -105,7 +110,11 @@ const Lab = () => {
             <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} addItemToCancel={addItemToCancel}/>
           )}
         </ol>
-        <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
+        {isDelivered ?
+          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Les commandes ont été livrées</button>
+          :
+          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={validateOrder} >Valider la commande</button>
+        }
       </>)}
     </div>
   );

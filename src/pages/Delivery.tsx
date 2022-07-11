@@ -23,7 +23,7 @@ const sortItemsByRestaurant = (orderItems:any) => {
     }
 
     let itemsByRestaurant:Array<Array<Item>> = [];
-    let restaurantItem:Array<Item> = []
+    let restaurantItem:Array<Item> = [];
 
     for (const restaurant of restaurants) {
         for (const item of orderItems) {
@@ -50,7 +50,6 @@ const Delivery = () => {
     }
 
     let [orderItems, setOrderItems]: any = useState([]);
-    //let [itemsByRestaurant, setItemsByRestaurant]: any = useState([]);
     let [dataLoading, setDataLoading]: any = useState(true);
 
     useEffect(() => {
@@ -70,11 +69,7 @@ const Delivery = () => {
             (<>
                 <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
                     {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
-                        <li className="flex flex-col w-fit min-w-full md:min-w-[50%] lg:min-w-[25%] gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
-                            <h2 className="text-xl text-center font-bold ">{restaurant[0].restaurant_name}</h2>
-                            <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
-                            <button className="btn btn-primary h-10">Valider la livraison</button>
-                        </li>
+                        <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
                     )}
                 </ol>
             </>)

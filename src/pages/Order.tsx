@@ -33,7 +33,7 @@ const Order = () => {
         useEffect(()=>{
             (async function awaitSetOrder() {
                 setOrderID(location.state.order_id);
-                const order = await store.getOrder(location.state.order_id);
+                const order = await store.orderStore.getOrder(location.state.order_id);
                 const itemCategories = await store.setOrder(location.state.order_id);
                 setItemCategories(itemCategories);
                 setIsEditable(order.status === "On order" || order.status === "Ordered");

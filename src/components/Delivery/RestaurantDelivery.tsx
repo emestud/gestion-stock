@@ -1,55 +1,38 @@
-import { Item } from "../../types"
-
-const sortByCategory = (items: Array<any>) => {
-
-    let itemsSortedByCategory:Array<Array<any>> = [];
-    let itemsCurrentCategory:Array<any> = [];
-    let currentCategory: string = items[0].itemCategory;
-
-    for (const item of items) {
-        if (item.itemCategory === currentCategory) {
-            itemsCurrentCategory.push(item);
-        }
-        else {
-            itemsSortedByCategory.push(itemsCurrentCategory);
-            itemsCurrentCategory = [item];
-            currentCategory = item.itemCategory;
-        }
-    }
-    itemsSortedByCategory.push(itemsCurrentCategory);
-
-    return itemsSortedByCategory;
-
-}
-
+import { useEffect, useState } from "react";
+import store from "../../stores/store";
+import RestaurantDeliveryItems from "./RestaurantDeliveryItems"
 
 const RestaurantDelivery = ({restaurant_items}:any) => {
 
-    let itemsSortedByCategory = sortByCategory(restaurant_items);
+    let orderID = restaurant_items[0].orderID;
+
+    let [isDelivered, setIsDelivered]: any = useState(false);
+
+    useEffect(()=>{
+        (async ()=>{
+            let {data, error} = await store.orderStore.getOrder(orderID);
+            if (data !== null) {
+                setIsDelivered(data[0].status === 'Delivered');
+            }
+        })();
+    })
+
+    const confirmDelivery = () => {
+        store.updateOrderStatus("Delivered", orderID);
+        setIsDelivered(true);
+    }
 
     return (
-        <>
-            <ol className="flex flex-col gap-2">
-                {
-                    itemsSortedByCategory.map((category:any)=>
-                        <li key={category.categoryName} className="card card-bordered p-2 bg-slate-100">
-                            <h2 className="card-title">{category[0].itemCategory}</h2>
-                            <ol className="card-body flex flex-col">
-                                {
-                                    category.map((item:any)=>
-                                        <p>
-                                            {`${item.itemName} - ${item.quantity} - ${item.containerName}`}
-                                        </p>
-                                    )
-                                }
-                            </ol>
-                        </li>
-                    )
-                }
-            </ol>
-        </>
+        <li className="flex flex-col w-fit min-w-full md:min-w-[50%] lg:min-w-[25%] gap-2 items-center justify-between h-full bg-slate-200 p-4 rounded-xl overflow-y-scroll">
+            <h2 className="text-xl text-center font-bold ">{restaurant_items[0].restaurant_name}</h2>
+            <RestaurantDeliveryItems restaurant_items={restaurant_items} key={restaurant_items[0].restaurant_name}/>
+            {isDelivered ?
+                <button className="btn btn-primary h-10" onClick={confirmDelivery}>Valider la livraison</button>
+                :
+                <button className="btn btn-disabled h-10">La commande a été livrée</button>
+            }
+        </li>
     )
 }
-
 
 export default RestaurantDelivery

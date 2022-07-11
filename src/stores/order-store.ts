@@ -2,6 +2,21 @@ import {supabase} from "../supabaseClient";
 
 export class OrderStore {
 
+  /**
+     * This function fetchs an returns an order from the DB
+     * @param orderID number representing the order ID
+     */
+   async getOrder(orderID: number){
+    let {data: order, error} = await supabase
+        .from('order')
+        .select('*')
+        .eq('id', orderID);
+    
+        if (order !== null && order.length !== 0) {
+            return order[0];
+        }
+  }
+
   public async getOrders(date: string | null) {
     const orders = new Array();
 
@@ -38,7 +53,7 @@ export class OrderStore {
 
   public async prepareOrders(orders: any[]) {
     const orderItems = new Array();
-
+    
     for (const order of orders) {
       let {data: products, errorProducts} = await supabase
         .from("order-item-container")
@@ -74,6 +89,7 @@ export class OrderStore {
         if (container !== null && itemFromDB != null) {
           let newItem = {
             id: item.id,
+            orderID: item.order_id,
             restaurant_name: orderItem.restaurant.name,
             itemName: itemFromDB[0].name,
             itemCategory: itemFromDB[0].category,
