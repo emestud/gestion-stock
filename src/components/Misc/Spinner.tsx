@@ -1,9 +1,9 @@
-import Spin from '../../assets/spin.svg'
+import Spin from '../../assets/spinning-burger.gif'
 
 const Spinner = () => {
 
     return (
-        <img src={Spin} alt="spinner" className="m-auto mt-24" />
+        <img src={Spin} alt="spin loading" className="m-auto pt-24"/>
     )
 }
 
