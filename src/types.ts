@@ -30,7 +30,7 @@ export type User = {
   restaurant_id: string
 };
 
-export type Status = "On order" | "Ordered" | "In preperation" | "Prepared" | "In delivery" | "Delivered" | "Received";
+export type Status = "On order" | "Ordered" | "Prepared" | "Delivered" | "Received";
 
 type Role = "Admin" | "Manager" | "Labo" | "Livreur" | "Anon";
 

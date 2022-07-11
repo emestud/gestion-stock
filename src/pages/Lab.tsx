@@ -22,13 +22,19 @@ const Lab = () => {
   let [orderItems, setOrderItems]: any = useState([]);
   let [restaurants, setRestaurants]: any = useState([]);
   let [itemsToCancel, setItemsToCancel]: any = useState([]);
-  let [dataLoading, setDataLoading]: any = useState(true)
+  let [dataLoading, setDataLoading]: any = useState(true);
+  let [orderIDs, setOrderIDs]:any = useState([]);
 
   useEffect(() => {
     (async () => {
       const restaurants = await store.getListRestaurantsName();
 
       const orders = await store.orderStore.getOrders(ordersDate);
+
+      for (const order of orders) {
+        setOrderIDs([...orderIDs, order.id]);
+      }
+
       const orderItemsTmp = await store.orderStore.prepareOrders(orders);
       const orderItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(orderItemsTmp);
 
@@ -81,8 +87,10 @@ const Lab = () => {
    */
   const validateOrder = () => {
     // TODO: change order status
-    console.log(itemsToCancel)
     store.cancelItems(itemsToCancel);
+    for (const order of orderIDs) {
+      store.updateOrderStatus("Prepared", order);
+    }
   }
 
 

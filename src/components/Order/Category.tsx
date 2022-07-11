@@ -2,12 +2,12 @@ import Item from './Item'
 
 const Category = (props: any) => {
 
-    let { categoryName, listItems, isOrdered } = props;
+    let { categoryName, listItems, isOrdered, isEditable } = props;
 
     let list = listItems.map((item:any) => 
         <li key={item.name}>
             <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} quantityProp={item.quantity} 
-                    isOrdered={isOrdered}/>
+                    isOrdered={isOrdered} isEditable={isEditable} />
         </li>
     )
 

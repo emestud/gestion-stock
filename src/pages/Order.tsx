@@ -19,6 +19,7 @@ const Order = () => {
     let [comment, setComment]:any = useState("");
     let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
     let [orderID, setOrderID]:any = useState("");
+    let [isEditable, setIsEditable]: any = useState(true)
 
     let [dataLoading, setDataLoading]: any = useState(true);
 
@@ -32,8 +33,10 @@ const Order = () => {
         useEffect(()=>{
             (async function awaitSetOrder() {
                 setOrderID(location.state.order_id);
+                const order = await store.getOrder(location.state.order_id);
                 const itemCategories = await store.setOrder(location.state.order_id);
                 setItemCategories(itemCategories);
+                setIsEditable(order.status === "On order" || order.status === "Ordered");
                 setDataLoading(false);
             })();
         }, []);
@@ -47,7 +50,7 @@ const Order = () => {
 
 
     let listCategory = itemCategories.map((category:any)=>
-        <li><Category categoryName={category.name} listItems={category.items} isOrdered={isOrdered} key={category.name}/></li>
+        <li><Category categoryName={category.name} listItems={category.items} isOrdered={isOrdered} isEditable={isEditable} key={category.name}/></li>
     )
 
     const updateDate = (event: any) => {
@@ -76,7 +79,10 @@ const Order = () => {
                     {listCategory}
                 </ol>
                 <textarea className="w-11/12 textarea textarea-accent max-w-3xl" value={comment} placeholder='Un commentaire ?... 💬' onChange={updateComment} disabled={isOrdered}/>
-                {isOrdered ? <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
+                {isEditable ? 
+                        <div className='btn btn-disabled'>La commande a été praparée</div>
+                    : isOrdered ? 
+                        <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />}
             </>)}
         </div>
     );

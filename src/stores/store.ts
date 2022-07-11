@@ -158,6 +158,21 @@ class Store {
         this.containerCategories.push(category);
     }
 
+    /**
+     * This function fetchs an returns an order from the DB
+     * @param orderID number representing the order ID
+     */
+    async getOrder(orderID: number){
+        let {data: order, error} = await supabase
+            .from('order')
+            .select('*')
+            .eq('id', orderID);
+        
+            if (order !== null && order.length !== 0) {
+                return order[0];
+            }
+    }
+
 
     /**
      * This function adds an item to the order, or updates it if the item has already been ordered
