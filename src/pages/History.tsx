@@ -48,7 +48,7 @@ const History = () => {
     };
 
     const ordersMap = orders.map((order:Order)=>
-        <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={"Préparé"} key={order.id} isActive={order.id===currentActiveTabID}
+        <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={order.status} key={order.id} isActive={order.id===currentActiveTabID}
                     updateActiveTab={()=>updateActiveTab(order.id, order.created_at)}
             />
     );
@@ -98,7 +98,7 @@ const History = () => {
                                 <th className="absolute">Date</th>
                                 <th>Restaurant</th>
                                 <th>Adresse</th>
-                                <th>Status</th>
+                                <th>Statut</th>
                             </tr>
                         </thead>
                         <tbody>
