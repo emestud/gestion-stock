@@ -47,8 +47,8 @@ const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
                     <tr>
                         {restaurants.map((_:string)=>
                             <>
-                                <th style={{ position: 'static'}} >Quantité</th>
-                                <th>Récipient</th>
+                                <th style={{ position: 'static'}} className="text-center">#</th>
+                                <th className="text-center">Récipient</th>
                             </>
                         )}
                     </tr>
