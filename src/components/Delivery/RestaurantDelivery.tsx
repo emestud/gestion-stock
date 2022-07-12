@@ -29,9 +29,9 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
             <h2 className="text-xl text-center font-bold ">{restaurant_items[0].restaurant_name}</h2>
             <RestaurantDeliveryItems restaurant_items={restaurant_items} key={restaurant_items[0].restaurant_name}/>
             {isDelivered ?
-                <button className="btn btn-disabled h-10 select-none">La commande a été livrée</button>
+                <button className="btn btn-disabled h-10">La commande a été livrée</button>
                 :
-                <button className="btn btn-primary h-10 select-none" onClick={confirmDelivery}>Valider la livraison</button>
+                <button className="btn btn-primary h-10" onClick={confirmDelivery}>Valider la livraison</button>
             }
         </li>
     )

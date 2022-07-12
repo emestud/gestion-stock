@@ -21,7 +21,7 @@ const App = () => {
 
   const navigate = useNavigate();
 
-  const user = localStorage.getItem('user');
+  const user = sessionStorage.getItem('user');
 
   if (user !== "" && user !== null) {
     store.logIn(JSON.parse(user));

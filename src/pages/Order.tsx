@@ -32,6 +32,9 @@ const Order = () => {
     if (location.state !== null) {
         useEffect(()=>{
             (async function awaitSetOrder() {
+
+                localStorage.setItem('order_id', location.state.order_id);
+
                 setOrderID(location.state.order_id);
                 const order = await store.orderStore.getOrder(location.state.order_id);
                 const itemCategories = await store.setOrder(location.state.order_id);
@@ -71,7 +74,7 @@ const Order = () => {
             : 
             (<>
                 <div className="w-11/12 max-w-4xl m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
-                    <input type="date" className="w-1/2" value={date} onChange={updateDate} disabled></input>
+                    <input type="date" className="w-1/2" value={date} onChange={updateDate}></input>
                     <p>|</p>
                     <p className="w-1/2">{store.restaurant.name}</p>
                 </div>

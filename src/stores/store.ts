@@ -471,7 +471,7 @@ class Store {
             restaurant_id: user.restaurant_id || ""
         }; // logging in the user
 
-        localStorage.setItem('user', JSON.stringify(this.user));
+        sessionStorage.setItem('user', JSON.stringify(this.user));
 
         // updating the restaurant (if the user is a manager)
         if (this.user.role === "Manager") {
@@ -519,7 +519,7 @@ class Store {
             restaurant_id: ""
         };
 
-        localStorage.setItem('user', "");
+        sessionStorage.setItem('user', "");
 
         this.restaurant = {
             id: "",

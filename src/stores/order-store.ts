@@ -6,7 +6,7 @@ export class OrderStore {
      * This function fetchs an returns an order from the DB
      * @param orderID number representing the order ID
      */
-   async getOrder(orderID: number){
+   async getOrder(orderID: string){
     let {data: order} = await supabase
         .from('order')
         .select('*')
