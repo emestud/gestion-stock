@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom"
 
 import { useState } from "react"
-
+import store from "../stores/store";
 
 const Burger = (props: any) => {
 
@@ -19,6 +19,7 @@ const Burger = (props: any) => {
 const NavBar = ({setLogOut}:any) => {
 
     const [isActive, setIsActive]:any = useState(false);
+    const userRole:string = store.user.role; 
 
     return (
         <>
@@ -26,8 +27,8 @@ const NavBar = ({setLogOut}:any) => {
                 <Burger isActive={isActive} setIsActive={setIsActive}> </Burger>
                 <ol className={`z-20 h-full w-full flex flex-col text-2xl justify-start items-center gap-10 pt-24 ${isActive ? '' : '-translate-x-20 opacity-0'}`}>
                     <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/">Historique</NavLink></li>
-                    <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/admin">Admin</NavLink></li>
-                    <li><NavLink className={({isActive})=> isActive ? 'underline' : ''} to="/statistiques">Statistiques</NavLink></li>
+                    <li><NavLink className={({isActive})=> isActive ? `underline ${userRole==='Admin' ? '' : 'hidden'}` : `${userRole==='Admin' ? '' : 'hidden'}`} to="/admin">Admin</NavLink></li>
+                    <li><NavLink className={({isActive})=> isActive ? `underline ${userRole==='Admin' ? '' : 'hidden'}` : `${userRole==='Admin' ? '' : 'hidden'}`} to="/statistiques">Statistiques</NavLink></li>
                     <li><a className="cursor-pointer" onClick={()=>{setLogOut(); setIsActive(false)}}>Deconnexion</a></li>
                 </ol>
                 
