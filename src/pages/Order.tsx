@@ -18,7 +18,9 @@ const Order = () => {
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
     let [comment, setComment]:any = useState("");
     let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
-    let [orderID, setOrderID]:any = useState("");
+    
+    let [orderID, setOrderID]:any = useState(""); 
+
     let [isEditable, setIsEditable]: any = useState(true)
 
     let [dataLoading, setDataLoading]: any = useState(true);

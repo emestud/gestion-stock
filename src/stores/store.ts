@@ -1,8 +1,6 @@
-import {$mobx, makeAutoObservable} from "mobx";
-import LogInModal from "../components/Auth/LogInModal";
-
+import {makeAutoObservable} from "mobx";
 import {supabase} from "../supabaseClient";
-import {Container, ContainerCategory, Item, ItemCategory, Order, Restaurant, Status, User} from "../types";
+import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
 import {OrderStore} from "./order-store";
 
 
@@ -21,6 +19,15 @@ class Store {
         created_at: "",
         restaurant_id: ""
     };
+
+    originalOrder: Order = {
+        id: "",
+        items: [],
+        status: "On order",
+        comment: "", 
+        created_at: "",
+        restaurant_id: ""
+    }
 
     isLoggedIn = false;
 
@@ -42,7 +49,33 @@ class Store {
         this.addItems();
         this.addContainers();
         
+
+
         makeAutoObservable(this);
+    }
+
+    /**
+     * This function initiates the orders, on the store creation, with two empty orders 
+     */
+    async initOrder() {
+        const {data: items} = await supabase
+            .from('items')
+            .select('*')
+
+        if (items !==  null) {
+            for (const item of items) {
+                this.order.items.push({
+                    id: item.id,
+                    name: item.name,
+                    quantity: [0, 0],
+                    container: [
+                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
+                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
+                    ],
+                    priority: item.priority
+                })
+            }
+        }
     }
 
     /**
@@ -173,25 +206,14 @@ class Store {
 
         console.log(`${name}: ${quantity} ${container.name}`);
 
-        this.order.items.forEach((item: Item)=>{
+        this.order.items.forEach((item: OrderItem)=>{
             if (item.name === name) {
-                item.container = container.name,
-                item.container_id = container.id,
-                item.quantity = quantity
+                item.container[1].name = container.name,
+                item.container[1].id = container.id,
+                item.quantity[1] = quantity
                 hasUpdated = true
             }
         });
-
-        if (!hasUpdated) { // item is not in the array
-            this.order.items.push({
-                id: id,
-                name: name,
-                quantity: quantity,
-                container: container.name,
-                container_id: container.id,
-                priority: priority
-            });
-        }
 
     }
 
@@ -221,16 +243,18 @@ class Store {
 
                 for (let item of this.order.items) {
                     
-                    let orderItem = {
-                        canceled_by_lab: false,
-                        item_id: item.id,
-                        container_id: item.container_id,
-                        order_id: order[0].id,
-                        quantity:item.quantity,
-                        priority: item.priority
-                    };
+                    if (item.quantity[1] > 0) {
+                        let orderItem = {
+                            canceled_by_lab: false,
+                            item_id: item.id,
+                            container_id: item.container[1].id,
+                            order_id: order[0].id,
+                            quantity:item.quantity[1],
+                            priority: item.priority
+                        };
 
-                    orderArray.push(orderItem);
+                        orderArray.push(orderItem);
+                    }
                 }
 
                 const { data, error } = await supabase
@@ -276,7 +300,7 @@ class Store {
                     let orderItem = {
                         canceled_by_lab: false,
                         item_id: item.id,
-                        container_id: item.container_id,
+                        container_id: item.container[1].id,
                         order_id: order[0].id,
                         quantity:item.quantity,
                         priority: item.priority
@@ -331,6 +355,13 @@ class Store {
         if (items !== null) {
             for (const item of items) {
 
+                for (const orderItem of this.order.items) {
+                    if (item.name === orderItem.name) {
+                        orderItem.container[0].name = item.container.name;
+                        orderItem.quantity[0] = item.quantity
+                    }
+                }
+
                 let newItem:Item = {
                     id: item.item.id,
                     name: item.item.name,
@@ -340,9 +371,7 @@ class Store {
                     priority: item.item.priority 
                 };
 
-                this.order.items.push(newItem);
-
-                // changing the items inside the "default" list of items 
+                // changing the items inside the "default" list of items (updating quantity and container)
                 for (const category of this.itemCategories) {
                     for (let itemInCat of category.items) {
                         if (itemInCat.name === newItem.name) {

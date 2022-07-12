@@ -43,9 +43,17 @@ export type ItemCategory = {
 
 export type Order = {
   id: string,
-  items: Array<Item>,
+  items: Array<OrderItem>,
   status: Status,
   comment: string
   created_at: string,
   restaurant_id: string
 };
+
+export type OrderItem = {
+  id: string
+  name: string,
+  quantity: Array<number>,
+  container: Array<Container>,
+  priority: number
+}
