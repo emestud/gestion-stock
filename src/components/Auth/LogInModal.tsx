@@ -29,6 +29,9 @@ const LogInModal = ({ setLogIn }:any) => {
             setErrorMessage("");
             setLogIn(user);
             navigate('/');
+
+
+
         }
         else { // login is not successful
             console.log(error);
@@ -43,8 +46,8 @@ const LogInModal = ({ setLogIn }:any) => {
             <form className="absolute flex flex-col bg-white w-10/12 mx-auto h-5/6 my-[5%] p-4 pt-24 gap-16 max-w-4xl items-center rounded-3xl" 
                 onSubmit={e => e.preventDefault()}
             >
-                <input className="w-full sm:w-1/2 input input-bordered" type="text" placeholder="Username" onChange={updateUsername}/>
-                <input className="w-full sm:w-1/2 input input-bordered" type="password" placeholder="Password" onChange={updatePassword}/>
+                <input className="w-full sm:w-1/2 input input-bordered" type="text" placeholder="Utilisateur" onChange={updateUsername}/>
+                <input className="w-full sm:w-1/2 input input-bordered" type="password" placeholder="Mot de passe" onChange={updatePassword}/>
                 <button className="w-full sm:w-1/2 btn btn-outline btn-primary" 
                         onClick={()=>tryLogIn(username, password)}>
                             Se connecter

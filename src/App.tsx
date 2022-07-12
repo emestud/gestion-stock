@@ -21,6 +21,12 @@ const App = () => {
 
   const navigate = useNavigate();
 
+  const user = localStorage.getItem('user');
+
+  if (user !== "" && user !== null) {
+    store.logIn(JSON.parse(user));
+  }
+
   let [isLoggedIn, setIsLoggedIn] = useState(store.isLoggedIn);
 
   const setLogIn = (user: any) => {
