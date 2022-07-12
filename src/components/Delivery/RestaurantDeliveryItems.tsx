@@ -37,7 +37,7 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
                             <ol className="card-body flex flex-col">
                                 {
                                     category.map((item:any)=>
-                                        <p>
+                                        <p className="select-none">
                                             {`${item.itemName} - ${item.quantity} - ${item.containerName}`}
                                         </p>
                                     )

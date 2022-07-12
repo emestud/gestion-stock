@@ -42,7 +42,7 @@ const Item = (props: any) => {
 
     return (
         <div className="flex justify-center gap-1">
-            <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg">{name}</p>
+            <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg select-none">{name}</p>
             <select className="w-1/3 select select-bordered" name="Container" id="container-select" defaultValue={containerProp}
                     onChange={(event)=>handleContainerChange(event.target.value)} disabled={isOrdered || !isEditable}>
                 {store.containerCategories.map(category=>

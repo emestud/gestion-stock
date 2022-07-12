@@ -24,8 +24,8 @@ const Item = ({items, addItemToCancel}:any) => {
                 {
                     items.quantities.map((quantity:any, index:number)=>
                         <>
-                            <td className={`text-center ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{quantity.quantity}</td>
-                            <td className={`text-center ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{items.containers[index].container}</td>
+                            <td className={`text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{quantity.quantity}</td>
+                            <td className={`text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{items.containers[index].container}</td>
                         </>
                 )}
                 <td><input type="checkbox" className="checkbox" onClick={()=>cancelItems()}/></td>

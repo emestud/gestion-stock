@@ -51,9 +51,9 @@ const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:a
 
     return (
         <tr className={`${isActive ? 'active' : ''}`} onClick={updateActiveTab}>
-            <td>{date}</td>
-            <td>{restaurantName}</td>
-            <td className={`badge badge-${getBadgeColor(status)} badge-outline`}>{getStatusText(status)}</td>
+            <td className="select-none">{date}</td>
+            <td className="select-none">{restaurantName}</td>
+            <td className={`badge badge-${getBadgeColor(status)} badge-outline select-none`}>{getStatusText(status)}</td>
         </tr>
     )
 }
