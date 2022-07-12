@@ -36,7 +36,7 @@ export class OrderStore {
       else {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
-          .select("*");
+          .select("*")
         
           data = dataTmp;
           error = errorTmp;

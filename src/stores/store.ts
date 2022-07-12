@@ -217,6 +217,7 @@ class Store {
             {
 
                 this.order.id = order[0].id;
+                sessionStorage.setItem('order_id', this.order.id);
 
                 for (let item of this.order.items) {
                     
@@ -250,56 +251,51 @@ class Store {
      */
     async modifyOrder() {
         
-        let newOrderItems = [];
+        const { data: order } = await supabase
+            .from('order')
+            .insert([
+                {
+                    created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
+                    restaurant_id: this.restaurant.id,
+                    created_by: this.user.id,
+                    comment: this.order.comment,
+                    status: "Ordered",
+                },
+            ]);
 
-        for (let item of this.order.items) {  // TODO: maybe think of a way to avoid useless API calls => check if item is inside the order.items array
-            try {
-                let {error} = await supabase
-                    .from('order-item-container')
-                    .update({
+            let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
+
+            if (order !== null && order.length > 0)
+            {
+
+                this.order.id = order[0].id;
+                sessionStorage.setItem('order_id', this.order.id);
+
+                for (let item of this.order.items) {
+                    
+                    let orderItem = {
+                        canceled_by_lab: false,
+                        item_id: item.id,
                         container_id: item.container_id,
-                        quantity: item.quantity
-                    })
-                    .eq('order_id', store.order.id).eq('item_id', item.id)
-                
-                if (error) {
-                    throw new Error(`Supabase error: ${error}`);
+                        order_id: order[0].id,
+                        quantity:item.quantity,
+                        priority: item.priority
+                    };
+
+                    orderArray.push(orderItem);
                 }
-                else {
-                    let {data:log, error} = await supabase
-                        .from('log-order')
-                        .insert({
-                           user_id: this.user.id,
-                           log: `Quantité de ${item.name} passé à ${item.quantity} ${item.container}` 
-                        });
-                }
+
+                const { data, error } = await supabase
+                    .from('order-item-container')
+                    .delete()
+                    .eq('order_id', this.order.id);
+
+                // sending everything in one request
+                const { data:orderItems } = await supabase
+                    .from('order-item-container')
+                    .insert(orderArray);
+
             }
-            catch (err) { // item was not in the order
-                let orderItem = {
-                    canceled_by_lab: false,
-                    item_id: item.id,
-                    container_id: item.container_id,
-                    order_id: this.order.id,
-                    quantity:item.quantity,
-                    priority: item.priority
-                };
-
-                newOrderItems.push(orderItem);
-
-                let {data:log, error} = await supabase
-                        .from('log-order')
-                        .insert({
-                           user_id: this.user.id,
-                           log: `${item.name} ajouté: ${item.quantity} ${item.container}` 
-                        });
-            }
-        }
-
-        if (newOrderItems.length > 0) { // pushing the new items
-            let {data, error} = await supabase
-                .from('order-item-container')
-                .insert(newOrderItems);
-        }
 
     }
 

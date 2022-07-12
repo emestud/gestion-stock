@@ -33,9 +33,8 @@ const Order = () => {
         useEffect(()=>{
             (async function awaitSetOrder() {
 
-                localStorage.setItem('order_id', location.state.order_id);
-
                 setOrderID(location.state.order_id);
+
                 const order = await store.orderStore.getOrder(location.state.order_id);
                 const itemCategories = await store.setOrder(location.state.order_id);
                 setItemCategories(itemCategories);
