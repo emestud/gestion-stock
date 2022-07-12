@@ -13,7 +13,8 @@ export class OrderStore {
         .eq('id', orderID);
 
         if (order !== null && order.length > 0) {
-          return order[0];
+          let _ = order[0];
+          return _;
         }
   }
 

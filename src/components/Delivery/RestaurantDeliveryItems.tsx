@@ -29,7 +29,7 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
 
     return (
         <>
-            <ol className="flex flex-col gap-2">
+            <ol className="flex flex-col gap-2 w-full">
                 {
                     itemsSortedByCategory.map((category:any)=>
                         <li key={category.categoryName} className="card card-bordered p-2 bg-slate-100">

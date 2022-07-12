@@ -67,6 +67,7 @@ const Delivery = () => {
             (<Spinner />)
             :
             (<>
+                <h1 className="text-2xl font-semibold text-center mt-24">Date: {ordersDate}</h1>
                 <ol className="flex gap-2 h-3/4 w-11/12 m-auto p-4 overflow-x-scroll mt-20">
                     {sortItemsByRestaurant(orderItems).map((restaurant:Array<any>)=>
                         <RestaurantDelivery restaurant_items={restaurant} key={restaurant[0].restaurant_name}/>
