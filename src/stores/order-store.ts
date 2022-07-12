@@ -46,7 +46,7 @@ export class OrderStore {
         orders.sort((a:any, b:any)=>{
           let dateA = new Date(a.created_at);
           let dateB = new Date(b.created_at);
-          return dateB.getTime() - dateA.getTime()
+          return dateB.getTime() - dateA.getTime();
         })
       }
     } catch (err) {

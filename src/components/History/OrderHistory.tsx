@@ -53,7 +53,6 @@ const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:a
         <tr className={`${isActive ? 'active' : ''}`} onClick={updateActiveTab}>
             <td>{date}</td>
             <td>{restaurantName}</td>
-            <td>{restaurantAddress}</td>
             <td className={`badge badge-${getBadgeColor(status)} badge-outline`}>{getStatusText(status)}</td>
         </tr>
     )

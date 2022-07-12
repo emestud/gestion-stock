@@ -97,7 +97,6 @@ const History = () => {
                             <tr>
                                 <th className="absolute">Date</th>
                                 <th>Restaurant</th>
-                                <th>Adresse</th>
                                 <th>Statut</th>
                             </tr>
                         </thead>
