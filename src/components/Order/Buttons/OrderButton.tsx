@@ -6,15 +6,17 @@ const OrderButton = (props:any) => {
 
     const sendOrder = async () => {
 
-        if (store.order.items.length <= 0) {
+        if (store.order.items.length === 0) {
             return; // Cannot send the order, at least one item needs to be ordered
         }
 
         store.order.status = "Ordered";
         setIsOrdered(!isOrdered);
 
-        if (store.order.id === "") // order has not been sent yet
+        
+        if (store.order.id === ""){ // order has not been sent yet
             await store.sendOrder();
+        }
         else {
             await store.modifyOrder();
         }

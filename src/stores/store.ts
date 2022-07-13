@@ -1,4 +1,5 @@
 import {makeAutoObservable} from "mobx";
+import Category from "../components/Order/Category";
 import {supabase} from "../supabaseClient";
 import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
 import {OrderStore} from "./order-store";
@@ -20,14 +21,6 @@ class Store {
         restaurant_id: ""
     };
 
-    originalOrder: Order = {
-        id: "",
-        items: [],
-        status: "On order",
-        comment: "", 
-        created_at: "",
-        restaurant_id: ""
-    }
 
     isLoggedIn = false;
 
@@ -49,7 +42,7 @@ class Store {
         this.addItems();
         this.addContainers();
         
-
+        this.initOrder();
 
         makeAutoObservable(this);
     }
@@ -59,8 +52,10 @@ class Store {
      */
     async initOrder() {
         const {data: items} = await supabase
-            .from('items')
+            .from('item')
             .select('*')
+
+        this.order.items = [] // emptying the array, just in case
 
         if (items !==  null) {
             for (const item of items) {
@@ -72,7 +67,8 @@ class Store {
                         {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
                         {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
                     ],
-                    priority: item.priority
+                    priority: item.priority,
+                    category: item.category
                 })
             }
         }
@@ -195,6 +191,24 @@ class Store {
     }
 
     /**
+     * This function returns all the items which category is the one given to the function
+     * @param category the category name
+     */
+    getItemsOfCategory(category:string) {
+
+        let itemsOfCategory: Array<any> = [];
+        
+        for (const item of this.order.items) {
+            if (item.category === category) {
+                itemsOfCategory.push(item);
+            }
+        }
+
+        return itemsOfCategory;
+
+    }
+
+    /**
      * This function adds an item to the order, or updates it if the item has already been ordered
      * @param name name of the item
      * @param quantity amount needed
@@ -205,6 +219,7 @@ class Store {
         let hasUpdated: boolean = false;
 
         console.log(`${name}: ${quantity} ${container.name}`);
+        console.log(this.order.items.length)
 
         this.order.items.forEach((item: OrderItem)=>{
             if (item.name === name) {
@@ -239,7 +254,6 @@ class Store {
             {
 
                 this.order.id = order[0].id;
-                sessionStorage.setItem('order_id', this.order.id);
 
                 for (let item of this.order.items) {
                     
@@ -249,7 +263,7 @@ class Store {
                             item_id: item.id,
                             container_id: item.container[1].id,
                             order_id: order[0].id,
-                            quantity:item.quantity[1],
+                            quantity: item.quantity[1],
                             priority: item.priority
                         };
 
@@ -284,6 +298,8 @@ class Store {
                     created_by: this.user.id,
                     comment: this.order.comment,
                     status: "Ordered",
+                    original_order: this.order.id,
+                    isLastModifiedOrder: true
                 },
             ]);
 
@@ -292,27 +308,34 @@ class Store {
             if (order !== null && order.length > 0)
             {
 
-                this.order.id = order[0].id;
-                sessionStorage.setItem('order_id', this.order.id);
+                let originalOrderID: string = this.order.id;
+                let modifiedOrderID: string = order[0].id
 
                 for (let item of this.order.items) {
                     
+                    if (item.quantity[1] === 0) {
+                        continue;
+                    }
+
                     let orderItem = {
                         canceled_by_lab: false,
                         item_id: item.id,
                         container_id: item.container[1].id,
-                        order_id: order[0].id,
-                        quantity:item.quantity,
+                        order_id: modifiedOrderID,
+                        quantity:item.quantity[1],
                         priority: item.priority
                     };
 
                     orderArray.push(orderItem);
                 }
 
+                console.log(originalOrderID)
+
                 const { data, error } = await supabase
-                    .from('order-item-container')
-                    .delete()
-                    .eq('order_id', this.order.id);
+                    .from('order')
+                    .update({isLastModifiedOrder: false})
+                    .eq('original_order', originalOrderID)
+                    .neq('id', modifiedOrderID);
 
                 // sending everything in one request
                 const { data:orderItems } = await supabase
@@ -326,12 +349,16 @@ class Store {
     /**
      * this function update the sotre order based on the orderID givn as parameter
      * @param orderID the ID of the current order
+     * @param originalOrder this boolean says weither the value needs to be updated for the original order or the current order
      */
-    async setOrder(orderID: string) {
+    async setOrder(orderID: string, originalOrder: boolean) {
 
         this.resetOrder();
 
-        this.order.id = orderID;
+        if (originalOrder) {
+            this.order.id = orderID;
+        }
+
         this.order.status = "Ordered";
         //this.order.created_at = "" // TODO set created_at
         // TODO updated restaurant info
@@ -357,8 +384,8 @@ class Store {
 
                 for (const orderItem of this.order.items) {
                     if (item.name === orderItem.name) {
-                        orderItem.container[0].name = item.container.name;
-                        orderItem.quantity[0] = item.quantity
+                        orderItem.container[originalOrder ? 0 : 1].name = item.container.name;
+                        orderItem.quantity[originalOrder ? 0 : 1] = item.quantity
                     }
                 }
 
@@ -396,6 +423,8 @@ class Store {
             created_at: "",
             restaurant_id: ""
         };
+
+        this.initOrder()
 
         // changing the items inside the "default" list of items 
         for (const category of this.itemCategories) {

@@ -23,6 +23,15 @@ const Item = (props: any) => {
     let [quantity, setQuantity] = useState(quantityProp);
     let [container, setContainer] = useState(containerProp);
 
+    let newQuantity = quantityProp[1];
+    let oldQuantity = quantityProp[0];
+    let quantityDiff = newQuantity - oldQuantity;
+
+    let oldContainer = containerProp[0];
+    let newContainer = containerProp[1];
+    let containerChanged = oldContainer.name !== newContainer.name;
+
+
     const handleQuantityChange = (newQuantity: number) => {
         setQuantity(newQuantity);
 
@@ -43,7 +52,7 @@ const Item = (props: any) => {
     return (
         <div className="flex justify-center gap-1">
             <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg select-none">{name}</p>
-            <select className="w-1/3 select select-bordered" name="Container" id="container-select" defaultValue={containerProp}
+            <select className={`w-1/3 select select-bordered ${containerChanged ? 'bg-yellow-300' : ''}`} name="Container" id="container-select" defaultValue={newContainer.name}
                     onChange={(event)=>handleContainerChange(event.target.value)} disabled={isOrdered || !isEditable}>
                 {store.containerCategories.map(category=>
                     <optgroup label={category.name}>
@@ -55,7 +64,8 @@ const Item = (props: any) => {
                     </optgroup>
                 )}
             </select>
-            <input className="w-1/3 input input-bordered" type="number" min="0" placeholder="0" value={quantity} disabled={isOrdered || !isEditable}
+            <input className={`w-1/3 input input-bordered ${quantityDiff > 0 ? 'bg-green-300' : (quantityDiff < 0 ? 'bg-red-500' : '')}`} 
+                    type="number" min="0" placeholder="0" value={newQuantity} disabled={isOrdered || !isEditable}
                     onChange={(event)=>handleQuantityChange(parseInt(event.target.value))} />
         </div>
     );

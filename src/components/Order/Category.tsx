@@ -1,13 +1,21 @@
+import { useEffect, useState } from 'react';
 import Item from './Item'
+
+import store from '../../stores/store'
 
 const Category = (props: any) => {
 
-    let { categoryName, listItems, isOrdered, isEditable } = props;
+    let { categoryName, isOrdered, isEditable } = props;
 
-    let list = listItems.map((item:any) => 
+    let [items, setItems]:any = useState([]);
+
+    useEffect(()=>{
+        setItems(store.getItemsOfCategory(categoryName));
+    },[]);
+
+    let list = items.map((item:any, index:number) => 
         <li key={item.name}>
-            <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} quantityProp={item.quantity} 
-                    isOrdered={isOrdered} isEditable={isEditable} />
+            <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} quantityProp={item.quantity} isOrdered={isOrdered} isEditable={isEditable} />
         </li>
     )
 

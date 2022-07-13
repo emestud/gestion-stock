@@ -55,5 +55,6 @@ export type OrderItem = {
   name: string,
   quantity: Array<number>,
   container: Array<Container>,
-  priority: number
+  priority: number,
+  category: string
 }

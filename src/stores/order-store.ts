@@ -12,9 +12,20 @@ export class OrderStore {
         .select('*')
         .eq('id', orderID);
 
+      let {data: lastModification} = await supabase
+        .from('order')
+        .select('*')
+        .eq('original_order', orderID)
+        .eq('isLastModifiedOrder', true);
+
+
         if (order !== null && order.length > 0) {
-          let _ = order[0];
-          return _;
+          let originalOrder = order[0];
+          let lastModificationOrder = {}
+          if (lastModification !== null && lastModification.length > 0) {
+            lastModificationOrder = lastModification[0];
+          }
+          return [originalOrder, lastModificationOrder];
         }
   }
 
@@ -28,8 +39,8 @@ export class OrderStore {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
           .select("*")
-          .eq('created_at', date);
-        
+          .eq('created_at', date)
+
           data = dataTmp;
           error = errorTmp;
       }
@@ -37,8 +48,10 @@ export class OrderStore {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
           .select("*")
-        
-          data = dataTmp;
+
+          data = dataTmp?.filter(el=>{
+            return el.original_order === null
+          });
           error = errorTmp;
       }
 
