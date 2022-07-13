@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
+import { proxyPrint } from '../utils'
 
 const Order = () => {
 
@@ -43,7 +44,7 @@ const Order = () => {
                 const itemCategories = await store.setOrder(location.state.order_id, true);                
                 setItemCategories(itemCategories);
 
-                if (lastModification.id !== undefined){
+                if (lastModification !== undefined){
                     const modifiedItemCategories = await store.setOrder(lastModification.id, false);
                     setModifiedItemCategories(modifiedItemCategories);
                 }
@@ -55,8 +56,10 @@ const Order = () => {
     }
     else {
         useEffect(()=>{
-            store.resetOrder();
-            setDataLoading(false);
+            (async ()=>{
+                await store.resetOrder();
+                setDataLoading(false);
+            })();
         }, []);
     }
 

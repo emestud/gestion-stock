@@ -1,5 +1,6 @@
 import { useState } from "react"
 import store from "../../stores/store"
+import { proxyPrint } from "../../utils";
 
 
 const getContainerID = (containerName: string):string => {
@@ -18,33 +19,35 @@ const getContainerID = (containerName: string):string => {
 
 const Item = (props: any) => {
 
-    let {id, name, containerProp, quantityProp, priority, isOrdered, isEditable} = props;
+    let {id, name, containerProp, quantityProp, priority, isOrdered, isEditable, item} = props;
 
     let [quantity, setQuantity] = useState(quantityProp);
     let [container, setContainer] = useState(containerProp);
 
-    let newQuantity = quantityProp[1];
-    let oldQuantity = quantityProp[0];
+    let [newQuantity, setNewQuantity] = useState(quantityProp[1]);
+    let [oldQuantity, setOldQuantity] = useState(quantityProp[0]);
     let quantityDiff = newQuantity - oldQuantity;
 
-    let oldContainer = containerProp[0];
-    let newContainer = containerProp[1];
+    let [oldContainer, setOldContainer] = useState(containerProp[0]);
+    let [newContainer, setNewContainer] = useState(containerProp[1]);
     let containerChanged = oldContainer.name !== newContainer.name;
 
-
-    const handleQuantityChange = (newQuantity: number) => {
-        setQuantity(newQuantity);
+    const handleQuantityChange = (newQuantityValue: number) => {
+        setNewQuantity(newQuantityValue);
 
         if (newQuantity !== 0) {
-            store.updateOrder(id, name, newQuantity, {name: container, id:getContainerID(container)}, priority)
+            store.updateOrder(id, name, newQuantityValue, {name: newContainer.name, id:newContainer.id}, priority)
         }
     }
 
-    const handleContainerChange = (newContainer: string) => {
-        setContainer(newContainer)
+    const handleContainerChange = (newContainerValue: string) => {
+        setNewContainer({
+            id: newContainer.id,
+            name: newContainerValue
+        })
 
         if (quantity !== 0) {
-            store.updateOrder(id, name, quantity, {name: newContainer, id:getContainerID(newContainer)}, priority)
+            store.updateOrder(id, name, newQuantity, {name: newContainerValue, id:newContainer.id}, priority)
         }
     }
 

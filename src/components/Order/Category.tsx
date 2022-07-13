@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Item from './Item'
 
 import store from '../../stores/store'
+import { proxyPrint } from '../../utils';
 
 const Category = (props: any) => {
 
@@ -15,7 +16,8 @@ const Category = (props: any) => {
 
     let list = items.map((item:any, index:number) => 
         <li key={item.name}>
-            <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} quantityProp={item.quantity} isOrdered={isOrdered} isEditable={isEditable} />
+            <Item id={item.id} name={item.name} containerProp={item.container} priority={item.priority} 
+                quantityProp={item.quantity} isOrdered={isOrdered} isEditable={isEditable} item={item} />
         </li>
     )
 

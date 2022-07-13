@@ -21,7 +21,7 @@ export class OrderStore {
 
         if (order !== null && order.length > 0) {
           let originalOrder = order[0];
-          let lastModificationOrder = {}
+          let lastModificationOrder = undefined;
           if (lastModification !== null && lastModification.length > 0) {
             lastModificationOrder = lastModification[0];
           }

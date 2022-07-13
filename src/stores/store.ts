@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
-import Category from "../components/Order/Category";
 import {supabase} from "../supabaseClient";
 import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
+import { proxyPrint } from "../utils";
 import {OrderStore} from "./order-store";
 
 
@@ -219,7 +219,6 @@ class Store {
         let hasUpdated: boolean = false;
 
         console.log(`${name}: ${quantity} ${container.name}`);
-        console.log(this.order.items.length)
 
         this.order.items.forEach((item: OrderItem)=>{
             if (item.name === name) {
@@ -329,8 +328,6 @@ class Store {
                     orderArray.push(orderItem);
                 }
 
-                console.log(originalOrderID)
-
                 const { data, error } = await supabase
                     .from('order')
                     .update({isLastModifiedOrder: false})
@@ -353,9 +350,8 @@ class Store {
      */
     async setOrder(orderID: string, originalOrder: boolean) {
 
-        this.resetOrder();
-
         if (originalOrder) {
+            await this.resetOrder();
             this.order.id = orderID;
         }
 
@@ -383,9 +379,17 @@ class Store {
             for (const item of items) {
 
                 for (const orderItem of this.order.items) {
-                    if (item.name === orderItem.name) {
-                        orderItem.container[originalOrder ? 0 : 1].name = item.container.name;
-                        orderItem.quantity[originalOrder ? 0 : 1] = item.quantity
+                    if (item.item.name === orderItem.name) {
+                        if (originalOrder) {
+                            orderItem.container[1].name = item.container.name;
+                            orderItem.container[0].name = item.container.name;
+                            
+                            orderItem.quantity = [item.quantity, item.quantity]
+                        }
+                        else {
+                            orderItem.container[1].name = item.container.name;
+                            orderItem.quantity[1] = item.quantity
+                        }
                     }
                 }
 
@@ -408,13 +412,14 @@ class Store {
                 }
             }
         }
+        //proxyPrint(this.order)
         return this.itemCategories;
     }
 
     /**
      * This function reset the order object
      */
-    resetOrder() {
+    async resetOrder() {
         this.order = {
             id: "",
             items: [],
@@ -424,7 +429,7 @@ class Store {
             restaurant_id: ""
         };
 
-        this.initOrder()
+        await this.initOrder()
 
         // changing the items inside the "default" list of items 
         for (const category of this.itemCategories) {
