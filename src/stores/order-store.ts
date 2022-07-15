@@ -1,4 +1,5 @@
 import {supabase} from "../supabaseClient";
+import { proxyPrint } from "../utils";
 
 export class OrderStore {
 
@@ -12,9 +13,20 @@ export class OrderStore {
         .select('*')
         .eq('id', orderID);
 
+      let {data: lastModification} = await supabase
+        .from('order')
+        .select('*')
+        .eq('original_order', orderID)
+        .eq('isLastModifiedOrder', true);
+
+
         if (order !== null && order.length > 0) {
-          let _ = order[0];
-          return _;
+          let originalOrder = order[0];
+          let lastModificationOrder = undefined;
+          if (lastModification !== null && lastModification.length > 0) {
+            lastModificationOrder = lastModification[0];
+          }
+          return [originalOrder, lastModificationOrder];
         }
   }
 
@@ -28,8 +40,9 @@ export class OrderStore {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
           .select("*")
-          .eq('created_at', date);
-        
+          .eq('created_at', date)
+          .is('original_order', null);
+
           data = dataTmp;
           error = errorTmp;
       }
@@ -37,7 +50,8 @@ export class OrderStore {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
           .select("*")
-        
+          .is('original_order', null);
+
           data = dataTmp;
           error = errorTmp;
       }
@@ -57,9 +71,30 @@ export class OrderStore {
     return orders;
   }
 
+  public async getModifiedOrders(orders: Array<any>) {
+    let ordersTuples:Array<any> = [];
+
+    for (const order of orders) {
+      const {data: modifiedOrder} = await supabase
+        .from('order')
+        .select('*')
+        .eq('isLastModifiedOrder', true)
+        .eq('original_order', order.id);
+      
+      if (modifiedOrder === null || modifiedOrder.length === 0) {
+        ordersTuples.push([order, order]); // we push the exact same order if the order hasnt been modified
+      }
+      else {
+        ordersTuples.push([order, modifiedOrder[0]]);
+      }
+
+    }    
+    return ordersTuples;
+  }
+
   public async prepareOrders(orders: any[]) {
     const orderItems = new Array();
-    
+
     for (const order of orders) {
       let {data: products} = await supabase
         .from("order-item-container")

@@ -12,19 +12,29 @@ const restaurantIsInItemsList = (restaurant: string, itemList: Array<any>) => {
 }
 
 const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
-    
+
     for (const item of itemsByCategory) {
-        if (item.quantities.length < restaurants.length) {
-            for (const restaurant of restaurants) {
-                if (!restaurantIsInItemsList(restaurant, item.quantities)) {
-                    item.quantities.push({
-                        quantity: 0,
-                        restaurant: restaurant
-                      });
-                    item.containers.push({
-                        container: "Aucun",
-                        restaurant: restaurant
-                    });
+        for (const quantity of item.quantities) {
+            if (quantity.length < restaurants.length) {
+                for (const restaurant of restaurants) {
+                    if (!restaurantIsInItemsList(restaurant, quantity)) {
+                        quantity.push({
+                            quantity: 0,
+                            restaurant: restaurant
+                        });
+                    }
+                }
+            }
+        }
+        for (const container of item.containers) {
+            if (container.length < restaurants.length) {
+                for (const restaurant of restaurants) {
+                    if (!restaurantIsInItemsList(restaurant, container)) {
+                        container.push({
+                            container: "Aucun",
+                            restaurant: restaurant
+                        });
+                    }
                 }
             }
         }

@@ -7,6 +7,7 @@ import { Item } from "../types";
 import Category from "../components/Lab/Category";
 
 import Spinner from "../components/Misc/Spinner";
+import { itemIsInArray, proxyPrint } from "../utils";
 
 const Lab = () => {
 
@@ -31,19 +32,46 @@ const Lab = () => {
     (async () => {
       const restaurants = await store.getListRestaurantsName();
 
-      const orders = await store.orderStore.getOrders(ordersDate);
+      const originalOrders = await store.orderStore.getOrders(ordersDate);
+      const orders = await store.orderStore.getModifiedOrders(originalOrders);
 
       for (const order of orders) {
-        setOrderIDs([...orderIDs, order.id]);
-        if (order.status === 'Delivered') { // if one order has alreadt been delivered, it means that the other orders are being delivered or already delivered
+        setOrderIDs([...orderIDs, order[1].id]);
+        if (order[1].status === 'Delivered') { // if one order has already been delivered, it means that the other orders are being delivered or already delivered
           setIsDelivered(true);
         }
       }
 
-      const orderItemsTmp = await store.orderStore.prepareOrders(orders);
-      const orderItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(orderItemsTmp);
+      let modifiedOrders: Array<any> = [];
+      for (const tuple of orders) {
+        modifiedOrders.push(tuple[1]);
+      }
 
-      setOrderItems(orderItemsGatheredByRestaurant);
+      const originalOrdersItemsTmp = await store.orderStore.prepareOrders(originalOrders);
+      const originalOrdersItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(originalOrdersItemsTmp);
+
+      const modifiedOrdersItemsTmp = await store.orderStore.prepareOrders(modifiedOrders);
+      const modifiedOrdersItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(modifiedOrdersItemsTmp);
+
+      console.log(originalOrdersItemsGatheredByRestaurant);
+      console.log(modifiedOrdersItemsGatheredByRestaurant);
+
+      let orderItems: Array<any> = []
+
+      for (const item of modifiedOrdersItemsGatheredByRestaurant) {
+        let originalItem = itemIsInArray(originalOrdersItemsGatheredByRestaurant, item.name);
+        if (originalItem !== null)
+        {
+          orderItems.push({
+            name: item.name,
+            priority: item.priority,
+            containers: [originalItem.containers, item.containers],
+            quantities: [originalItem.quantities, item.quantities],
+          });
+        }
+      }
+
+      setOrderItems(orderItems);
       setRestaurants(restaurants);
       setDataLoading(false);
     })();

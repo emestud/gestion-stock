@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
+import { proxyPrint } from '../utils'
 
 const Order = () => {
 
@@ -18,7 +19,10 @@ const Order = () => {
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
     let [comment, setComment]:any = useState("");
     let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
-    let [orderID, setOrderID]:any = useState("");
+    let [modifiedItemCategories, setModifiedItemCategories]: any = useState(store.itemCategories);
+    
+    let [orderID, setOrderID]:any = useState(""); 
+
     let [isEditable, setIsEditable]: any = useState(true)
 
     let [dataLoading, setDataLoading]: any = useState(true);
@@ -35,9 +39,16 @@ const Order = () => {
 
                 setOrderID(location.state.order_id);
 
-                const order = await store.orderStore.getOrder(location.state.order_id);
-                const itemCategories = await store.setOrder(location.state.order_id);
+                const [order, lastModification]:any = await store.orderStore.getOrder(location.state.order_id);
+
+                const itemCategories = await store.setOrder(location.state.order_id, true);                
                 setItemCategories(itemCategories);
+
+                if (lastModification !== undefined){
+                    const modifiedItemCategories = await store.setOrder(lastModification.id, false);
+                    setModifiedItemCategories(modifiedItemCategories);
+                }
+
                 setIsEditable(order.status === "On order" || order.status === "Ordered");
                 setDataLoading(false);
             })();
@@ -45,14 +56,16 @@ const Order = () => {
     }
     else {
         useEffect(()=>{
-            store.resetOrder();
-            setDataLoading(false);
+            (async ()=>{
+                await store.resetOrder();
+                setDataLoading(false);
+            })();
         }, []);
     }
 
 
-    let listCategory = itemCategories.map((category:any)=>
-        <li><Category categoryName={category.name} listItems={category.items} isOrdered={isOrdered} isEditable={isEditable} key={category.name}/></li>
+    let listCategory = itemCategories.map((category:any, index:number)=>
+        <li><Category categoryName={category.name} isOrdered={isOrdered} isEditable={isEditable} key={category.name}/></li>
     )
 
     const updateDate = (event: any) => {

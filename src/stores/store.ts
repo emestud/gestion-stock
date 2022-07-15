@@ -1,8 +1,7 @@
-import {$mobx, makeAutoObservable} from "mobx";
-import LogInModal from "../components/Auth/LogInModal";
-
+import {makeAutoObservable} from "mobx";
 import {supabase} from "../supabaseClient";
-import {Container, ContainerCategory, Item, ItemCategory, Order, Restaurant, Status, User} from "../types";
+import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
+import { proxyPrint } from "../utils";
 import {OrderStore} from "./order-store";
 
 
@@ -21,6 +20,7 @@ class Store {
         created_at: "",
         restaurant_id: ""
     };
+
 
     isLoggedIn = false;
 
@@ -42,7 +42,36 @@ class Store {
         this.addItems();
         this.addContainers();
         
+        this.initOrder();
+
         makeAutoObservable(this);
+    }
+
+    /**
+     * This function initiates the orders, on the store creation, with two empty orders 
+     */
+    async initOrder() {
+        const {data: items} = await supabase
+            .from('item')
+            .select('*')
+
+        this.order.items = [] // emptying the array, just in case
+
+        if (items !==  null) {
+            for (const item of items) {
+                this.order.items.push({
+                    id: item.id,
+                    name: item.name,
+                    quantity: [0, 0],
+                    container: [
+                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
+                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
+                    ],
+                    priority: item.priority,
+                    category: item.category
+                })
+            }
+        }
     }
 
     /**
@@ -162,6 +191,24 @@ class Store {
     }
 
     /**
+     * This function returns all the items which category is the one given to the function
+     * @param category the category name
+     */
+    getItemsOfCategory(category:string) {
+
+        let itemsOfCategory: Array<any> = [];
+        
+        for (const item of this.order.items) {
+            if (item.category === category) {
+                itemsOfCategory.push(item);
+            }
+        }
+
+        return itemsOfCategory;
+
+    }
+
+    /**
      * This function adds an item to the order, or updates it if the item has already been ordered
      * @param name name of the item
      * @param quantity amount needed
@@ -173,25 +220,14 @@ class Store {
 
         console.log(`${name}: ${quantity} ${container.name}`);
 
-        this.order.items.forEach((item: Item)=>{
+        this.order.items.forEach((item: OrderItem)=>{
             if (item.name === name) {
-                item.container = container.name,
-                item.container_id = container.id,
-                item.quantity = quantity
+                item.container[1].name = container.name,
+                item.container[1].id = container.id,
+                item.quantity[1] = quantity
                 hasUpdated = true
             }
         });
-
-        if (!hasUpdated) { // item is not in the array
-            this.order.items.push({
-                id: id,
-                name: name,
-                quantity: quantity,
-                container: container.name,
-                container_id: container.id,
-                priority: priority
-            });
-        }
 
     }
 
@@ -217,20 +253,21 @@ class Store {
             {
 
                 this.order.id = order[0].id;
-                sessionStorage.setItem('order_id', this.order.id);
 
                 for (let item of this.order.items) {
                     
-                    let orderItem = {
-                        canceled_by_lab: false,
-                        item_id: item.id,
-                        container_id: item.container_id,
-                        order_id: order[0].id,
-                        quantity:item.quantity,
-                        priority: item.priority
-                    };
+                    if (item.quantity[1] > 0) {
+                        let orderItem = {
+                            canceled_by_lab: false,
+                            item_id: item.id,
+                            container_id: item.container[1].id,
+                            order_id: order[0].id,
+                            quantity: item.quantity[1],
+                            priority: item.priority
+                        };
 
-                    orderArray.push(orderItem);
+                        orderArray.push(orderItem);
+                    }
                 }
 
                 const { data, error } = await supabase
@@ -260,6 +297,8 @@ class Store {
                     created_by: this.user.id,
                     comment: this.order.comment,
                     status: "Ordered",
+                    original_order: this.order.id,
+                    isLastModifiedOrder: true
                 },
             ]);
 
@@ -268,17 +307,21 @@ class Store {
             if (order !== null && order.length > 0)
             {
 
-                this.order.id = order[0].id;
-                sessionStorage.setItem('order_id', this.order.id);
+                let originalOrderID: string = this.order.id;
+                let modifiedOrderID: string = order[0].id
 
                 for (let item of this.order.items) {
                     
+                    if (item.quantity[1] === 0) {
+                        continue;
+                    }
+
                     let orderItem = {
                         canceled_by_lab: false,
                         item_id: item.id,
-                        container_id: item.container_id,
-                        order_id: order[0].id,
-                        quantity:item.quantity,
+                        container_id: item.container[1].id,
+                        order_id: modifiedOrderID,
+                        quantity:item.quantity[1],
                         priority: item.priority
                     };
 
@@ -286,9 +329,10 @@ class Store {
                 }
 
                 const { data, error } = await supabase
-                    .from('order-item-container')
-                    .delete()
-                    .eq('order_id', this.order.id);
+                    .from('order')
+                    .update({isLastModifiedOrder: false})
+                    .eq('original_order', originalOrderID)
+                    .neq('id', modifiedOrderID);
 
                 // sending everything in one request
                 const { data:orderItems } = await supabase
@@ -302,12 +346,15 @@ class Store {
     /**
      * this function update the sotre order based on the orderID givn as parameter
      * @param orderID the ID of the current order
+     * @param originalOrder this boolean says weither the value needs to be updated for the original order or the current order
      */
-    async setOrder(orderID: string) {
+    async setOrder(orderID: string, originalOrder: boolean) {
 
-        this.resetOrder();
+        if (originalOrder) {
+            await this.resetOrder();
+            this.order.id = orderID;
+        }
 
-        this.order.id = orderID;
         this.order.status = "Ordered";
         //this.order.created_at = "" // TODO set created_at
         // TODO updated restaurant info
@@ -331,6 +378,21 @@ class Store {
         if (items !== null) {
             for (const item of items) {
 
+                for (const orderItem of this.order.items) {
+                    if (item.item.name === orderItem.name) {
+                        if (originalOrder) {
+                            orderItem.container[1].name = item.container.name;
+                            orderItem.container[0].name = item.container.name;
+                            
+                            orderItem.quantity = [item.quantity, item.quantity]
+                        }
+                        else {
+                            orderItem.container[1].name = item.container.name;
+                            orderItem.quantity[1] = item.quantity
+                        }
+                    }
+                }
+
                 let newItem:Item = {
                     id: item.item.id,
                     name: item.item.name,
@@ -340,9 +402,7 @@ class Store {
                     priority: item.item.priority 
                 };
 
-                this.order.items.push(newItem);
-
-                // changing the items inside the "default" list of items 
+                // changing the items inside the "default" list of items (updating quantity and container)
                 for (const category of this.itemCategories) {
                     for (let itemInCat of category.items) {
                         if (itemInCat.name === newItem.name) {
@@ -352,13 +412,14 @@ class Store {
                 }
             }
         }
+        //proxyPrint(this.order)
         return this.itemCategories;
     }
 
     /**
      * This function reset the order object
      */
-    resetOrder() {
+    async resetOrder() {
         this.order = {
             id: "",
             items: [],
@@ -367,6 +428,8 @@ class Store {
             created_at: "",
             restaurant_id: ""
         };
+
+        await this.initOrder()
 
         // changing the items inside the "default" list of items 
         for (const category of this.itemCategories) {
