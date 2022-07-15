@@ -22,7 +22,6 @@ const Item = (props: any) => {
     let {id, name, containerProp, quantityProp, priority, isOrdered, isEditable, item} = props;
 
     let [quantity, setQuantity] = useState(quantityProp);
-    let [container, setContainer] = useState(containerProp);
 
     let [newQuantity, setNewQuantity] = useState(quantityProp[1]);
     let [oldQuantity, setOldQuantity] = useState(quantityProp[0]);
@@ -32,7 +31,27 @@ const Item = (props: any) => {
     let [newContainer, setNewContainer] = useState(containerProp[1]);
     let containerChanged = oldContainer.name !== newContainer.name;
 
+    let [numberInputIncorrect, setNumberInputIncorrect]:any = useState(false);
+
     const handleQuantityChange = (newQuantityValue: number) => {
+        
+        if (isNaN(newQuantityValue)) {
+            setNumberInputIncorrect(true);
+            return;
+        }
+        else {
+            setNumberInputIncorrect(false);
+        }
+
+        if (newQuantityValue < 0) {
+            let input = document.getElementById("quantityInput");
+            if (input!==null) {
+                input.value = "0";
+            }
+            setNewQuantity(0);
+            return;
+        }
+
         setNewQuantity(newQuantityValue);
 
         if (newQuantity !== 0) {
@@ -67,8 +86,10 @@ const Item = (props: any) => {
                     </optgroup>
                 )}
             </select>
-            <input className={`w-1/3 input input-bordered ${quantityDiff > 0 ? 'bg-green-300' : (quantityDiff < 0 ? 'bg-red-500' : '')}`} 
-                    type="number" min="0" placeholder="0" value={newQuantity} disabled={isOrdered || !isEditable}
+            <input id="quantityInput" className={`w-3/12 input input-bordered 
+                                ${quantityDiff > 0 ? 'bg-green-300' : (quantityDiff < 0 ? 'bg-red-500' : '')}
+                                ${numberInputIncorrect ? 'bg-red-900': ''}`} 
+                    type="text" min="0" pattern="[0-9]*" disabled={isOrdered || !isEditable} placeholder={newQuantity}
                     onChange={(event)=>handleQuantityChange(parseInt(event.target.value))} />
         </div>
     );
