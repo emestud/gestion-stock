@@ -41,24 +41,23 @@ const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
     }
 
     return (
-        <div>
-            <h1 className="m-4 lg:ml-12 text-xl font-bold">{itemsByCategory[0].itemCategory}</h1>
+        <div className="w-screen">
             <table className="z-0 w-full table table-compact table-zebra lg:ml-8 md:table-normal">
                 <thead>
                     <tr>
-                        <th rowSpan={2}  style={{ position: 'static'}} >
+                        <th rowSpan={2}  style={{ position: 'static'}} className="w-2/12">
                             Produit
                         </th>
                         {restaurants.map((restaurant:string)=>
-                            <th colSpan={2} rowSpan={1}>{restaurant}</th>
+                            <th colSpan={2} rowSpan={1} className="w-fit text-ellipsis">{restaurant}</th>
                         )}
-                        <th rowSpan={2}>Annulé ?</th>
+                        <th rowSpan={2} className="w-2/12">Annulé ?</th>
                     </tr>
                     <tr>
                         {restaurants.map((_:string)=>
                             <>
-                                <th style={{ position: 'static'}} className="text-center">#</th>
-                                <th className="text-center">Récipient</th>
+                                <th style={{ position: 'static'}} className="text-center px-0">#</th>
+                                <th className="text-center px-0">Récipient</th>
                             </>
                         )}
                     </tr>

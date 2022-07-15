@@ -160,13 +160,13 @@ const Lab = () => {
       (<Spinner />)
       :
       (<>
-        <ol className="w-full m-auto max-w-screen-xl flex flex-col gap-8 h-[120vh] overflow-y-scroll">
+        <ol className="w-screen flex flex-col gap-8 h-[120vh] overflow-y-scroll">
           {itemsByCategory.map((cat: any) =>
             <Category key={cat[0].id} itemsByCategory={cat} restaurants={restaurants} addItemToCancel={addItemToCancel}/>
           )}
         </ol>
         {isDelivered ?
-          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Les commandes ont été livrées</button>
+          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >La commandes a été livrée</button>
           :
           <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={confirmOrder} >Valider la commande</button>
         }
