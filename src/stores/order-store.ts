@@ -40,6 +40,7 @@ export class OrderStore {
           .from("order")
           .select("*")
           .eq('created_at', date)
+          .is('original_order', null);
 
           data = dataTmp;
           error = errorTmp;
@@ -48,10 +49,8 @@ export class OrderStore {
         let {data: dataTmp, error: errorTmp} = await supabase
           .from("order")
           .select("*")
+          .is('original_order', null);
 
-          data = dataTmp?.filter(el=>{
-            return el.original_order === null
-          });
           error = errorTmp;
       }
 

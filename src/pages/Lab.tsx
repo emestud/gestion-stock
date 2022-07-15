@@ -7,6 +7,7 @@ import { Item } from "../types";
 import Category from "../components/Lab/Category";
 
 import Spinner from "../components/Misc/Spinner";
+import { proxyPrint } from "../utils";
 
 const Lab = () => {
 
@@ -67,6 +68,8 @@ const Lab = () => {
     }
     itemsByCategory.push(category);
   } 
+
+  proxyPrint(itemsByCategory)
 
   /**
    * This function adds an item to the array of items to be canceled
