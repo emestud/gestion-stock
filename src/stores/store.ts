@@ -502,6 +502,17 @@ class Store {
         }
     }
 
+    /**
+     * 
+     * @param orderID order's id
+     * @param date Date you want to change the order's "created_at" attribute to
+     */
+    async changeOrderDate(orderID: string, date:any) {
+        let {data} = await supabase
+            .from('order')
+            .update({created_at: date})
+            .eq('id', orderID);
+    }
 
     /**
      * This function returns the restaurant name and adress given a restaurant ID 

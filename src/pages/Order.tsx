@@ -55,6 +55,7 @@ const Order = () => {
 
                 setIsEditable(order.status === "On order" || order.status === "Ordered");
                 setDataLoading(false);
+                setDate(order.created_at);
             })();
         }, []);
     }
@@ -75,6 +76,9 @@ const Order = () => {
     const updateDate = (event: any) => {
         store.order.created_at = event.target.value;
         setDate(event.target.value);
+        if (orderID !== "") {
+            store.changeOrderDate(orderID, event.target.value)
+        }
     };
 
     const updateComment = (event: any) => {
