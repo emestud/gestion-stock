@@ -37,8 +37,6 @@ const Item = ({items, addItemToCancel}:any) => {
         addItemToCancel(!isCanceled, item_ids);
         setIsCanceled(!isCanceled);
     }
-
-    console.log(items)
         
     return (
         <>

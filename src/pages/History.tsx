@@ -43,14 +43,18 @@ const History = () => {
     
 
 
-    const updateActiveTab = (orderID: string, orderDate: string) => {
+    const updateActiveTab = (orderID: string, orderDate: string, event: any) => {
         setCurrentActiveTabID(orderID);
         setCurrentActiveTabDate(orderDate)
+
+        if (event.detail >= 2) {
+            openOrder()
+        }
     };
 
     const ordersMap = orders.map((order:Order)=>
         <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={order.status} key={order.id} isActive={order.id===currentActiveTabID}
-                    updateActiveTab={()=>updateActiveTab(order.id, order.created_at)}
+                    updateActiveTab={(event: any)=>updateActiveTab(order.id, order.created_at, event)}
             />
     );
 
