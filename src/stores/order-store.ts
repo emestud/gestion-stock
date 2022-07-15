@@ -101,8 +101,8 @@ export class OrderStore {
       let {data: products} = await supabase
         .from("order-item-container")
         .select("*")
-        .eq("order_id", order.id)
-        .eq("canceled_by_lab", false);
+        .eq("order_id", order.id);
+        //.eq("canceled_by_lab", false);
 
       let {data: restaurant} = await supabase
         .from("restaurant")
@@ -206,6 +206,7 @@ export class OrderStore {
         }
 
         itemsForEachRestaurant.push({
+          canceled_by_lab: item.canceled_by_lab,
           name: item.itemName,
           quantities: quantities,
           containers: containers,

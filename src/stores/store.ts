@@ -460,14 +460,14 @@ class Store {
 
     /**
      * This function sets the value 'cancled_by_lab' to true for every order-item-container object in the DB which ID is inside the array (param).
-     * @param itemsToCancel array of ID
+     * @param itemsToCancel array of [ID, true|false]
      */
-    async cancelItems(itemsToCancel:Array<string>) {
+    async cancelItems(itemsToCancel:Array<any>) {
         for (const item of itemsToCancel) {
             const { data, error } = await supabase
                 .from('order-item-container')
-                .update({ canceled_by_lab: 'true' })
-                .eq('id', item);
+                .update({ canceled_by_lab: item[1] })
+                .eq('id', item[0]);
         }
     }
 

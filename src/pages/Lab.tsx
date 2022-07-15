@@ -53,20 +53,18 @@ const Lab = () => {
       const modifiedOrdersItemsTmp = await store.orderStore.prepareOrders(modifiedOrders);
       const modifiedOrdersItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(modifiedOrdersItemsTmp);
 
-      console.log(originalOrdersItemsGatheredByRestaurant);
-      console.log(modifiedOrdersItemsGatheredByRestaurant);
-
-      let orderItems: Array<any> = []
+      let orderItemsTmp: Array<any> = []
 
       for (const item of modifiedOrdersItemsGatheredByRestaurant) {
         let originalItem = itemIsInArray(originalOrdersItemsGatheredByRestaurant, item.name);
         if (originalItem !== null)
         {
-          orderItems.push({
+          orderItemsTmp.push({
             name: item.name,
             priority: item.priority,
             containers: [originalItem.containers, item.containers],
             quantities: [originalItem.quantities, item.quantities],
+            canceled_by_lab: item.canceled_by_lab
           });
         }
         else {
@@ -85,16 +83,17 @@ const Lab = () => {
             })
           }
 
-          orderItems.push({
+          orderItemsTmp.push({
             name: item.name,
             priority: item.priority,
             containers: [containers, item.containers],
             quantities: [quantities, item.quantities],
+            canceled_by_lab: item.canceled_by_lab
           })
         }
       }
 
-      setOrderItems(orderItems);
+      setOrderItems(orderItemsTmp);
       setRestaurants(restaurants);
       setDataLoading(false);
     })();
@@ -105,6 +104,7 @@ const Lab = () => {
   if (orderItems.length > 0) {
     let lastPriority:number = orderItems[0].priority;
     let category:Array<Item> = [];
+
 
     for (const item of orderItems) { // separating items based on their category (= priority)
       if (item.priority === lastPriority) {
@@ -127,13 +127,18 @@ const Lab = () => {
   const addItemToCancel = (isToBeCanceled: boolean, item_ids: Array<string>) => {
     if (isToBeCanceled) { // adding the item
       for (const item_id of item_ids) {
-        setItemsToCancel((oldArray:Array<string>)=>[...oldArray, item_id])
+        setItemsToCancel((oldArray:Array<any>)=>[...oldArray, [item_id, true]])
       }
     }
-    else { // removing the item
+    else { // removing the item or uncanceling it
       for (const item_id of item_ids) {
-        let itemsTmp = itemsToCancel.filter((item:string)=>item!==item_id)
-        setItemsToCancel(itemsTmp);
+        if (itemsToCancel.includes(item_id)) {
+          let itemsTmp = itemsToCancel.filter((item:string)=>item[0]!==item_id)
+          setItemsToCancel(itemsTmp);
+        }
+        else {
+          setItemsToCancel((oldArray:Array<any>)=>[...oldArray, [item_id, false]])
+        }
       }
     }
   }

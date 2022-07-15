@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { proxyPrint } from '../../utils';
 
 function quantityBgDiffColor(originalQuantities: Array<any>, modifiedQuantities: Array<any>, index: number) {
     if (originalQuantities[index].quantity < modifiedQuantities[index].quantity) {
@@ -23,14 +24,16 @@ function containerBgDiffColor(originalContainers: Array<any>, modifiedContainers
 
 const Item = ({items, addItemToCancel}:any) => {
 
-    const [isCanceled, setIsCanceled] = useState(false);
+    const [isCanceled, setIsCanceled] = useState(items.canceled_by_lab);
 
     const cancelItems = () => {
         let item_ids:Array<string> = [];
 
-        for (const item of items.quantities) {
-            if (item.item_order_id !== undefined) {
-                item_ids.push(item.item_order_id);
+        for (const itemsOfRestauraurants of items.quantities) {
+            for (const item of itemsOfRestauraurants) {
+                if (item.item_order_id !== undefined) {
+                    item_ids.push(item.item_order_id);
+                }
             }
         }
 
@@ -49,7 +52,7 @@ const Item = ({items, addItemToCancel}:any) => {
                             <td className={`${containerBgDiffColor(items.containers[0], items.containers[1], index)} text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{items.containers[1][index].container}</td>
                         </>
                 )}
-                <td><input type="checkbox" className="checkbox" onClick={()=>cancelItems()}/></td>
+                <td><input type="checkbox" className="checkbox" onChange={()=>cancelItems()} checked={isCanceled}/></td>
             </tr>
         </>
     )

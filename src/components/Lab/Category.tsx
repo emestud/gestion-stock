@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { proxyPrint } from "../../utils";
 import Item from "./Item";
 
 const restaurantIsInItemsList = (restaurant: string, itemList: Array<any>) => {
