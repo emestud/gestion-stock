@@ -8,7 +8,7 @@ export class OrderStore {
      * @param orderID number representing the order ID
      */
    async getOrder(orderID: string){
-    let {data: order} = await supabase
+      let {data: order} = await supabase
         .from('order')
         .select('*')
         .eq('id', orderID);
@@ -19,15 +19,17 @@ export class OrderStore {
         .eq('original_order', orderID)
         .eq('isLastModifiedOrder', true);
 
+      let originalOrder = undefined;
+      let lastModificationOrder = undefined;
 
-        if (order !== null && order.length > 0) {
-          let originalOrder = order[0];
-          let lastModificationOrder = undefined;
-          if (lastModification !== null && lastModification.length > 0) {
-            lastModificationOrder = lastModification[0];
-          }
-          return [originalOrder, lastModificationOrder];
+      if (order !== null && order.length > 0) {
+        originalOrder = order[0];
+        if (lastModification !== null && lastModification.length > 0) {
+          lastModificationOrder = lastModification[0];
         }
+
+      }
+    return [originalOrder, lastModificationOrder];
   }
 
   public async getOrders(date: string | null) {

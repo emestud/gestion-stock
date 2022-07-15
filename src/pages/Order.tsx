@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
 import GoBack from '../components/Misc/GoBack'
+import { proxyPrint } from '../utils'
 
 const Order = () => {
 
@@ -40,6 +41,9 @@ const Order = () => {
                 setOrderID(location.state.order_id);
 
                 const [order, lastModification]:any = await store.orderStore.getOrder(location.state.order_id);
+
+                setIsOrdered(lastModification.status!=="On order"); // updating the component state
+                store.order.status = lastModification.status; // updating the status in the store
 
                 const itemCategories = await store.setOrder(location.state.order_id, true);                
                 setItemCategories(itemCategories);

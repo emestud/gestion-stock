@@ -69,6 +69,29 @@ const Lab = () => {
             quantities: [originalItem.quantities, item.quantities],
           });
         }
+        else {
+
+          let containers:Array<any> = [];
+          let quantities: Array<any> = [];
+
+          for (const restaurant of restaurants) {
+            quantities.push({
+              restaurant: restaurant,
+              quantity: 0
+            })
+            containers.push({
+              restaurant: restaurant,
+              container: "Aucun"
+            })
+          }
+
+          orderItems.push({
+            name: item.name,
+            priority: item.priority,
+            containers: [containers, item.containers],
+            quantities: [quantities, item.quantities],
+          })
+        }
       }
 
       setOrderItems(orderItems);
