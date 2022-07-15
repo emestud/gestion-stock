@@ -53,7 +53,12 @@ class Store {
     async initOrder() {
         const {data: items} = await supabase
             .from('item')
-            .select('*')
+            .select(`*,
+                container:default_container(
+                    id,
+                    name
+                )
+            `)
 
         this.order.items = [] // emptying the array, just in case
 
@@ -64,8 +69,14 @@ class Store {
                     name: item.name,
                     quantity: [0, 0],
                     container: [
-                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
-                        {id: "2ebe580d-66e2-4a9a-94e1-6b4edf70f617", name:"Bac 1/6"},
+                        {
+                            id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
+                            name: (item.container === null) ? 'Pack' : item.container.name,
+                        },
+                        {
+                            id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
+                            name: (item.container === null) ? 'Pack' : item.container.name,
+                        },
                     ],
                     priority: item.priority,
                     category: item.category
@@ -86,7 +97,11 @@ class Store {
 
         let { data: items } = await supabase
             .from('item')
-            .select('*');
+            .select(`*,
+                container:default_container(
+                    id,
+                    name
+                )`);
 
         let listCategories:Array<string> = [];
 
@@ -106,13 +121,14 @@ class Store {
 
             let products:Array<Item> = [];
 
+
             categoryItems?.forEach(item=>{
                 products.push({
                     id: item.id,
                     name: item.name,
                     quantity: 0,
-                    container: "Bac 1/6 profond",
-                    container_id: "56262456-d89a-4d8b-b833-be377504f88b", // TODO modify later, maybe items having a default container (name+id) would be nice,
+                    container: (item.container === null) ? 'Pack' : item.container.name,
+                    container_id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
                     priority: item.priority
                 });
             })
@@ -412,7 +428,6 @@ class Store {
                 }
             }
         }
-        //proxyPrint(this.order)
         return this.itemCategories;
     }
 

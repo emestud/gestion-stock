@@ -44,7 +44,7 @@ const Item = (props: any) => {
         }
 
         if (newQuantityValue < 0) {
-            let input = document.getElementById("quantityInput");
+            let input = document.getElementById("quantityInput") as HTMLInputElement;
             if (input!==null) {
                 input.value = "0";
             }
