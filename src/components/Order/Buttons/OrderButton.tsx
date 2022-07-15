@@ -23,7 +23,7 @@ const OrderButton = (props:any) => {
     }
 
     return (
-        <button className="sticky flex justify-center w-fit m-auto text-2xl btn md:w-2/3 lg:w-1/2 max-w-2xl"
+        <button className="sticky top-[2.5%] flex justify-center w-fit m-auto text-2xl btn md:w-2/3 lg:w-1/2 max-w-2xl"
                 onClick={sendOrder}>
             Valider la commande
         </button>
