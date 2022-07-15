@@ -10,7 +10,7 @@ const ModifyButton = (props:any) => {
     }
 
     return (
-        <button className="flex text-white justify-center w-fit m-auto text-2xl btn btn-warning 
+        <button className="sticky top-[2.5%] flex text-white justify-center w-fit m-auto text-2xl btn btn-warning 
                                 md:w-2/3 lg:w-1/2 max-w-2xl"
                 onClick={ModifyOrder}>
             Modifier la commande
