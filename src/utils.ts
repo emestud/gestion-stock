@@ -8,3 +8,13 @@ export function proxyPrint(object: any) {
     }
     console.log(JSON.parse(JSON.stringify(object)));
 }
+
+
+export function itemIsInArray(array: Array<any>, name: string) {
+    for (const item of array) {
+        if (item.name === name) {
+            return item;
+        }
+    }
+    return null;
+}

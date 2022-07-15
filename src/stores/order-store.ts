@@ -1,4 +1,5 @@
 import {supabase} from "../supabaseClient";
+import { proxyPrint } from "../utils";
 
 export class OrderStore {
 
@@ -51,6 +52,7 @@ export class OrderStore {
           .select("*")
           .is('original_order', null);
 
+          data = dataTmp;
           error = errorTmp;
       }
 
@@ -69,9 +71,30 @@ export class OrderStore {
     return orders;
   }
 
+  public async getModifiedOrders(orders: Array<any>) {
+    let ordersTuples:Array<any> = [];
+
+    for (const order of orders) {
+      const {data: modifiedOrder} = await supabase
+        .from('order')
+        .select('*')
+        .eq('isLastModifiedOrder', true)
+        .eq('original_order', order.id);
+      
+      if (modifiedOrder === null || modifiedOrder.length === 0) {
+        ordersTuples.push([order, order]); // we push the exact same order if the order hasnt been modified
+      }
+      else {
+        ordersTuples.push([order, modifiedOrder[0]]);
+      }
+
+    }    
+    return ordersTuples;
+  }
+
   public async prepareOrders(orders: any[]) {
     const orderItems = new Array();
-    
+
     for (const order of orders) {
       let {data: products} = await supabase
         .from("order-item-container")

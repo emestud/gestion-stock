@@ -1,5 +1,26 @@
 import { useState } from 'react'
 
+function quantityBgDiffColor(originalQuantities: Array<any>, modifiedQuantities: Array<any>, index: number) {
+    if (originalQuantities[index].quantity < modifiedQuantities[index].quantity) {
+        return 'bg-green-300';
+    }
+    else if (originalQuantities[index].quantity > modifiedQuantities[index].quantity) {
+        return 'bg-red-500'
+    }
+    else {
+        return ''
+    }
+}
+
+function containerBgDiffColor(originalContainers: Array<any>, modifiedContainers: Array<any>, index: number) {
+    if (originalContainers[index].container !== modifiedContainers[index].container) {
+        return 'bg-yellow-300';
+    }
+    else {
+        return ''
+    }
+}
+
 const Item = ({items, addItemToCancel}:any) => {
 
     const [isCanceled, setIsCanceled] = useState(false);
@@ -17,15 +38,17 @@ const Item = ({items, addItemToCancel}:any) => {
         setIsCanceled(!isCanceled);
     }
 
+    console.log(items)
+        
     return (
         <>
             <tr>
                 <td>{items.name}</td>
                 {
-                    items.quantities.map((quantity:any, index:number)=>
+                    items.quantities[1].map((quantity:any, index:number)=>
                         <>
-                            <td className={`text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{quantity.quantity}</td>
-                            <td className={`text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{items.containers[index].container}</td>
+                            <td className={`${quantityBgDiffColor(items.quantities[0], items.quantities[1], index)} text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{quantity.quantity}</td>
+                            <td className={`${containerBgDiffColor(items.containers[0], items.containers[1], index)} text-center select-none ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}>{items.containers[1][index].container}</td>
                         </>
                 )}
                 <td><input type="checkbox" className="checkbox" onClick={()=>cancelItems()}/></td>
