@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
-import { proxyPrint } from '../utils'
+import GoBack from '../components/Misc/GoBack'
 
 const Order = () => {
 
@@ -85,10 +85,13 @@ const Order = () => {
             (<Spinner />) 
             : 
             (<>
-                <div className="w-11/12 max-w-4xl m-auto mb-8 p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
-                    <input type="date" className="w-1/2" value={date} onChange={updateDate}></input>
-                    <p>|</p>
-                    <p className="w-1/2">{store.restaurant.name}</p>
+                <div className='w-full flex items-center justify-around max-w-screen-md'>
+                    <GoBack />
+                    <div className="w-10/12 max-w-4xl p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
+                        <input type="date" className="w-fit" value={date} onChange={updateDate}></input>
+                        <p>|</p>
+                        <p className="">{store.restaurant.name}</p>
+                    </div>
                 </div>
                 {isEditable ? 
                     isOrdered ? 
