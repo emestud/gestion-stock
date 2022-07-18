@@ -7,14 +7,17 @@ export class OrderStore {
      * This function fetchs an returns an order from the DB
      * @param orderID number representing the order ID
      */
-   async getOrder(orderID: string){
+   async getOrder(orderID: string, mode: string = "Order"){
+
+      const tableDBName = (mode === 'Order') ? 'order' : 'waste'
+
       let {data: order} = await supabase
-        .from('order')
+        .from(tableDBName)
         .select('*')
         .eq('id', orderID);
 
       let {data: lastModification} = await supabase
-        .from('order')
+        .from(tableDBName)
         .select('*')
         .eq('original_order', orderID)
         .eq('isLastModifiedOrder', true);
@@ -32,6 +35,7 @@ export class OrderStore {
         }
 
       }
+
     return [originalOrder, lastModificationOrder];
   }
 
@@ -75,6 +79,48 @@ export class OrderStore {
 
     return orders;
   }
+
+
+  public async getWastes(date: string | null) {
+    const wastes = new Array();
+
+    try {
+      let data: any;
+      let error: any;
+      if (date !== null) {
+        let {data: dataTmp, error: errorTmp} = await supabase
+          .from("waste")
+          .select("*")
+          .eq('created_at', date)
+          .is('original_order', null);
+
+          data = dataTmp;
+          error = errorTmp;
+      }
+      else {
+        let {data: dataTmp, error: errorTmp} = await supabase
+          .from("waste")
+          .select("*")
+          .is('original_order', null);
+
+          data = dataTmp;
+          error = errorTmp;
+      }
+
+      if (data?.length !== 0 && data !== null) {
+        wastes.push(...data);
+        wastes.sort((a:any, b:any)=>{
+          let dateA = new Date(a.created_at);
+          let dateB = new Date(b.created_at);
+          return dateB.getTime() - dateA.getTime();
+        })
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    return wastes;
+  }
+
 
   public async getModifiedOrders(orders: Array<any>) {
     let ordersTuples:Array<any> = [];

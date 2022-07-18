@@ -2,9 +2,10 @@ import store from "../stores/store";
 import { Order } from "../types";
 
 import { useEffect, useState } from "react";
-import OrderHistory from "../components/History/OrderHistory";
-
 import { useNavigate } from "react-router-dom";
+
+import OrderHistory from "../components/History/OrderHistory";
+import WasteHistory from '../components/History/WasteHistory'
 
 import Spinner from "../components/Misc/Spinner";
 
@@ -13,12 +14,29 @@ const History = () => {
     const navigate = useNavigate();
 
     const [orders, setOrders]:any = useState([]);
+    const [wastes, setWastes]:any = useState([]);
+
     const [currentActiveTabID, setCurrentActiveTabID]:any = useState("");
     const [currentActiveTabDate, setCurrentActiveTabDate]: any = useState("");
 
     // this variable is true if an order has already been created for a restaurant on the current date
     const [orderAlreadyExists, setOrderAlreadyExists]: any = useState(false);
     const [dataLoading, setDataLoading]: any = useState(true);
+
+    const [currentMode, setCurrentMode]: any = useState("Order");
+
+
+    const changeMode = () => {
+        if (currentMode === 'Order') {
+            store.orderMode = 'Order';
+            setCurrentMode('Waste');
+        }
+        else {
+            store.orderMode = 'Waste';
+            setCurrentMode('Order');
+        }
+    }
+
 
     const getOrders = async () => {
         let tmp:Array<Order> = await store.orderStore.getOrders(null);
@@ -36,8 +54,14 @@ const History = () => {
         }
     };
 
+    const getWastes = async () => {
+        let tmp: Array<any> = await store.orderStore.getWastes(null);
+        setWastes(tmp);
+    }
+
     useEffect(() => {
         getOrders();
+        getWastes();
         setDataLoading(false);
     }, []);
     
@@ -58,6 +82,12 @@ const History = () => {
             />
     );
 
+    const wastesMap = wastes.map((waste:any)=>
+        <WasteHistory date={waste.created_at} restaurant_id={waste.restaurant_id} key={waste.id} isActive={waste.id===currentActiveTabID}
+                      updateActiveTab={(event: any)=>updateActiveTab(waste.id, waste.created_at, event)}
+        />
+    )
+
     const openOrder = () => {
         if (store.user.role === 'Labo') {
             navigate('/lab', {
@@ -77,7 +107,7 @@ const History = () => {
             navigate('/order', {
                 state: {
                     order_id: currentActiveTabID, // needed so we can later fetch all the orders for a given date
-                    mode: 'Order'
+                    mode: currentMode
                 }
             }) 
         }
@@ -109,13 +139,20 @@ const History = () => {
             (<>
                 <div>
                     <h1 className="text-2xl text-center mb-8">Historique</h1>
-                    <div>
-                        <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
-                            Nouvelle commande
-                        </button>
-                        <button onClick={newWaste} className={`btn btn-sm btn-secondary m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
-                            Déclarer pertes
-                        </button>
+                    <div className="flex justify-between items-center px-4">
+                        <div>
+                            <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                                Nouvelle commande
+                            </button>
+                            <button onClick={newWaste} className={`btn btn-sm btn-secondary m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                                Déclarer pertes
+                            </button>
+                        </div>
+                        <div className="flex gap-4">
+                            <p className={`${currentMode === 'Order' ? 'font-bold underline' : ''}`}>Commandes</p>
+                            <input type="checkbox" className="toggle" checked={currentMode==='Waste'} onChange={changeMode}/>
+                            <p className={`${currentMode === 'Waste' ? 'font-bold underline' : ''}`}>Déchets</p>     
+                        </div>
                     </div>
                     <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
                         <thead>
@@ -126,7 +163,7 @@ const History = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {ordersMap}
+                            {currentMode === 'Order' ? ordersMap : wastesMap}
                         </tbody>
                     </table>
                 </div>

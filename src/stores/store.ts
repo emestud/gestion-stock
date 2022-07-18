@@ -276,8 +276,6 @@ class Store {
                 this.order.id = order[0].id;
 
                 for (let item of this.order.items) {
-                    
-                    console.log(item)
 
                     if (item.quantity[1] > 0) {
                         let orderItem:{[k: string]: any} = { /*{[k: string]: any} is required to dynamically ad a field to the object */
@@ -379,6 +377,8 @@ class Store {
      */
     async setOrder(orderID: string, originalOrder: boolean) {
 
+        let tableDBName = (this.orderMode === 'Order') ? 'order' : 'waste';
+
         if (originalOrder) {
             await this.resetOrder();
             this.order.id = orderID;
@@ -389,7 +389,7 @@ class Store {
         // TODO updated restaurant info
 
         let {data: items} = await supabase
-            .from('order-item-container')
+            .from(`${tableDBName}-item-container`)
             .select(`  
                 quantity, 
                 item:item_id(
@@ -402,8 +402,10 @@ class Store {
                     name
                 )
             `)
-            .eq('order_id', orderID);
-        
+            .eq(`${tableDBName}_id`, orderID);
+                    
+        //console.log(items)            
+
         if (items !== null) {
             for (const item of items) {
 

@@ -34,8 +34,7 @@ const getBadgeColor = (status: Status) => {
 
 const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:any) => {
     
-    const [restaurantName, setRestaurantName] = useState("")
-    const [restaurantAddress, setRestaurantAdress] = useState("")
+    const [restaurantName, setRestaurantName] = useState("");
 
     useEffect(()=>{
         (async () => {
@@ -43,7 +42,6 @@ const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:a
             
             if (tmp !== null) {
                 setRestaurantName(tmp[0].name);
-                setRestaurantAdress(tmp[0].address)
             }
         })();
     }, [])
