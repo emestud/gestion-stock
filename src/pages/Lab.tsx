@@ -27,6 +27,7 @@ const Lab = () => {
   let [orderIDs, setOrderIDs]:any = useState([]);
 
   let [isDelivered, setIsDelivered]:any = useState(false);
+  let [isPrepared, setIsPrepared]:any = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -36,7 +37,7 @@ const Lab = () => {
       const orders = await store.orderStore.getModifiedOrders(originalOrders);
 
       for (const order of orders) {
-        setOrderIDs([...orderIDs, order[1].id]);
+        setOrderIDs([...orderIDs, [order[0].id, order[1].id]]);
         if (order[1].status === 'Delivered') { // if one order has already been delivered, it means that the other orders are being delivered or already delivered
           setIsDelivered(true);
         }
@@ -148,8 +149,10 @@ const Lab = () => {
    */
   const confirmOrder = () => {
     store.cancelItems(itemsToCancel);
+    setIsPrepared(true);
     for (const order of orderIDs) {
-      store.updateOrderStatus("Prepared", order);
+      store.updateOrderStatus("Prepared", order[0]); // original order
+      store.updateOrderStatus("Prepared", order[1]); // modified order
     }
   }
 
@@ -168,7 +171,10 @@ const Lab = () => {
         {isDelivered ?
           <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >La commandes a été livrée</button>
           :
-          <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={confirmOrder} >Valider la commande</button>
+            isPrepared ? 
+              <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Commande Validée</button>
+              :
+              <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={confirmOrder} >Valider la commande</button>
         }
       </>)}
     </div>

@@ -27,6 +27,9 @@ export class OrderStore {
         if (lastModification !== null && lastModification.length > 0) {
           lastModificationOrder = lastModification[0];
         }
+        else {
+          lastModificationOrder = originalOrder
+        }
 
       }
     return [originalOrder, lastModificationOrder];
