@@ -15,10 +15,10 @@ const OrderButton = (props:any) => {
 
         
         if (store.order.id === ""){ // order has not been sent yet
-            await store.sendOrder();
+            await store.sendOrder(store.orderMode);
         }
         else {
-            await store.modifyOrder();
+            await store.modifyOrder(store.orderMode);
         }
     }
 

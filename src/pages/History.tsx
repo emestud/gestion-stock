@@ -76,14 +76,29 @@ const History = () => {
         else {
             navigate('/order', {
                 state: {
-                    order_id: currentActiveTabID // needed so we can later fetch all the orders for a given date
+                    order_id: currentActiveTabID, // needed so we can later fetch all the orders for a given date
+                    mode: 'Order'
                 }
             }) 
         }
     }   
 
     const newOrder = () => {
-        navigate('/order')
+        navigate('/order', {
+            state: {
+                order_id: '',
+                mode: 'Order'
+            }
+        })
+    }
+
+    const newWaste = () => {
+        navigate('/order', {
+            state: {
+                order_id: '',
+                mode: 'Waste'
+            }
+        })
     }
 
     return (
@@ -94,9 +109,14 @@ const History = () => {
             (<>
                 <div>
                     <h1 className="text-2xl text-center mb-8">Historique</h1>
-                    <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
-                        Nouvelle commande
-                    </button>
+                    <div>
+                        <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                            Nouvelle commande
+                        </button>
+                        <button onClick={newWaste} className={`btn btn-sm btn-secondary m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                            Déclarer pertes
+                        </button>
+                    </div>
                     <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
                         <thead>
                             <tr>

@@ -9,7 +9,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
 import GoBack from '../components/Misc/GoBack'
-import { proxyPrint } from '../utils'
 
 const Order = () => {
 
@@ -34,7 +33,9 @@ const Order = () => {
         }
     }, [])
 
-    if (location.state !== null) {
+    store.orderMode = location.state.mode;
+
+    if (location.state !== null && location.state.order_id != "") {
         useEffect(()=>{
             (async function awaitSetOrder() {
 
@@ -98,7 +99,7 @@ const Order = () => {
                     <div className="w-10/12 max-w-4xl p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
                         <input type="date" className="w-fit" value={date} onChange={updateDate}></input>
                         <p>|</p>
-                        <p className="">{store.restaurant.name}</p>
+                        <p>{store.restaurant.name}</p>
                     </div>
                 </div>
                 {isEditable ? 

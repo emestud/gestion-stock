@@ -7,7 +7,7 @@ import { Item } from "../types";
 import Category from "../components/Lab/Category";
 
 import Spinner from "../components/Misc/Spinner";
-import { itemIsInArray, proxyPrint } from "../utils";
+import { itemIsInArray } from "../utils";
 
 const Lab = () => {
 
@@ -152,7 +152,7 @@ const Lab = () => {
     setIsPrepared(true);
     for (const order of orderIDs) {
       store.updateOrderStatus("Prepared", order[0]); // original order
-      store.updateOrderStatus("Prepared", order[1]); // modified order
+      store.updateOrderStatus("Prepared", order[1]); // modified order  
     }
   }
 

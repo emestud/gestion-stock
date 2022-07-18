@@ -21,6 +21,7 @@ class Store {
         restaurant_id: ""
     };
 
+    orderMode: "Order" | "Waste" = "Order";
 
     isLoggedIn = false;
 
@@ -250,16 +251,20 @@ class Store {
     /**
      * This function sends the order to the database
      */
-    async sendOrder() {
+    async sendOrder(mode: string = "Order") {
+        
+        let mainDBTable = mode === 'Order' ? 'order' : 'waste';
+        let secondaryDBTable = mode === 'Order' ? 'order-item-container' : 'waste-item-container'; 
+        
         const { data: order } = await supabase
-            .from('order')
+            .from(mainDBTable)
             .insert([
                 {
                     created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
                     restaurant_id: this.restaurant.id,
                     created_by: this.user.id,
                     comment: this.order.comment,
-                    status: "Ordered"
+                    status: mode === 'Order' ? "Ordered" :  null
                 },
             ]);
 
@@ -272,28 +277,36 @@ class Store {
 
                 for (let item of this.order.items) {
                     
+                    console.log(item)
+
                     if (item.quantity[1] > 0) {
-                        let orderItem = {
-                            canceled_by_lab: false,
+                        let orderItem:{[k: string]: any} = { /*{[k: string]: any} is required to dynamically ad a field to the object */
                             item_id: item.id,
                             container_id: item.container[1].id,
-                            order_id: order[0].id,
                             quantity: item.quantity[1],
                             priority: item.priority
                         };
+
+                        if (mode === 'Order') {
+                            orderItem.canceled_by_lab = false;
+                            orderItem.order_id = order[0].id;
+                        }
+                        else {
+                            orderItem.waste_id = order[0].id;
+                        }
 
                         orderArray.push(orderItem);
                     }
                 }
 
-                const { data, error } = await supabase
-                    .from('order-item-container')
+                /*const { data, error } = await supabase
+                    .from(secondaryDBTable)
                     .delete()
-                    .eq('order_id', this.order.id);
+                    .eq('order_id', this.order.id); */
 
                 // sending everything in one request
                 const { data:orderItems } = await supabase
-                    .from('order-item-container')
+                    .from(secondaryDBTable)
                     .insert(orderArray);
 
             }
@@ -302,7 +315,7 @@ class Store {
     /**
      * This function modifies the order in the database
      */
-    async modifyOrder() {
+    async modifyOrder(mode: string = "Order") {
         
         const { data: order } = await supabase
             .from('order')
