@@ -97,7 +97,7 @@ const Order = () => {
                 <div className='w-full flex items-center justify-around max-w-screen-md'>
                     <GoBack />
                     <div className="w-10/12 max-w-4xl p-2 rounded-lg flex gap-2 font-bold text-xl justify-center items-center border-2 border-solid border-black">
-                        <input type="date" className="w-fit" value={date} onChange={updateDate}></input>
+                        <input type="date" className="w-fit" value={date} onChange={updateDate} disabled={isOrdered || !isEditable}></input>
                         <p>|</p>
                         <p>{store.restaurant.name}</p>
                     </div>
@@ -106,7 +106,11 @@ const Order = () => {
                     isOrdered ? 
                         <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />
                     :
-                    <div className='btn btn-disabled'>La commande a été praparée</div>
+                    <div className='btn btn-disabled'>
+                        {
+                        location.state.mode==="Order" ? "La commande a été praparée" : "Cette page ne peut pas être modifiée"
+                        }
+                    </div>
                 }
                 <ol className="w-11/12 max-w-screen-md flex flex-col gap-8">
                     {listCategory}
