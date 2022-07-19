@@ -139,12 +139,12 @@ const History = () => {
             (<>
                 <div>
                     <h1 className="text-2xl text-center mb-8">Historique</h1>
-                    <div className="flex justify-between items-center px-4">
+                    <div className={`flex justify-between items-center px-4 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
                         <div>
-                            <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''} ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                            <button onClick={newOrder} className="btn btn-sm btn-accent m-2 lg:ml-8">
                                 Nouvelle commande
                             </button>
-                            <button onClick={newWaste} className={`btn btn-sm btn-secondary m-2 lg:ml-8 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
+                            <button onClick={newWaste} className="btn btn-sm btn-secondary m-2 lg:ml-8">
                                 Déclarer pertes
                             </button>
                         </div>
