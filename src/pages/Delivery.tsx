@@ -61,7 +61,13 @@ const Delivery = () => {
             let orders:Array<any> = [];
 
             for (const originalOrder of originalOrders) {
-                orders.push(await getLastModificationOfOrder(originalOrder.id));
+                let tmp = await getLastModificationOfOrder(originalOrder.id)
+                if (tmp == null) { // order has no modification
+                    orders.push(originalOrder);
+                }
+                else {
+                    orders.push(tmp);
+                }
             }
             const orderItemsTmp = await store.orderStore.prepareOrders(orders);
 

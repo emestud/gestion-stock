@@ -10,10 +10,8 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
 
     useEffect(()=>{
         (async ()=>{
-            let {data: order, error} = await store.orderStore.getOrder(orderID);
-            console.log(order)
-            if (order !== null && order !== undefined) {
-                console.log(order)  
+            let order = await store.orderStore.getOrder(orderID);
+            if (order !== null && order !== undefined) { 
                 setIsDelivered(order[0].status === 'Delivered');
             }
         })();
