@@ -104,7 +104,7 @@ const Order = () => {
                 </div>
                 {isEditable ? 
                     isOrdered ? 
-                        <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} />
+                        <ModifyButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} mode={location.state.mode} /> : <OrderButton isOrdered={isOrdered} setIsOrdered={setIsOrdered} mode={location.state.mode} />
                     :
                     <div className='btn btn-disabled'>
                         {

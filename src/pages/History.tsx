@@ -138,7 +138,7 @@ const History = () => {
                         <div className="flex gap-4">
                             <p className={`${currentMode === 'Order' ? 'font-bold underline' : ''}`}>Commandes</p>
                             <input type="checkbox" className="toggle" checked={currentMode==='Waste'} onChange={changeMode}/>
-                            <p className={`${currentMode === 'Waste' ? 'font-bold underline' : ''}`}>Déchets</p>     
+                            <p className={`${currentMode === 'Waste' ? 'font-bold underline' : ''}`}>Pertes</p>     
                         </div>
                     </div>
                     <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">

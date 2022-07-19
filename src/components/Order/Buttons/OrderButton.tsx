@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import store from "../../../stores/store"
 
 const OrderButton = (props:any) => {
 
-    let {isOrdered, setIsOrdered} = props;
+    let {isOrdered, setIsOrdered, mode} = props;
+
+    let navigate = useNavigate();
 
     const sendOrder = async () => {
 
@@ -20,12 +23,14 @@ const OrderButton = (props:any) => {
         else {
             await store.modifyOrder(store.orderMode);
         }
+        
+        navigate('/');
     }
 
     return (
         <button className="sticky top-[3%] sm:top-[2.5%] flex text-white justify-center ml-24 md:m-auto p-0 w-8/12 h-fit m-auto text-xl btn md:w-2/3 lg:w-1/2 max-w-2xl"
                 onClick={sendOrder}>
-            Valider la commande
+            Valider {mode === 'Order' ? 'la commande' : 'les pertes'}
         </button>
     );
 
