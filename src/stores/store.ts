@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {supabase} from "../supabaseClient";
+import {sendOrders, sendWastes, supabase} from "../databaseClient";
 import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
 import { proxyPrint } from "../utils";
 import {OrderStore} from "./order-store";
@@ -233,8 +233,6 @@ class Store {
      */
     updateOrder(id:string, name: string, quantity: number, container: Container, priority: number) {
 
-        let hasUpdated: boolean = false;
-
         console.log(`${name}: ${quantity} ${container.name}`);
 
         this.order.items.forEach((item: OrderItem)=>{
@@ -242,7 +240,6 @@ class Store {
                 item.container[1].name = container.name,
                 item.container[1].id = container.id,
                 item.quantity[1] = quantity
-                hasUpdated = true
             }
         });
 
@@ -256,58 +253,71 @@ class Store {
         let mainDBTable = mode === 'Order' ? 'order' : 'waste';
         let secondaryDBTable = mode === 'Order' ? 'order-item-container' : 'waste-item-container'; 
         
-        const { data: order } = await supabase
-            .from(mainDBTable)
-            .insert([
+        let order = null;
+
+        if (mode === "Order") {
+            order = await sendOrders([
                 {
                     created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
                     restaurant_id: this.restaurant.id,
                     created_by: this.user.id,
                     comment: this.order.comment,
-                    status: mode === 'Order' ? "Ordered" :  null
+                    status: "Ordered"
                 },
-            ]);
+            ])
+        }
+        else {
+            order = await sendWastes([
+                {
+                    created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
+                    restaurant_id: this.restaurant.id,
+                    created_by: this.user.id,
+                    comment: this.order.comment,
+                    status: null
+                },
+            ])
+        }
 
-            let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
+        let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
 
-            if (order !== null && order.length > 0)
-            {
+        if (order !== null && order.length > 0)
+        {
 
-                this.order.id = order[0].id;
+            this.order.id = order[0].id;
 
-                for (let item of this.order.items) {
+            for (let item of this.order.items) {
 
-                    if (item.quantity[1] > 0) {
-                        let orderItem:{[k: string]: any} = { /*{[k: string]: any} is required to dynamically ad a field to the object */
-                            item_id: item.id,
-                            container_id: item.container[1].id,
-                            quantity: item.quantity[1],
-                            priority: item.priority
-                        };
+                if (item.quantity[1] > 0) {
+                    let orderItem:{[k: string]: any} = { /*{[k: string]: any} is required to dynamically ad a field to the object */
+                        item_id: item.id,
+                        container_id: item.container[1].id,
+                         quantity: item.quantity[1],
+                        priority: item.priority
+                    };
 
-                        if (mode === 'Order') {
-                            orderItem.canceled_by_lab = false;
-                            orderItem.order_id = order[0].id;
-                        }
-                        else {
-                            orderItem.waste_id = order[0].id;
-                        }
-
-                        orderArray.push(orderItem);
+                    if (mode === 'Order') {
+                        orderItem.canceled_by_lab = false;
+                        orderItem.order_id = order[0].id;
                     }
+                     else {
+                         orderItem.waste_id = order[0].id;
+                    }
+
+                    orderArray.push(orderItem);
                 }
-
-                /*const { data, error } = await supabase
-                    .from(secondaryDBTable)
-                    .delete()
-                    .eq('order_id', this.order.id); */
-
-                // sending everything in one request
-                const { data:orderItems } = await supabase
-                    .from(secondaryDBTable)
-                    .insert(orderArray);
-
             }
+
+            /*const { data, error } = await supabase
+                .from(secondaryDBTable)
+                .delete()
+                .eq('order_id', this.order.id); */
+
+            // sending everything in one request
+            const { data:orderItems } = await supabase
+                .from(secondaryDBTable)
+                .insert(orderArray);
+
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom";
-import { logIn } from "../../supabaseClient"
+import { logIn } from "../../databaseClient"
 
 const LogInModal = ({ setLogIn }:any) => {
 

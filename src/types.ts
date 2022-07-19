@@ -30,7 +30,7 @@ export type User = {
   restaurant_id: string
 };
 
-export type Status = "On order" | "Ordered" | "Prepared" | "Delivered" | "Received";
+export type Status = "On order" | "Ordered" | "Prepared" | "Delivered" | "Received" | null;
 
 type Role = "Admin" | "Manager" | "Labo" | "Livreur" | "Anon";
 
@@ -47,7 +47,7 @@ export type Order = {
   status: Status,
   comment: string
   created_at: string,
-  restaurant_id: string
+  restaurant_id: string,
 };
 
 export type OrderItem = {

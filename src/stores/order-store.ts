@@ -1,32 +1,30 @@
-import {supabase} from "../supabaseClient";
-import { proxyPrint } from "../utils";
+import { supabase, getOrderByID, getWasteByID, getLastModificationOfOrder, 
+        getOrdersByDate, getAllOriginalOrders, getWastesByDate, getAllWastes } from "../databaseClient";
 
 export class OrderStore {
 
-  /**
+    /**
      * This function fetchs an returns an order from the DB
      * @param orderID number representing the order ID
      */
    async getOrder(orderID: string, mode: string = "Order"){
 
-      const tableDBName = (mode === 'Order') ? 'order' : 'waste'
+      let order = null;
+      let lastModification = null;
 
-      let {data: order} = await supabase
-        .from(tableDBName)
-        .select('*')
-        .eq('id', orderID);
+      if (mode === "Order") {
+        order = await getOrderByID(orderID);
+        lastModification = await getLastModificationOfOrder(orderID);
+      }
+      else {
+        order = await getWasteByID(orderID);
+      }
 
-      let {data: lastModification} = await supabase
-        .from(tableDBName)
-        .select('*')
-        .eq('original_order', orderID)
-        .eq('isLastModifiedOrder', true);
+      let originalOrder = null;
+      let lastModificationOrder = null;
 
-      let originalOrder = undefined;
-      let lastModificationOrder = undefined;
-
-      if (order !== null && order.length > 0) {
-        originalOrder = order[0];
+      if (order !== null) {
+        originalOrder = order;
         if (lastModification !== null && lastModification.length > 0) {
           lastModificationOrder = lastModification[0];
         }
@@ -35,34 +33,28 @@ export class OrderStore {
         }
 
       }
-
-    return [originalOrder, lastModificationOrder];
-  }
+      return [originalOrder, lastModificationOrder];
+    }
 
   public async getOrders(date: string | null) {
     const orders = new Array();
 
     try {
       let data: any;
-      let error: any;
       if (date !== null) {
-        let {data: dataTmp, error: errorTmp} = await supabase
-          .from("order")
-          .select("*")
-          .eq('created_at', date)
-          .is('original_order', null);
 
-          data = dataTmp;
-          error = errorTmp;
+          let orders = await getOrdersByDate(date);
+          
+          if (orders !== null) {
+            orders.filter((order)=>{
+              return order.original_order === null;
+            })
+          }
+
+          data = orders;
       }
       else {
-        let {data: dataTmp, error: errorTmp} = await supabase
-          .from("order")
-          .select("*")
-          .is('original_order', null);
-
-          data = dataTmp;
-          error = errorTmp;
+          data = await getAllOriginalOrders();
       }
 
       if (data?.length !== 0 && data !== null) {
@@ -86,25 +78,11 @@ export class OrderStore {
 
     try {
       let data: any;
-      let error: any;
       if (date !== null) {
-        let {data: dataTmp, error: errorTmp} = await supabase
-          .from("waste")
-          .select("*")
-          .eq('created_at', date)
-          .is('original_order', null);
-
-          data = dataTmp;
-          error = errorTmp;
+          data = await getWastesByDate(date);
       }
       else {
-        let {data: dataTmp, error: errorTmp} = await supabase
-          .from("waste")
-          .select("*")
-          .is('original_order', null);
-
-          data = dataTmp;
-          error = errorTmp;
+          data = await getAllWastes();
       }
 
       if (data?.length !== 0 && data !== null) {
@@ -118,6 +96,7 @@ export class OrderStore {
     } catch (err) {
       console.log(err);
     }
+
     return wastes;
   }
 
@@ -126,12 +105,9 @@ export class OrderStore {
     let ordersTuples:Array<any> = [];
 
     for (const order of orders) {
-      const {data: modifiedOrder} = await supabase
-        .from('order')
-        .select('*')
-        .eq('isLastModifiedOrder', true)
-        .eq('original_order', order.id);
-      
+
+      let modifiedOrder = await getLastModificationOfOrder(order.id);
+
       if (modifiedOrder === null || modifiedOrder.length === 0) {
         ordersTuples.push([order, order]); // we push the exact same order if the order hasnt been modified
       }
