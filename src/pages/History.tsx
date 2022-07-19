@@ -46,7 +46,7 @@ const History = () => {
 
             let today = new Date();
             let todayFormated = today.toLocaleDateString('en-CA');
-            if (order.restaurant_id === store.user.restaurant_id && todayFormated === order.created_at) {
+            if ((order.restaurant_id === store.user.restaurant_id && todayFormated === order.created_at)) {
                 setOrderAlreadyExists(true);
                 return;
             }
@@ -157,7 +157,7 @@ const History = () => {
                     <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
                         <thead>
                             <tr>
-                                <th className="absolute">Date</th>
+                                <th className="absolute" style={{position: "static"}}>Date</th>
                                 <th>Restaurant</th>
                                 <th>Statut</th>
                             </tr>

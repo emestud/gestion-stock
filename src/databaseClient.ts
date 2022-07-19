@@ -88,7 +88,7 @@ export const getLastModificationOfOrder = async (originalOrderID: string) => {
         .eq('original_order', originalOrderID)
         .eq('isLastModifiedOrder', true);
 
-    if (lastModification !== null) {
+    if (lastModification !== null && lastModification.length>0) {
         return lastModification[0];
     }
     else return null;
@@ -140,7 +140,7 @@ export const getAllWastes = async () => {
 
 export const sendWastes = async (wastes: Array<any>) => {
     const {data, error} = await supabase
-        .from('order')
+        .from('waste')
         .insert(wastes);
     
     return data

@@ -36,6 +36,7 @@ const Lab = () => {
       const originalOrders = await store.orderStore.getOrders(ordersDate);
       const orders = await store.orderStore.getModifiedOrders(originalOrders);
 
+      
       for (const order of orders) {
         setOrderIDs([...orderIDs, [order[0].id, order[1].id]]);
         if (order[1].status === 'Delivered') { // if one order has already been delivered, it means that the other orders are being delivered or already delivered

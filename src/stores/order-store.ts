@@ -25,8 +25,8 @@ export class OrderStore {
 
       if (order !== null) {
         originalOrder = order;
-        if (lastModification !== null && lastModification.length > 0) {
-          lastModificationOrder = lastModification[0];
+        if (lastModification !== null) {
+          lastModificationOrder = lastModification;
         }
         else {
           lastModificationOrder = originalOrder
@@ -46,11 +46,10 @@ export class OrderStore {
           let orders = await getOrdersByDate(date);
           
           if (orders !== null) {
-            orders.filter((order)=>{
+            orders = orders.filter((order)=>{
               return order.original_order === null;
             })
           }
-
           data = orders;
       }
       else {
@@ -112,7 +111,7 @@ export class OrderStore {
         ordersTuples.push([order, order]); // we push the exact same order if the order hasnt been modified
       }
       else {
-        ordersTuples.push([order, modifiedOrder[0]]);
+        ordersTuples.push([order, modifiedOrder]);
       }
 
     }    
@@ -120,6 +119,7 @@ export class OrderStore {
   }
 
   public async prepareOrders(orders: any[]) {
+
     const orderItems = new Array();
 
     for (const order of orders) {

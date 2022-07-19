@@ -7,6 +7,8 @@ import { Item } from "../types";
 import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
 import Spinner from "../components/Misc/Spinner";
+import { getLastModificationOfOrder } from "../databaseClient";
+import { proxyPrint } from "../utils";
 
 const sortItemsByRestaurant = (orderItems:any) => {
     
@@ -54,10 +56,18 @@ const Delivery = () => {
 
     useEffect(() => {
         (async () => {
-          const orders = await store.orderStore.getOrders(ordersDate);
-          const orderItemsTmp = await store.orderStore.prepareOrders(orders);
-          setOrderItems(orderItemsTmp);
-          setDataLoading(false);
+            const originalOrders = await store.orderStore.getOrders(ordersDate);
+
+            let orders:Array<any> = [];
+
+            for (const originalOrder of originalOrders) {
+                orders.push(await getLastModificationOfOrder(originalOrder.id));
+            }
+            const orderItemsTmp = await store.orderStore.prepareOrders(orders);
+
+            setOrderItems(orderItemsTmp);
+            setDataLoading(false);
+            console.log(orderItems)
         })();
       }, []);
 

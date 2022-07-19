@@ -413,7 +413,6 @@ class Store {
                 )
             `)
             .eq(`${tableDBName}_id`, orderID);
-                            
 
         if (items !== null) {
             for (const item of items) {
