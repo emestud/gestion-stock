@@ -51,11 +51,11 @@ const Item = ({items, addItemToCancel}:any) => {
                     items.quantities[1].map((quantity:any, index:number)=>
                         <>
                             <td className={`${quantityBgDiffColor(items.quantities[0], items.quantities[1], index)} 
-                                            text-center select-none px-0 ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}
-                                        >{quantity.quantity}</td>
+                                            text-center select-none px-0`}
+                                        >{quantity.quantity  !== 0 ? quantity.quantity : ''}</td>
                             <td className={`${containerBgDiffColor(items.containers[0], items.containers[1], index)} 
-                                            text-center select-none px-0 ${quantity.quantity === 0 ? 'line-through brightness-75':''}`}
-                                        >{items.containers[1][index].container}</td>
+                                            text-center select-none px-0`}
+                                        >{items.containers[1][index].container !== 'Aucun' ? items.containers[1][index].container  : '' }</td>
                         </>
                 )}
                 <td><input type="checkbox" className="checkbox" onChange={()=>cancelItems()} checked={isCanceled}/></td>

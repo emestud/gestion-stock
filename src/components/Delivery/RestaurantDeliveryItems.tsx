@@ -34,12 +34,14 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
                     itemsSortedByCategory.map((category:any)=>
                         <li key={category.categoryName} className="card card-bordered p-2 bg-slate-100">
                             <h2 className="card-title">{category[0].itemCategory}</h2>
-                            <ol className="card-body flex flex-col">
+                            <ol className="card-body flex flex-col px-0 py-4">
                                 {
                                     category.map((item:any)=>
-                                        <p className="select-none">
-                                            {`${item.itemName} - ${item.quantity} - ${item.containerName}`}
-                                        </p>
+                                        <div className="flex select-none gap-1">
+                                            <p className="w-5/12 truncate">{item.itemName}</p>
+                                            <p className="w-2/12 truncate">{item.quantity}</p>
+                                            <p className="w-5/12 truncate">{item.containerName}</p>
+                                        </div>
                                     )
                                 }
                             </ol>
