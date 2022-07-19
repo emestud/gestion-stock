@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import store from "../../stores/store"
 
-const WasteHistory = ({date, restaurant_id, isActive, updateActiveTab}:any) => {
+const WasteHistory = ({date, restaurant_id, openWaste}:any) => {
     
     const [restaurantName, setRestaurantName] = useState("");
 
@@ -17,7 +17,7 @@ const WasteHistory = ({date, restaurant_id, isActive, updateActiveTab}:any) => {
 
 
     return (
-        <tr className={`${isActive ? 'active' : ''}`} onClick={updateActiveTab}>
+        <tr onClick={openWaste}>
             <td className="select-none">{date}</td>
             <td className="select-none">{restaurantName}</td>
             <td className={`badge badge-ghost} badge-outline select-none`}>---</td>

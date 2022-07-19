@@ -32,7 +32,7 @@ const getBadgeColor = (status: Status) => {
 
 }
 
-const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:any) => {
+const OrderHistory = ({date, restaurant_id, status, openOrder}:any) => {
     
     const [restaurantName, setRestaurantName] = useState("");
 
@@ -48,7 +48,7 @@ const OrderHistory = ({date, restaurant_id, status, isActive, updateActiveTab}:a
 
 
     return (
-        <tr className={`${isActive ? 'active' : ''}`} onClick={updateActiveTab}>
+        <tr onClick={openOrder}>
             <td className="select-none">{date}</td>
             <td className="select-none">{restaurantName}</td>
             <td className={`badge badge-${getBadgeColor(status)} badge-outline select-none`}>{getStatusText(status)}</td>

@@ -16,9 +16,6 @@ const History = () => {
     const [orders, setOrders]:any = useState([]);
     const [wastes, setWastes]:any = useState([]);
 
-    const [currentActiveTabID, setCurrentActiveTabID]:any = useState("");
-    const [currentActiveTabDate, setCurrentActiveTabDate]: any = useState("");
-
     // this variable is true if an order has already been created for a restaurant on the current date
     const [orderAlreadyExists, setOrderAlreadyExists]: any = useState(false);
     const [dataLoading, setDataLoading]: any = useState(true);
@@ -66,47 +63,37 @@ const History = () => {
     }, []);
     
 
-
-    const updateActiveTab = (orderID: string, orderDate: string, event: any) => {
-        setCurrentActiveTabID(orderID);
-        setCurrentActiveTabDate(orderDate)
-
-        if (event.detail >= 2) {
-            openOrder()
-        }
-    };
-
     const ordersMap = orders.map((order:Order)=>
-        <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={order.status} key={order.id} isActive={order.id===currentActiveTabID}
-                    updateActiveTab={(event: any)=>updateActiveTab(order.id, order.created_at, event)}
+        <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={order.status} key={order.id}
+                        openOrder={()=>openOrder(order.id, order.created_at)}
             />
     );
 
     const wastesMap = wastes.map((waste:any)=>
-        <WasteHistory date={waste.created_at} restaurant_id={waste.restaurant_id} key={waste.id} isActive={waste.id===currentActiveTabID}
-                      updateActiveTab={(event: any)=>updateActiveTab(waste.id, waste.created_at, event)}
+        <WasteHistory date={waste.created_at} restaurant_id={waste.restaurant_id} key={waste.id}
+                        openWaste={()=>openOrder(waste.id, waste.created_at)}
         />
     )
 
-    const openOrder = () => {
+    const openOrder = (orderID: string, orderDate:string) => {
         if (store.user.role === 'Labo') {
             navigate('/lab', {
                 state: {
-                    date: currentActiveTabDate // needed so we can later fetch all the orders for a given date
+                    date: orderDate // needed so we can later fetch all the orders for a given date
                 }
             }) 
         }
         else if (store.user.role === 'Livreur') {
             navigate('/delivery', {
                 state: {
-                    date: currentActiveTabDate // needed so we can later fetch all the orders for a given date
+                    date: orderDate// needed so we can later fetch all the orders for a given date
                 }
             }) 
         }
         else {
             navigate('/order', {
                 state: {
-                    order_id: currentActiveTabID, // needed so we can later fetch all the orders for a given date
+                    order_id: orderID,// needed so we can later fetch all the orders for a given date
                     mode: currentMode
                 }
             }) 
@@ -167,10 +154,6 @@ const History = () => {
                         </tbody>
                     </table>
                 </div>
-                <button className={`fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary ${currentActiveTabID==="" ? 'btn-disabled':''}`} 
-                        onClick={openOrder}>
-                    Ouvrir
-                </button>  
             </>)}
         </div>
     );
