@@ -1,5 +1,6 @@
 import { supabase, getOrderByID, getWasteByID, getLastModificationOfOrder, 
-        getOrdersByDate, getAllOriginalOrders, getWastesByDate, getAllWastes } from "../databaseClient";
+        getOrdersByDate, getAllOriginalOrders, getWastesByDate, getAllWastes, getRestaurantData, get3TupleFromOrder, getContainerNameByID, getItemByID } from "../databaseClient";
+import { Item } from "../types";
 
 export class OrderStore {
 
@@ -123,20 +124,13 @@ export class OrderStore {
     const orderItems = new Array();
 
     for (const order of orders) {
-      let {data: products} = await supabase
-        .from("order-item-container")
-        .select("*")
-        .eq("order_id", order.id);
-        //.eq("canceled_by_lab", false);
+      let products = await get3TupleFromOrder(order.id);
 
-      let {data: restaurant} = await supabase
-        .from("restaurant")
-        .select("name, address")
-        .eq("id", order.restaurant_id);
+      let restaurant = await getRestaurantData(order.restaurant_id);
 
       orderItems.push({
         items: products,
-        restaurant: (restaurant !== null) ? restaurant[0] : {},
+        restaurant: (restaurant !== null) ? restaurant : {},
       });
 
     }
@@ -145,25 +139,20 @@ export class OrderStore {
 
     for (const orderItem of orderItems) {
       for (const item of orderItem.items) {
-        let {data: container} = await supabase
-          .from("container")
-          .select("name")
-          .eq("id", item.container_id);
 
-        let {data: itemFromDB} = await supabase
-          .from("item")
-          .select("name, category, priority")
-          .eq("id", item.item_id);
+        let container: string = await getContainerNameByID(item.container_id);
+        
+        let itemFromDB = await getItemByID(item.item_id);
 
         if (container !== null && itemFromDB != null) {
           let newItem = {
             id: item.id,
             orderID: item.order_id,
             restaurant_name: orderItem.restaurant.name,
-            itemName: itemFromDB[0].name,
-            itemCategory: itemFromDB[0].category,
-            priority: itemFromDB[0].priority,
-            containerName: container[0].name,
+            itemName: itemFromDB.name,
+            itemCategory: itemFromDB.category,
+            priority: itemFromDB.priority,
+            containerName: container,
             quantity: item.quantity,
             canceled_by_lab: item.canceled_by_lab,
           };

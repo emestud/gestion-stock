@@ -191,6 +191,18 @@ export const getItemsWithContainer = async () => {
     return items;
 }
 
+export const getItemByID = async (itemID: string) => {
+    let {data: itemFromDB} = await supabase
+    .from("item")
+    .select("*")
+    .eq("id", itemID);
+
+    if (itemFromDB !== null && itemFromDB.length>0) {
+        return itemFromDB[0];
+    }
+
+}
+
 export const getItemCategories = async () => {
 
     let tmp:Array<string> = [];
@@ -219,6 +231,18 @@ export const getContainers = async () => {
         .select('*');
     
     return containers
+}
+
+export const getContainerNameByID = async (containerID: string) => {
+    let {data: container} = await supabase
+        .from("container")
+        .select("name")
+        .eq("id", containerID);
+    
+        if (container !== null && container.length > 0) {
+            return container[0].name;
+        }
+        else return "";
 }
 
 export const getContainerCategories = async () => {
@@ -251,6 +275,17 @@ export const sendOrderItems = async (itemsArray: Array<any>) => {
         .insert(itemsArray);
     
         return orderItems;
+}
+
+export const get3TupleFromOrder = async (orderID: string) => {
+    let {data: products} = await supabase
+        .from("order-item-container")
+        .select("*")
+        .eq("order_id", orderID);
+    
+    if (products !== null)
+        return products;
+    else return [];
 }
 
 export const getItemsFromOrder = async (orderID: string) => {
