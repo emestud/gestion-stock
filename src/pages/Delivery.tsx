@@ -73,7 +73,6 @@ const Delivery = () => {
 
             setOrderItems(orderItemsTmp);
             setDataLoading(false);
-            console.log(orderItems)
         })();
       }, []);
 

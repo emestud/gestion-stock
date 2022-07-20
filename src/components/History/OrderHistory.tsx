@@ -41,7 +41,7 @@ const OrderHistory = ({date, restaurant_id, status, openOrder}:any) => {
             let tmp:any = await store.getRestaurantData(restaurant_id);
             
             if (tmp !== null) {
-                setRestaurantName(tmp[0].name);
+                setRestaurantName(tmp.name);
             }
         })();
     }, [])

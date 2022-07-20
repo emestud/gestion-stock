@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
-import {sendOrders, sendWastes, supabase} from "../databaseClient";
+import {getContainerCategories, getContainers, getItemCategories, getItemsWithContainer, sendOrderItems, sendOrders, 
+        sendWasteItems, sendWastes, updateOldModificationsOfOrder, supabase, getItemsFromOrder, getItemsFromWaste, updateItemCancelStatus, updateOrderComment, updateOrderStatus, updateOrderDate, getRestaurantData, getRestaurantsName, logUserAuth} from "../databaseClient";
 import {Container, ContainerCategory, Item, ItemCategory, Order, OrderItem, Restaurant, Status, User} from "../types";
-import { proxyPrint } from "../utils";
 import {OrderStore} from "./order-store";
 
 
@@ -52,14 +52,8 @@ class Store {
      * This function initiates the orders, on the store creation, with two empty orders 
      */
     async initOrder() {
-        const {data: items} = await supabase
-            .from('item')
-            .select(`*,
-                container:default_container(
-                    id,
-                    name
-                )
-            `)
+        
+        const items = await getItemsWithContainer();
 
         this.order.items = [] // emptying the array, just in case
 
@@ -92,23 +86,15 @@ class Store {
     async addItems() {
 
         // Adding the items to the store
-        let { data: categories } = await supabase
-        .from('item')
-        .select('category');
+        let categories = await getItemCategories();
 
-        let { data: items } = await supabase
-            .from('item')
-            .select(`*,
-                container:default_container(
-                    id,
-                    name
-                )`);
+        let items = await getItemsWithContainer()
 
         let listCategories:Array<string> = [];
 
-        categories?.forEach((category:any)=>{
-        if (!listCategories.includes(category.category))
-            listCategories.push(category.category);
+        categories.forEach((category:any)=>{
+        if (!listCategories.includes(category))
+            listCategories.push(category);
         });
 
         for (const category of listCategories) {
@@ -156,20 +142,16 @@ class Store {
     async addContainers() {
 
         // Adding the containers to the store
-        let { data: categories } = await supabase
-        .from('container')
-        .select('category');
+        let categories = await getContainerCategories();
 
-        let { data: containers } = await supabase
-            .from('container')
-            .select('*');
+        let containers = await getContainers();
 
         let listCategories:Array<string> = [];
 
         if (categories !== null)
             for (const category of categories){
-                if (!listCategories.includes(category.category))
-                    listCategories.push(category.category);
+                if (!listCategories.includes(category))
+                    listCategories.push(category);
             }
 
         for (const category of listCategories) {
@@ -250,9 +232,6 @@ class Store {
      */
     async sendOrder(mode: string = "Order") {
         
-        let mainDBTable = mode === 'Order' ? 'order' : 'waste';
-        let secondaryDBTable = mode === 'Order' ? 'order-item-container' : 'waste-item-container'; 
-        
         let order = null;
 
         if (mode === "Order") {
@@ -277,7 +256,6 @@ class Store {
                 },
             ])
         }
-
         let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
 
         if (order !== null && order.length > 0)
@@ -286,8 +264,8 @@ class Store {
             this.order.id = order[0].id;
 
             for (let item of this.order.items) {
-
                 if (item.quantity[1] > 0) {
+                    
                     let orderItem:{[k: string]: any} = { /*{[k: string]: any} is required to dynamically ad a field to the object */
                         item_id: item.id,
                         container_id: item.container[1].id,
@@ -307,16 +285,13 @@ class Store {
                 }
             }
 
-            /*const { data, error } = await supabase
-                .from(secondaryDBTable)
-                .delete()
-                .eq('order_id', this.order.id); */
-
             // sending everything in one request
-            const { data:orderItems } = await supabase
-                .from(secondaryDBTable)
-                .insert(orderArray);
-
+            if (mode === 'Order') {
+                let orderItems = await sendOrderItems(orderArray);
+            }
+            else {
+                let wasteItems = await sendWasteItems(orderArray);
+            }
         }
     }
 
@@ -325,58 +300,50 @@ class Store {
      */
     async modifyOrder(mode: string = "Order") {
         
-        const { data: order } = await supabase
-            .from('order')
-            .insert([
-                {
-                    created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
-                    restaurant_id: this.restaurant.id,
-                    created_by: this.user.id,
-                    comment: this.order.comment,
-                    status: "Ordered",
-                    original_order: this.order.id,
-                    isLastModifiedOrder: true
-                },
-            ]);
-
-            let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
-
-            if (order !== null && order.length > 0)
+        const order = await sendOrders([
             {
+                created_at: new Date().toISOString(), // toISOString is needed to be able to send to supabase
+                restaurant_id: this.restaurant.id,
+                created_by: this.user.id,
+                comment: this.order.comment,
+                status: "Ordered",
+                original_order: this.order.id,
+                isLastModifiedOrder: true
+            },
+        ])
 
-                let originalOrderID: string = this.order.id;
-                let modifiedOrderID: string = order[0].id
+        let orderArray:Array<any> = []; // array containing the (order-item-containers) 3-tuple
 
-                for (let item of this.order.items) {
+        if (order !== null && order.length > 0)
+        {
+
+            let originalOrderID: string = this.order.id;
+            let modifiedOrderID: string = order[0].id
+
+            for (let item of this.order.items) {
                     
-                    if (item.quantity[1] === 0) {
-                        continue;
-                    }
-
-                    let orderItem = {
-                        canceled_by_lab: false,
-                        item_id: item.id,
-                        container_id: item.container[1].id,
-                        order_id: modifiedOrderID,
-                        quantity:item.quantity[1],
-                        priority: item.priority
-                    };
-
-                    orderArray.push(orderItem);
+                if (item.quantity[1] === 0) {
+                    continue;
                 }
 
-                const { data, error } = await supabase
-                    .from('order')
-                    .update({isLastModifiedOrder: false})
-                    .eq('original_order', originalOrderID)
-                    .neq('id', modifiedOrderID);
+                let orderItem = {
+                    canceled_by_lab: false,
+                    item_id: item.id,
+                    container_id: item.container[1].id,
+                    order_id: modifiedOrderID,
+                    quantity:item.quantity[1],
+                    priority: item.priority
+                };
 
-                // sending everything in one request
-                const { data:orderItems } = await supabase
-                    .from('order-item-container')
-                    .insert(orderArray);
-
+                orderArray.push(orderItem);
             }
+
+            await updateOldModificationsOfOrder(originalOrderID, modifiedOrderID);
+
+            // sending everything in one request
+            const orderItems = await sendOrderItems(orderArray);
+
+        }
 
     }
 
@@ -397,22 +364,16 @@ class Store {
         this.order.status = "Ordered";
         //this.order.created_at = "" // TODO set created_at
         // TODO updated restaurant info
+        
+        let items:Array<any> = [];
 
-        let {data: items} = await supabase
-            .from(`${tableDBName}-item-container`)
-            .select(`  
-                quantity, 
-                item:item_id(
-                    id,
-                    name,
-                    priority
-                ),
-                container: container_id(
-                    id,
-                    name
-                )
-            `)
-            .eq(`${tableDBName}_id`, orderID);
+        if (this.orderMode === 'Order') {
+            items = await getItemsFromOrder(orderID);
+        }
+        else {
+            items = await getItemsFromWaste(orderID)
+        }
+
 
         if (items !== null) {
             for (const item of items) {
@@ -487,10 +448,7 @@ class Store {
      */
     async cancelItems(itemsToCancel:Array<any>) {
         for (const item of itemsToCancel) {
-            const { data, error } = await supabase
-                .from('order-item-container')
-                .update({ canceled_by_lab: item[1] })
-                .eq('id', item[0]);
+            await updateItemCancelStatus(item[0], item[1]);
         }
     }
 
@@ -502,10 +460,7 @@ class Store {
         this.order.comment = comment;
 
         if (orderID !== "") {
-            let {data, error} = await supabase
-                .from('order')
-                .update({comment: comment})
-                .eq('id', orderID);
+            await updateOrderComment(orderID, comment);
         }
     }
 
@@ -518,10 +473,7 @@ class Store {
         this.order.status = status
 
         if (orderID !== "") {
-            let {data, error} = await supabase
-                .from('order')
-                .update({status: status})
-                .eq('id', orderID);
+            updateOrderStatus(orderID, status);
         }
     }
 
@@ -531,39 +483,22 @@ class Store {
      * @param date Date you want to change the order's "created_at" attribute to
      */
     async changeOrderDate(orderID: string, date:any) {
-        let {data} = await supabase
-            .from('order')
-            .update({created_at: date})
-            .eq('id', orderID);
+        if (orderID !== "") {
+            updateOrderDate(orderID, date);
+        }
     }
 
     /**
      * This function returns the restaurant name and adress given a restaurant ID 
      * @param restaurant_id the ID of the restaurant
      */
-    async getRestaurantData(restaurant_id: string) {
+    async getRestaurantData(restaurantID: string) {
 
-        const {data: restaurant} = await supabase
-            .from('restaurant')
-            .select('name, address')
-            .eq('id', restaurant_id);
-
-        return restaurant;
+        return await getRestaurantData(restaurantID);
     }
 
     async getListRestaurantsName() {
-        let {data} = await supabase
-            .from('restaurant')
-            .select('name')
-
-        let restaurantNames:Array<string> = [];
-
-        if (data !== null)
-        for (const rest of data) {
-            restaurantNames.push(rest.name)
-        }
-
-        return restaurantNames
+        return await getRestaurantsName();
     }
 
     /**
@@ -583,26 +518,19 @@ class Store {
 
         // updating the restaurant (if the user is a manager)
         if (this.user.role === "Manager") {
-            let {data: restaurant} = await supabase
-                .from('restaurant')
-                .select('*')
-                .eq('id', user.restaurant_id);
 
-            if (restaurant?.length !== 0 && restaurant !== null) // restaurant is an array
+            let restaurant = await getRestaurantData(user.restaurant_id);
+
+            if (restaurant !== null) // restaurant is an array
                 this.restaurant = {
-                    id: restaurant[0].id,
-                    name: restaurant[0].name,
-                    address: restaurant[0].address
+                    id: restaurant.id,
+                    name: restaurant.name,
+                    address: restaurant.address
                 };
         }
 
         // pushing the log to the table
-        let {data: log} = await supabase
-            .from('log-auth')
-            .insert({
-                user_id: user.id,
-                log_message: `User logged in` 
-            });
+        await logUserAuth(user.id, "User logged in");
 
     }
 
@@ -612,12 +540,7 @@ class Store {
     async logOut() {
 
         // pushing the log to the table
-        let {data: log} = await supabase
-            .from('log-auth')
-            .insert({
-                user_id: this.user.id,
-                log_message: `User logged out` 
-            });
+        await logUserAuth(this.user.id, "User logged out");
 
         this.isLoggedIn = false;
         this.user = {
