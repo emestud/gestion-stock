@@ -8,7 +8,6 @@ import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
 import Spinner from "../components/Misc/Spinner";
 import { getLastModificationOfOrder } from "../databaseClient";
-import { proxyPrint } from "../utils";
 
 const sortItemsByRestaurant = (orderItems:any) => {
     

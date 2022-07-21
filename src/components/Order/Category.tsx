@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Item from './Item'
 
 import store from '../../stores/store'
-import { proxyPrint } from '../../utils';
 
 const Category = (props: any) => {
 

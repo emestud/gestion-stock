@@ -68,6 +68,18 @@ export const getAllOrders = async () => {
     return orders;   
 }
 
+export const getOrdersWithRestaurantName = async () => {
+    const {data} = await supabase
+        .from('order')
+        .select(`
+            *,
+            restaurant:restaurant_id(
+                name
+            )
+        `)
+
+    return data === null ? [] : data;
+}
 
 export const getAllOriginalOrders = async () => {
 
@@ -78,7 +90,6 @@ export const getAllOriginalOrders = async () => {
 
     return orders;   
 }
-
 
 export const getLastModificationOfOrder = async (originalOrderID: string) => {
 
@@ -164,6 +175,19 @@ export const getAllWastes = async () => {
         .select('*');
 
     return wastes;   
+}
+
+export const getWastesWithRestaurantName = async () => {
+    const {data} = await supabase
+        .from('waste')
+        .select(`
+            *,
+            restaurant:restaurant_id(
+                name
+            )
+        `)
+
+    return data === null ? [] : data;
 }
 
 export const sendWastes = async (wastes: Array<any>) => {

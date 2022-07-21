@@ -32,20 +32,7 @@ const getBadgeColor = (status: Status) => {
 
 }
 
-const OrderHistory = ({date, restaurant_id, status, openOrder}:any) => {
-    
-    const [restaurantName, setRestaurantName] = useState("");
-
-    useEffect(()=>{
-        (async () => {
-            let tmp:any = await store.getRestaurantData(restaurant_id);
-            
-            if (tmp !== null) {
-                setRestaurantName(tmp.name);
-            }
-        })();
-    }, [])
-
+const OrderHistory = ({date, restaurantName, status, openOrder}:any) => {
 
     return (
         <tr onClick={openOrder}>

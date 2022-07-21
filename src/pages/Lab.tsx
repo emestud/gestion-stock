@@ -173,7 +173,7 @@ const Lab = () => {
           <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >La commandes a été livrée</button>
           :
             isPrepared ? 
-              <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Commande Validée</button>
+              <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-disable" >Commande préparée</button>
               :
               <button className="fixed bottom-[5%] left-1/2 -translate-x-2/4 w-1/2 max-w-lg btn btn-primary" onClick={confirmOrder} >Valider la commande</button>
         }

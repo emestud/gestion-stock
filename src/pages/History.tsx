@@ -8,6 +8,7 @@ import OrderHistory from "../components/History/OrderHistory";
 import WasteHistory from '../components/History/WasteHistory'
 
 import Spinner from "../components/Misc/Spinner";
+import { getOrdersWithRestaurantName, getWastesWithRestaurantName } from "../databaseClient";
 
 const History = () => {
 
@@ -36,7 +37,8 @@ const History = () => {
 
 
     const getOrders = async () => {
-        let tmp:Array<Order> = await store.orderStore.getOrders(null);
+        //let tmp:Array<Order> = await store.orderStore.getOrders(null);
+        let tmp:Array<any> = await getOrdersWithRestaurantName();
         setOrders(tmp);
 
         for (const order of tmp) { // checking if an order has already been created for today 
@@ -52,7 +54,8 @@ const History = () => {
     };
 
     const getWastes = async () => {
-        let tmp: Array<any> = await store.orderStore.getWastes(null);
+        //let tmp: Array<any> = await store.orderStore.getWastes(null);
+        let tmp: Array<any> = await getWastesWithRestaurantName();
         setWastes(tmp);
     }
 
@@ -61,16 +64,15 @@ const History = () => {
         getWastes();
         setDataLoading(false);
     }, []);
-    
 
-    const ordersMap = orders.map((order:Order)=>
-        <OrderHistory date={order.created_at} restaurant_id={order.restaurant_id} status={order.status} key={order.id}
+    const ordersMap = orders.map((order:any)=>
+        <OrderHistory date={order.created_at} restaurantName={order.restaurant.name} status={order.status} key={order.id}
                         openOrder={()=>openOrder(order.id, order.created_at)}
             />
     );
 
     const wastesMap = wastes.map((waste:any)=>
-        <WasteHistory date={waste.created_at} restaurant_id={waste.restaurant_id} key={waste.id}
+        <WasteHistory date={waste.created_at} restaurantName={waste.restaurant.name} key={waste.id}
                         openWaste={()=>openOrder(waste.id, waste.created_at)}
         />
     )
