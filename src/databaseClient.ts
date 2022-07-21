@@ -77,6 +77,7 @@ export const getOrdersWithRestaurantName = async () => {
                 name
             )
         `)
+        .is('original_order', null);
 
     return data === null ? [] : data;
 }
