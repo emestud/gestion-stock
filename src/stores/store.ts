@@ -60,7 +60,7 @@ class Store {
     /**
      * This function initiates the orders, on the store creation, with two empty orders 
      */
-    async initOrder() {
+    initOrder() {
 
         this.order.items = [] // emptying the array, just in case
 
@@ -431,7 +431,7 @@ class Store {
             restaurant_id: ""
         };
 
-        await this.initOrder()
+        this.initOrder()
 
         // changing the items inside the "default" list of items 
         for (const category of this.itemCategories) {

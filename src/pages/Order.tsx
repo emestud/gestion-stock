@@ -61,9 +61,9 @@ const Order = () => {
     else {
         useEffect(()=>{
             (async ()=>{
-                await store.resetOrder();
+                store.resetOrder();
                 setDataLoading(false);
-                setIsEditable(true);
+                setIsOrdered(false); // making sure the order is not considered as "Ordered"
             })();
         }, []);
     }
