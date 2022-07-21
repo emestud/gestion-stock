@@ -1,20 +1,5 @@
 import { useState } from "react"
 import store from "../../stores/store"
-import { proxyPrint } from "../../utils";
-
-
-const getContainerID = (containerName: string):string => {
-
-    let container_id = "";
-
-    store.containerCategories.forEach(((category: any)=>{
-        category.containers.forEach((container:any)=>{
-            if (container.name===containerName)
-            container_id = container.id;
-        });
-    }));
-    return container_id;
-}
 
 
 const Item = (props: any) => {

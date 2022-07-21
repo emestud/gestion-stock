@@ -97,24 +97,25 @@ class Store {
 
         let listCategories:Array<string> = [];
 
-        categories.forEach((category:any)=>{
-        if (!listCategories.includes(category))
-            listCategories.push(category);
-        });
+        for (const category of categories) {
+            if (!listCategories.includes(category)) {
+                listCategories.push(category);
+            }
+        }
 
         for (const category of listCategories) {
 
             let categoryItems:Array<any> = [];
-            items?.forEach((item:any)=>{
+
+            for (const item of items) {
                 if (item.category===category) {
                     categoryItems.push(item);
                 }
-            });
+            }
 
             let products:Array<Item> = [];
 
-
-            categoryItems?.forEach(item=>{
+            for (const item of categoryItems) {
                 products.push({
                     id: item.id,
                     name: item.name,
@@ -123,7 +124,7 @@ class Store {
                     container_id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
                     priority: item.priority
                 });
-            })
+            }
 
             store.addItemCategory({
                 name: category,
@@ -171,12 +172,12 @@ class Store {
 
             let containersList:Array<Container> = [];
 
-            categoryContainers?.forEach(container=>{
+            for (const container of categoryContainers) {
                 containersList.push({
                     name: container.name,
                     id: container.id
                 });
-            });
+            }
 
             store.addContainerCategory({
                 name: category,
@@ -220,15 +221,15 @@ class Store {
      */
     updateOrder(id:string, name: string, quantity: number, container: Container, priority: number) {
 
-        console.log(`${name}: ${quantity} ${container.name}`);
+        //console.log(`${name}: ${quantity} ${container.name}`);
 
-        this.order.items.forEach((item: OrderItem)=>{
+        for (const item of this.order.items) {
             if (item.name === name) {
                 item.container[1].name = container.name,
                 item.container[1].id = container.id,
                 item.quantity[1] = quantity
             }
-        });
+        };
 
     }
 
