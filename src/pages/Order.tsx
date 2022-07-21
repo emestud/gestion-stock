@@ -19,7 +19,6 @@ const Order = () => {
     let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
     let [comment, setComment]:any = useState("");
     let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
-    let [modifiedItemCategories, setModifiedItemCategories]: any = useState(store.itemCategories);
     
     let [orderID, setOrderID]:any = useState(""); 
 
@@ -50,8 +49,7 @@ const Order = () => {
                 setItemCategories(itemCategories);
 
                 if (lastModification !== undefined){
-                    const modifiedItemCategories = await store.setOrder(lastModification.id, false);
-                    setModifiedItemCategories(modifiedItemCategories);
+                    await store.setOrder(lastModification.id, false);
                 }
 
                 setIsEditable(order.status === "On order" || order.status === "Ordered");
@@ -65,10 +63,10 @@ const Order = () => {
             (async ()=>{
                 await store.resetOrder();
                 setDataLoading(false);
+                setIsEditable(true);
             })();
         }, []);
     }
-
 
     let listCategory = itemCategories.map((category:any, index:number)=>
         <li><Category categoryName={category.name} isOrdered={isOrdered} isEditable={isEditable} key={category.name}/></li>
