@@ -2,7 +2,7 @@ import store from "../stores/store";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { Item, Order, OrderItem } from "../types";
+import { Item, Order, ItemWithLabInfo } from "../types";
 
 import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
@@ -50,7 +50,7 @@ const Delivery = () => {
         navigate('/unauthorized');
     }
 
-    let [orderItems, setOrderItems] = useState<Array<OrderItem>>([]);
+    let [orderItems, setOrderItems] = useState<Array<ItemWithLabInfo>>([]);
     let [dataLoading, setDataLoading] = useState<boolean>(true);
 
     useEffect(() => {

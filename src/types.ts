@@ -103,3 +103,6 @@ interface ItemOrderID {
 }
 
 export type LabItemInfo = ItemOrderID & RestaurantName & (_Quantity | _Container);
+
+
+export type ItemWithLabInfo = Omit<Item, 'container_id'> & RestaurantName & CanceledByLab;

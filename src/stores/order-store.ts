@@ -1,8 +1,6 @@
-import { supabase, getOrderByID, getWasteByID, getLastModificationOfOrder, 
+import { getOrderByID, getWasteByID, getLastModificationOfOrder, 
         getOrdersByDate, getAllOriginalOrders, getWastesByDate, getAllWastes, getRestaurantData, get3TupleFromOrder, getContainerNameByID, getItemByID } from "../databaseClient";
-import { CanceledByLab, Item, LabItemInfo, Order, OrderTuple, RestaurantName, Waste } from "../types";
-
-type LabItem = Omit<Item, 'container_id'> & RestaurantName & CanceledByLab;
+import { LabItemInfo, Order, OrderTuple, Waste, ItemWithLabInfo } from "../types";
 
 export class OrderStore {
 
@@ -142,7 +140,7 @@ export class OrderStore {
 
     }
 
-    let newItems: Array<LabItem> = [];
+    let newItems: Array<ItemWithLabInfo> = [];
 
     for (const orderItem of orderItems) {
       for (const item of orderItem.items) {
@@ -174,7 +172,7 @@ export class OrderStore {
     });
   }
 
-  public gatherItemsForLab(items: Array<LabItem>) {
+  public gatherItemsForLab(items: Array<ItemWithLabInfo>) {
 
     let restaurants:Array<string> = []
     for (const item of items) {
