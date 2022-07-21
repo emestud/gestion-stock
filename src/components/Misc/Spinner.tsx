@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import Spin from '../../assets/spinning-burger.gif'
+import Spin from '../../assets/loading-response.gif'
 
 const Spinner = () => {
 
