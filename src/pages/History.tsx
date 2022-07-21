@@ -127,7 +127,7 @@ const History = () => {
             :
             (<>
                 <div>
-                    <h1 className="text-2xl text-center mb-8">Historique</h1>
+                    <h1 className="text-2xl text-center mb-8 select-none">Historique</h1>
                     <div className={`flex justify-between items-center px-4 ${(store.user.role==='Manager' || store.user.role==='Admin') ? '' : 'hidden'}`}>
                         <div>
                             <button onClick={newOrder} className={`btn btn-sm btn-accent m-2 lg:ml-8 ${orderAlreadyExists ? 'btn-disabled' : ''}`}>
@@ -137,7 +137,7 @@ const History = () => {
                                 Déclarer pertes
                             </button>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 select-none">
                             <p className={`${currentMode === 'Order' ? 'font-bold underline' : ''}`}>Commandes</p>
                             <input type="checkbox" className="toggle" checked={currentMode==='Waste'} onChange={changeMode}/>
                             <p className={`${currentMode === 'Waste' ? 'font-bold underline' : ''}`}>Pertes</p>     
