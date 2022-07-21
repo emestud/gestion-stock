@@ -12,6 +12,8 @@ class Store {
 
     orderStore: OrderStore;
 
+    defaultItems: Array<any> = [];
+
     order: Order = {
         id: "",
         items: [],
@@ -42,41 +44,44 @@ class Store {
         this.orderStore = new OrderStore();
         this.addItems();
         this.addContainers();
-        
+
+        this.initDefautItems();
         this.initOrder();
 
+        
+
         makeAutoObservable(this);
+    }
+
+    async initDefautItems() {
+        this.defaultItems = await getItemsWithContainer();
     }
 
     /**
      * This function initiates the orders, on the store creation, with two empty orders 
      */
     async initOrder() {
-        
-        const items = await getItemsWithContainer();
 
         this.order.items = [] // emptying the array, just in case
 
-        if (items !==  null) {
-            for (const item of items) {
-                this.order.items.push({
-                    id: item.id,
-                    name: item.name,
-                    quantity: [0, 0],
-                    container: [
-                        {
-                            id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
-                            name: (item.container === null) ? 'Pack' : item.container.name,
-                        },
-                        {
-                            id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
-                            name: (item.container === null) ? 'Pack' : item.container.name,
-                        },
-                    ],
-                    priority: item.priority,
-                    category: item.category
-                })
-            }
+        for (const item of this.defaultItems) {
+            this.order.items.push({
+                id: item.id,
+                name: item.name,
+                quantity: [0, 0],
+                container: [
+                    {
+                        id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
+                        name: (item.container === null) ? 'Pack' : item.container.name,
+                    },
+                    {
+                        id: (item.container === null) ? 'b8018542-e927-44c1-b40c-39fc586b74cf' : item.container.id,
+                        name: (item.container === null) ? 'Pack' : item.container.name,
+                    },
+                ],
+                 priority: item.priority,
+                category: item.category
+            })
         }
     }
 
@@ -354,9 +359,7 @@ class Store {
      */
     async setOrder(orderID: string, originalOrder: boolean) {
 
-        let tableDBName = (this.orderMode === 'Order') ? 'order' : 'waste';
-
-        if (originalOrder) {
+        if (originalOrder) { // we "reset" the order in the store in order to make sure there is no overlap between order items
             await this.resetOrder();
             this.order.id = orderID;
         }

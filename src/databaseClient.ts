@@ -213,7 +213,7 @@ export const getItemsWithContainer = async () => {
                 )
             `);
     
-    return items;
+    return items !== null ? items : [];
 }
 
 export const getItemByID = async (itemID: string) => {
