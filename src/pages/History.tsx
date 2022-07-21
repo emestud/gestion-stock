@@ -1,5 +1,4 @@
 import store from "../stores/store";
-import { Order } from "../types";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,19 +8,20 @@ import WasteHistory from '../components/History/WasteHistory'
 
 import Spinner from "../components/Misc/Spinner";
 import { getOrdersWithRestaurantName, getWastesWithRestaurantName } from "../databaseClient";
+import { Order, Waste } from "../types";
 
 const History = () => {
 
     const navigate = useNavigate();
 
-    const [orders, setOrders]:any = useState([]);
-    const [wastes, setWastes]:any = useState([]);
+    const [orders, setOrders] = useState<Array<Order>>([]);
+    const [wastes, setWastes] = useState<Array<Waste>>([]);
 
     // this variable is true if an order has already been created for a restaurant on the current date
-    const [orderAlreadyExists, setOrderAlreadyExists]: any = useState(false);
-    const [dataLoading, setDataLoading]: any = useState(true);
+    const [orderAlreadyExists, setOrderAlreadyExists] = useState<boolean>(false);
+    const [dataLoading, setDataLoading] = useState<boolean>(true);
 
-    const [currentMode, setCurrentMode]: any = useState("Order");
+    const [currentMode, setCurrentMode] = useState<string>("Order");
 
 
     const changeMode = () => {

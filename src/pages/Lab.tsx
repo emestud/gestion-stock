@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import store from "../stores/store";
-import { Item } from "../types";
+import { Item, LabItem } from "../types";
 
 import Category from "../components/Lab/Category";
 
@@ -20,14 +20,14 @@ const Lab = () => {
     navigate('/unauthorized');
   }
 
-  let [orderItems, setOrderItems]: any = useState([]);
-  let [restaurants, setRestaurants]: any = useState([]);
-  let [itemsToCancel, setItemsToCancel]: any = useState([]);
-  let [dataLoading, setDataLoading]: any = useState(true);
-  let [orderIDs, setOrderIDs]:any = useState([]);
+  let [orderItems, setOrderItems] = useState<Array<LabItem>>([]);
+  let [restaurants, setRestaurants] = useState<Array<string>>([]);
+  let [itemsToCancel, setItemsToCancel] = useState<Array<string>>([]);
+  let [dataLoading, setDataLoading] = useState<boolean>(true);
+  let [orderIDs, setOrderIDs] = useState<Array<string[]>>([]);
 
-  let [isDelivered, setIsDelivered]:any = useState(false);
-  let [isPrepared, setIsPrepared]:any = useState(false);
+  let [isDelivered, setIsDelivered] = useState<boolean>(false);
+  let [isPrepared, setIsPrepared] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -38,15 +38,15 @@ const Lab = () => {
 
       
       for (const order of orders) {
-        setOrderIDs([...orderIDs, [order[0].id, order[1].id]]);
-        if (order[1].status === 'Delivered') { // if one order has already been delivered, it means that the other orders are being delivered or already delivered
+        setOrderIDs([...orderIDs, [order.originalOrder.id, order.modifiedOrder.id]]);
+        if (order.modifiedOrder.status === 'Delivered') { // if one order has already been delivered, it means that the other orders are being delivered or already delivered
           setIsDelivered(true);
         }
       }
 
       let modifiedOrders: Array<any> = [];
       for (const tuple of orders) {
-        modifiedOrders.push(tuple[1]);
+        modifiedOrders.push(tuple.modifiedOrder);
       }
 
       const originalOrdersItemsTmp = await store.orderStore.prepareOrders(originalOrders);
@@ -55,7 +55,7 @@ const Lab = () => {
       const modifiedOrdersItemsTmp = await store.orderStore.prepareOrders(modifiedOrders);
       const modifiedOrdersItemsGatheredByRestaurant = store.orderStore.gatherItemsForLab(modifiedOrdersItemsTmp);
 
-      let orderItemsTmp: Array<any> = []
+      let orderItemsTmp: Array<LabItem> = []
 
       for (const item of modifiedOrdersItemsGatheredByRestaurant) {
         let originalItem = itemIsInArray(originalOrdersItemsGatheredByRestaurant, item.name);
@@ -66,7 +66,7 @@ const Lab = () => {
             priority: item.priority,
             containers: [originalItem.containers, item.containers],
             quantities: [originalItem.quantities, item.quantities],
-            canceled_by_lab: item.canceled_by_lab
+            canceledByLab: item.canceled_by_lab
           });
         }
         else {
@@ -90,7 +90,7 @@ const Lab = () => {
             priority: item.priority,
             containers: [containers, item.containers],
             quantities: [quantities, item.quantities],
-            canceled_by_lab: item.canceled_by_lab
+            canceledByLab: item.canceled_by_lab
           })
         }
       }
@@ -105,7 +105,7 @@ const Lab = () => {
 
   if (orderItems.length > 0) {
     let lastPriority:number = orderItems[0].priority;
-    let category:Array<Item> = [];
+    let category:Array<LabItem> = [];
 
 
     for (const item of orderItems) { // separating items based on their category (= priority)

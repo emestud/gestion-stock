@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-import store from "../../stores/store"
 import { Status } from "../../types"
 
 const getStatusText = (status: Status) => {

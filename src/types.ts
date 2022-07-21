@@ -50,6 +50,20 @@ export type Order = {
   restaurant_id: string,
 };
 
+export type OrderTuple = {
+  originalOrder: Order,
+  modifiedOrder: Order
+}
+
+export type Waste = {
+  id: string,
+  items: Array<OrderItem>,
+  status: Status,
+  comment: string
+  created_at: string,
+  restaurant_id: string,
+};
+
 export type OrderItem = {
   id: string
   name: string,
@@ -58,3 +72,34 @@ export type OrderItem = {
   priority: number,
   category: string
 }
+
+export interface RestaurantName {
+  restaurant: string
+}
+
+export interface CanceledByLab {
+  canceledByLab: boolean
+}
+
+export type LabItem = {
+  name: string,
+  priority: number,
+  containers: Array<RestaurantName & string>,
+  quantities: Array<RestaurantName & number>,
+  canceledByLab: boolean
+}
+
+
+interface _Quantity {
+  quantity: number
+}
+
+interface _Container {
+  container: string
+}
+
+interface ItemOrderID {
+  item_order_id: string
+}
+
+export type LabItemInfo = ItemOrderID & RestaurantName & (_Quantity | _Container);

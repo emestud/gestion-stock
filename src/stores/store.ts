@@ -486,7 +486,7 @@ class Store {
      * @param orderID order's id
      * @param date Date you want to change the order's "created_at" attribute to
      */
-    async changeOrderDate(orderID: string, date:any) {
+    async changeOrderDate(orderID: string, date:string) {
         if (orderID !== "") {
             updateOrderDate(orderID, date);
         }

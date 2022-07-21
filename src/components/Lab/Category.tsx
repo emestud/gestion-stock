@@ -1,5 +1,5 @@
-import { proxyPrint } from "../../utils";
-import Item from "./Item";
+import { Item } from "../../types";
+import LabItem from "./LabItem";
 
 const restaurantIsInItemsList = (restaurant: string, itemList: Array<any>) => {
 
@@ -63,8 +63,8 @@ const Category = ({itemsByCategory, restaurants, addItemToCancel}:any) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {itemsByCategory.map((items:any)=>
-                        <Item items={items} addItemToCancel={addItemToCancel}/>
+                    {itemsByCategory.map((items:Item)=>
+                        <LabItem items={items} addItemToCancel={addItemToCancel}/>
                     )}
                 </tbody>
             </table>

@@ -4,7 +4,7 @@ import NavBar from "./components/Navbar";
 
 import Admin from './pages/Admin';
 
-import Order from './pages/Order';
+import OrderPage from './pages/Order';
 import Lab from './pages/Lab';
 import Delivery from './pages/Delivery';
 
@@ -52,7 +52,7 @@ const App = () => {
       <main className="h-screen w-screen overflow-scroll">
         <Routes>
           <Route path="login" element={<LogIn setLogIn={setLogIn} />}></Route>
-          <Route path="order" element={ <Order /> }></Route>
+          <Route path="order" element={ <OrderPage /> }></Route>
           <Route path="lab" element={ <Lab /> }></Route>
           <Route path="delivery" element={ <Delivery /> }></Route>
           <Route path="admin" element={ <Admin /> }></Route>

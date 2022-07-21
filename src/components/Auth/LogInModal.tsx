@@ -5,9 +5,9 @@ import { logIn } from "../../databaseClient"
 const LogInModal = ({ setLogIn }:any) => {
 
 
-    let [username, setUsername] = useState("");
-    let [password, setPassword] = useState("");
-    let [errorMessage, setErrorMessage] = useState("");
+    let [username, setUsername] = useState<string>("");
+    let [password, setPassword] = useState<string>("");
+    let [errorMessage, setErrorMessage] = useState<string>("");
     
     let navigate = useNavigate();
 

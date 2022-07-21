@@ -2,7 +2,7 @@ import store from "../stores/store";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { Item } from "../types";
+import { Item, Order, OrderItem } from "../types";
 
 import RestaurantDelivery from "../components/Delivery/RestaurantDelivery";
 
@@ -50,14 +50,14 @@ const Delivery = () => {
         navigate('/unauthorized');
     }
 
-    let [orderItems, setOrderItems]: any = useState([]);
-    let [dataLoading, setDataLoading]: any = useState(true);
+    let [orderItems, setOrderItems] = useState<Array<OrderItem>>([]);
+    let [dataLoading, setDataLoading] = useState<boolean>(true);
 
     useEffect(() => {
         (async () => {
             const originalOrders = await store.orderStore.getOrders(ordersDate);
 
-            let orders:Array<any> = [];
+            let orders:Array<Order> = [];
 
             for (const originalOrder of originalOrders) {
                 let tmp = await getLastModificationOfOrder(originalOrder.id)

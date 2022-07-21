@@ -22,9 +22,9 @@ function containerBgDiffColor(originalContainers: Array<any>, modifiedContainers
     }
 }
 
-const Item = ({items, addItemToCancel}:any) => {
+const LabItem = ({items, addItemToCancel}:any) => {
 
-    const [isCanceled, setIsCanceled] = useState(items.canceled_by_lab);
+    const [isCanceled, setIsCanceled] = useState<boolean>(items.canceled_by_lab);
 
     const cancelItems = () => {
         let item_ids:Array<string> = [];
@@ -62,4 +62,4 @@ const Item = ({items, addItemToCancel}:any) => {
     )
 }
 
-export default Item
+export default LabItem

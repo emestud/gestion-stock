@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react"
-import store from "../../stores/store"
-
 const WasteHistory = ({date, restaurantName, openWaste}:any) => {
 
     return (

@@ -1,6 +1,8 @@
 import { supabase, getOrderByID, getWasteByID, getLastModificationOfOrder, 
         getOrdersByDate, getAllOriginalOrders, getWastesByDate, getAllWastes, getRestaurantData, get3TupleFromOrder, getContainerNameByID, getItemByID } from "../databaseClient";
-import { Item } from "../types";
+import { CanceledByLab, Item, LabItemInfo, Order, OrderTuple, RestaurantName, Waste } from "../types";
+
+type LabItem = Omit<Item, 'container_id'> & RestaurantName & CanceledByLab;
 
 export class OrderStore {
 
@@ -41,7 +43,7 @@ export class OrderStore {
     const orders = new Array();
 
     try {
-      let data: any;
+      let data: Array<Order> | null;
       if (date !== null) {
 
           let orders = await getOrdersByDate(date);
@@ -77,7 +79,7 @@ export class OrderStore {
     const wastes = new Array();
 
     try {
-      let data: any;
+      let data: Array<Waste> | null;
       if (date !== null) {
           data = await getWastesByDate(date);
       }
@@ -101,25 +103,30 @@ export class OrderStore {
   }
 
 
-  public async getModifiedOrders(orders: Array<any>) {
-    let ordersTuples:Array<any> = [];
+  public async getModifiedOrders(orders: Array<Order>) {
+    let ordersTuples:Array<OrderTuple> = [];
 
     for (const order of orders) {
 
       let modifiedOrder = await getLastModificationOfOrder(order.id);
 
       if (modifiedOrder === null || modifiedOrder.length === 0) {
-        ordersTuples.push([order, order]); // we push the exact same order if the order hasnt been modified
+        ordersTuples.push({
+          originalOrder: order,
+          modifiedOrder: order
+        }); // we push the exact same order if the order hasnt been modified
       }
       else {
-        ordersTuples.push([order, modifiedOrder]);
+        ordersTuples.push({
+          originalOrder: order, 
+          modifiedOrder: modifiedOrder});
       }
 
     }    
     return ordersTuples;
   }
 
-  public async prepareOrders(orders: any[]) {
+  public async prepareOrders(orders: Order[]) {
 
     const orderItems = new Array();
 
@@ -135,7 +142,7 @@ export class OrderStore {
 
     }
 
-    let newItems: Array<any> = [];
+    let newItems: Array<LabItem> = [];
 
     for (const orderItem of orderItems) {
       for (const item of orderItem.items) {
@@ -148,13 +155,13 @@ export class OrderStore {
           let newItem = {
             id: item.id,
             orderID: item.order_id,
-            restaurant_name: orderItem.restaurant.name,
-            itemName: itemFromDB.name,
+            restaurant: orderItem.restaurant.name,
+            name: itemFromDB.name,
             itemCategory: itemFromDB.category,
             priority: itemFromDB.priority,
-            containerName: container,
+            container: container,
             quantity: item.quantity,
-            canceled_by_lab: item.canceled_by_lab,
+            canceledByLab: item.canceled_by_lab,
           };
 
           newItems.push(newItem);
@@ -167,12 +174,12 @@ export class OrderStore {
     });
   }
 
-  public gatherItemsForLab(items: Array<any>) {
+  public gatherItemsForLab(items: Array<LabItem>) {
 
     let restaurants:Array<string> = []
     for (const item of items) {
-      if(!restaurants.includes(item.restaurant_name)) {
-        restaurants.push(item.restaurant_name);
+      if(!restaurants.includes(item.restaurant)) {
+        restaurants.push(item.restaurant);
       }
     }
 
@@ -180,22 +187,22 @@ export class OrderStore {
     let itemsProcessed: Array<string> = [];
     
     for (const item of items) {
-      if (!itemsProcessed.includes(item.itemName)) {
+      if (!itemsProcessed.includes(item.name)) {
 
-        let quantities:Array<any> = [];
-        let containers: Array<any> = [];
+        let quantities:Array<LabItemInfo> = [];
+        let containers: Array<LabItemInfo> = [];
         
         for (const itemToFind of items) {
-          if (itemToFind.itemName === item.itemName) {
+          if (itemToFind.name === item.name) {
             quantities.push({
               item_order_id: itemToFind.id,
               quantity: itemToFind.quantity,
-              restaurant: itemToFind.restaurant_name
+              restaurant: itemToFind.restaurant
             });
             containers.push({
               item_order_id: itemToFind.id,
-              container: itemToFind.containerName,
-              restaurant: itemToFind.restaurant_name
+              container: itemToFind.container,
+              restaurant: itemToFind.restaurant
             });
           }
         }
@@ -209,10 +216,12 @@ export class OrderStore {
           }
           if (!isInArray) {
             quantities.push({
+              item_order_id: "",
               quantity: 0,
               restaurant: restaurant
             });
             containers.push({
+              item_order_id: "",
               container: "Aucun",
               restaurant: restaurant
             });
@@ -220,15 +229,15 @@ export class OrderStore {
         }
 
         itemsForEachRestaurant.push({
-          canceled_by_lab: item.canceled_by_lab,
-          name: item.itemName,
+          canceled_by_lab: item.canceledByLab,
+          name: item.name,
           quantities: quantities,
           containers: containers,
           priority: item.priority
         });
       }
 
-      itemsProcessed.push(item.itemName);
+      itemsProcessed.push(item.name);
     }
 
     return itemsForEachRestaurant;

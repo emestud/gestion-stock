@@ -6,7 +6,7 @@ const RestaurantDelivery = ({restaurant_items}:any) => {
 
     let orderID = restaurant_items[0].orderID;
 
-    let [isDelivered, setIsDelivered]: any = useState(false);
+    let [isDelivered, setIsDelivered] = useState<boolean>(false);
 
     useEffect(()=>{
         (async ()=>{

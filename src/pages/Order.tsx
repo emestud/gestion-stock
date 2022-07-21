@@ -9,22 +9,23 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 import Spinner from '../components/Misc/Spinner'
 import GoBack from '../components/Misc/GoBack'
+import { ItemCategory, Order } from '../types'
 
-const Order = () => {
+const OrderPage = () => {
 
     const navigate = useNavigate();
     const location:any = useLocation();
 
-    let [isOrdered, setIsOrdered] = useState(store.order.status!=="On order");
-    let [date, setDate] = useState(new Date().toLocaleDateString('en-CA'));
-    let [comment, setComment]:any = useState("");
-    let [itemCategories, setItemCategories]:any = useState(store.itemCategories);
+    let [isOrdered, setIsOrdered] = useState<boolean>(store.order.status!=="On order");
+    let [date, setDate] = useState<string>(new Date().toLocaleDateString('en-CA'));
+    let [comment, setComment] = useState<string>("");
+    let [itemCategories, setItemCategories] = useState<Array<ItemCategory>>(store.itemCategories);
     
-    let [orderID, setOrderID]:any = useState(""); 
+    let [orderID, setOrderID] = useState<string>(""); 
 
-    let [isEditable, setIsEditable]: any = useState(true)
+    let [isEditable, setIsEditable] = useState<boolean>(true)
 
-    let [dataLoading, setDataLoading]: any = useState(true);
+    let [dataLoading, setDataLoading] = useState<boolean>(true);
 
     useEffect(()=>{
         if (store.user.role !== "Manager" && store.user.role !== "Admin") {
@@ -40,7 +41,7 @@ const Order = () => {
 
                 setOrderID(location.state.order_id);
 
-                const [order, lastModification]:any = await store.orderStore.getOrder(location.state.order_id, location.state.mode);
+                const [order, lastModification]:Array<Order> = await store.orderStore.getOrder(location.state.order_id, location.state.mode);
 
                 setIsOrdered(lastModification.status!=="On order"); // updating the component state
                 store.order.status = lastModification.status; // updating the status in the store
@@ -68,7 +69,7 @@ const Order = () => {
         }, []);
     }
 
-    let listCategory = itemCategories.map((category:any, index:number)=>
+    let listCategory = itemCategories.map((category:ItemCategory, index:number)=>
         <li><Category categoryName={category.name} isOrdered={isOrdered} isEditable={isEditable} key={category.name}/></li>
     )
 
@@ -119,4 +120,4 @@ const Order = () => {
     );
 }
 
-export default Order;
+export default OrderPage;

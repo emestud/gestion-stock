@@ -1,5 +1,3 @@
-import { Item } from "../../types"
-
 const sortByCategory = (items: Array<any>) => {
 
     let itemsSortedByCategory:Array<Array<any>> = [];
