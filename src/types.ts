@@ -149,6 +149,10 @@ export type LabItemInfo = ItemOrderID &
   RestaurantName &
   (_Quantity | _Container);
 
+export type LabItemQuantity = ItemOrderID & RestaurantName & _Quantity;
+
+export type LabItemContainer = ItemOrderID & RestaurantName & _Container;
+
 export type ItemWithLabInfo = Omit<Item, 'container_id'> &
   RestaurantName &
   CanceledByLab;

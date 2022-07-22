@@ -1,8 +1,10 @@
 import {useState} from 'react';
 
+import {LabItemQuantity, LabItemContainer} from '../../types';
+
 function quantityBgDiffColor(
-  originalQuantities: Array<any>,
-  modifiedQuantities: Array<any>,
+  originalQuantities: Array<LabItemQuantity>,
+  modifiedQuantities: Array<LabItemQuantity>,
   index: number
 ) {
   if (originalQuantities[index].quantity < modifiedQuantities[index].quantity) {
@@ -17,8 +19,8 @@ function quantityBgDiffColor(
 }
 
 function containerBgDiffColor(
-  originalContainers: Array<any>,
-  modifiedContainers: Array<any>,
+  originalContainers: Array<LabItemContainer>,
+  modifiedContainers: Array<LabItemContainer>,
   index: number
 ) {
   if (
@@ -30,12 +32,17 @@ function containerBgDiffColor(
   }
 }
 
-const LabItem = ({items, addItemToCancel}: any) => {
+interface LabItemProps {
+  items: any;
+  addItemToCancel: (isToBeCanceled: boolean, item_ids: Array<string>) => void;
+}
+
+const LabItem = ({items, addItemToCancel}: LabItemProps) => {
   const [isCanceled, setIsCanceled] = useState<boolean>(items.canceledByLab);
 
   for (let i = 0; i < items.containers.length; i++) {
     items.containers[i] = items.containers[i].sort(
-      (containerA: any, containerB: any) => {
+      (containerA: LabItemContainer, containerB: LabItemContainer) => {
         return containerA.restaurant.localeCompare(containerB.restaurant);
       }
     );
@@ -43,7 +50,7 @@ const LabItem = ({items, addItemToCancel}: any) => {
 
   for (let i = 0; i < items.quantities.length; i++) {
     items.quantities[i] = items.quantities[i].sort(
-      (quantityA: any, quantityB: any) => {
+      (quantityA: LabItemQuantity, quantityB: LabItemQuantity) => {
         return quantityA.restaurant.localeCompare(quantityB.restaurant);
       }
     );
@@ -68,7 +75,7 @@ const LabItem = ({items, addItemToCancel}: any) => {
     <>
       <tr>
         <td>{items.name}</td>
-        {items.quantities[1].map((quantity: any, index: number) => (
+        {items.quantities[1].map((quantity: LabItemQuantity, index: number) => (
           <>
             <td
               className={`${quantityBgDiffColor(
