@@ -128,7 +128,14 @@ export class OrderStore {
 
     const orderItems = new Array();
 
+    let originalOrderID:string = "";
+
     for (const order of orders) {
+
+      if (order.original_order) {
+        originalOrderID = order.original_order;
+      }
+
       let products = await get3TupleFromOrder(order.id);
 
       let restaurant = await getRestaurantData(order.restaurant_id);
@@ -152,7 +159,7 @@ export class OrderStore {
         if (container !== null && itemFromDB != null) {
           let newItem = {
             id: item.id,
-            orderID: item.order_id,
+            orderID: originalOrderID ? originalOrderID : item.order_id,
             restaurant: orderItem.restaurant.name,
             name: itemFromDB.name,
             itemCategory: itemFromDB.category,

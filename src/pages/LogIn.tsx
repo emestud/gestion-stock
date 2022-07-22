@@ -1,12 +1,16 @@
-import LogInModal from "../components/Auth/LogInModal"
+import LogInModal from '../components/Auth/LogInModal';
+import {User} from '../types';
 
-const LogIn = ({setLogIn}:any) => {
-
-    return (
-        <div>
-            <LogInModal setLogIn={setLogIn} />
-        </div>
-    )
+interface LogInProp {
+  setLogIn: (user: User) => void;
 }
 
-export default LogIn
+const LogIn = ({setLogIn}: LogInProp) => {
+  return (
+    <div>
+      <LogInModal setLogIn={setLogIn} />
+    </div>
+  );
+};
+
+export default LogIn;
