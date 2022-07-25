@@ -32,7 +32,6 @@ import {
   User,
   WasteItemContainer,
 } from '../types';
-import {proxyPrint} from '../utils';
 import {OrderStore} from './order-store';
 
 class Store {
@@ -172,7 +171,7 @@ class Store {
     }
     this.itemCategories = this.itemCategories.sort((a, b) => {
       return a.items[0].orderPriority - b.items[0].orderPriority;
-    })
+    });
   }
 
   /**
@@ -181,6 +180,22 @@ class Store {
    */
   addItemCategory(category: ItemCategory) {
     this.itemCategories.push(category);
+  }
+
+  /**
+   * this function takes the name of a container as a parameter and returns its ID
+   * @param name the name of the container
+   * @returns the id of the container (defaut is an empty string)
+   */
+  getContainerIDByName(name: string): string {
+    for (const containerCategory of this.containerCategories) {
+      for (const container of containerCategory.containers) {
+        if (container.name === name) {
+          return container.id;
+        }
+      }
+    }
+    return '';
   }
 
   /**
@@ -237,7 +252,7 @@ class Store {
    * @param category the category name
    */
   getItemsOfCategory(category: string) {
-    let itemsOfCategory: Array<any> = [];
+    const itemsOfCategory: Array<OrderItem> = [];
 
     for (const item of this.order.items) {
       if (item.category === category) {
@@ -255,7 +270,7 @@ class Store {
    * @param container type of container needed
    */
   updateOrder(name: string, quantity: number, container: Container) {
-    //console.log(`${name}: ${quantity} ${container.name}`);
+    console.log(`${name}: ${quantity} ${container.name}`);
 
     for (const item of this.order.items) {
       if (item.name === name) {
@@ -328,7 +343,6 @@ class Store {
           }
         }
       }
-
       // sending everything in one request
       if (mode === 'Order') {
         await sendOrderItems(orderArray);
@@ -361,7 +375,7 @@ class Store {
       const modifiedOrderID: string = order[0].id;
 
       for (const item of this.order.items) {
-        if (item.quantity[1] === 0) {
+        if (item.quantity[1] === 0 && item.quantity[0] === 0) {
           continue;
         }
 
@@ -481,7 +495,7 @@ class Store {
    * This function sets the value 'cancled_by_lab' to true for every order-item-container object in the DB which ID is inside the array (param).
    * @param itemsToCancel array of [ID, true|false]
    */
-  async cancelItems(itemsToCancel: Array<any>) {
+  async cancelItems(itemsToCancel: Array<string & boolean>) {
     for (const item of itemsToCancel) {
       await updateItemCancelStatus(item[0], item[1]);
     }
@@ -501,9 +515,9 @@ class Store {
   }
 
   /**
-   *
-   *
-   *
+   *  Changes the status of an order
+   * @param orderID order's id
+   * @param status new status
    */
   async updateOrderStatus(status: Status, orderID: string) {
     this.order.status = status;
@@ -514,7 +528,7 @@ class Store {
   }
 
   /**
-   *
+   *  Changes the date of an order
    * @param orderID order's id
    * @param date Date you want to change the order's "created_at" attribute to
    */

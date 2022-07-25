@@ -3,48 +3,34 @@ import store from '../../stores/store';
 import {Container} from '../../types';
 
 const Item = (props: any) => {
-  const {
-    id,
-    name,
-    containerProp,
-    quantityProp,
-    priority,
-    isOrdered,
-    isEditable,
-  } = props;
+  const {name, containerProp, quantityProp, isOrdered, isEditable} = props;
 
   const [quantity] = useState<number>(quantityProp);
 
-  const [newQuantity, setNewQuantity] = useState<number>(quantityProp[1]);
+  const [newQuantity, setNewQuantity] = useState<string>(quantityProp[1]); // text is easier to manipulate for the input
   const [oldQuantity] = useState<number>(quantityProp[0]);
-  const quantityDiff = newQuantity - oldQuantity;
+  const quantityDiff = parseInt(newQuantity) - oldQuantity;
 
   const [oldContainer] = useState<Container>(containerProp[0]);
   const [newContainer, setNewContainer] = useState<Container>(containerProp[1]);
   const containerChanged = oldContainer.name !== newContainer.name;
 
-  /*const [numberInputIncorrect, setNumberInputIncorrect] =
-    useState<boolean>(false);*/
+  const handleQuantityChange = (newQuantityValue: string) => {
+    let value = newQuantityValue.replace(/[^0-9]+/g, '');
 
-  const handleQuantityChange = (newQuantityValue: number) => {
-    const input = document.getElementById('quantityInput') as HTMLInputElement;
-
-    if (isNaN(newQuantityValue)) {
-      newQuantityValue = 0;
+    if (isNaN(parseInt(value))) {
+      value = '0';
     }
 
-    if (newQuantityValue < 0) {
-      if (input !== null) {
-        input.value = '0';
-      }
-      setNewQuantity(0);
-      return;
-    }
+    setNewQuantity(value);
 
-    setNewQuantity(newQuantityValue);
-
-    if (newQuantity !== 0) {
-      store.updateOrder(name, newQuantityValue, {
+    if (value !== '0') {
+      store.updateOrder(name, parseInt(value), {
+        name: newContainer.name,
+        id: newContainer.id,
+      });
+    } else if (value === '0' && oldQuantity !== 0) {
+      store.updateOrder(name, parseInt(value), {
         name: newContainer.name,
         id: newContainer.id,
       });
@@ -52,15 +38,17 @@ const Item = (props: any) => {
   };
 
   const handleContainerChange = (newContainerValue: string) => {
+    const containerID = store.getContainerIDByName(newContainerValue);
+
     setNewContainer({
-      id: newContainer.id,
+      id: containerID,
       name: newContainerValue,
     });
 
     if (quantity !== 0) {
-      store.updateOrder(name, newQuantity, {
+      store.updateOrder(name, parseInt(newQuantity), {
         name: newContainerValue,
-        id: newContainer.id,
+        id: containerID,
       });
     }
   };
@@ -101,8 +89,8 @@ const Item = (props: any) => {
         type="number"
         min="0"
         disabled={isOrdered || !isEditable}
-        placeholder={newQuantity.toString()}
-        onChange={event => handleQuantityChange(parseInt(event.target.value))}
+        placeholder={newQuantity}
+        onChange={event => handleQuantityChange(event.target.value)}
       />
     </div>
   );
