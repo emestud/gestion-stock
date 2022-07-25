@@ -40,7 +40,7 @@ const Category = ({itemsByCategory, restaurants, addItemToCancel}: any) => {
 
   return (
     <div className="w-screen">
-      <table className="z-0 w-full table table-compact table-zebra lg:ml-8 md:table-normal">
+      <table className="z-0 w-full table table-compact lg:ml-8 md:table-normal">
         <thead>
           <tr>
             <th rowSpan={2} style={{position: 'static'}} className="w-2/12">
