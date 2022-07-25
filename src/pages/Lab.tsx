@@ -7,7 +7,7 @@ import {LabItem, Order, RestaurantName, _Container, _Quantity} from '../types';
 import Category from '../components/Lab/Category';
 
 import Spinner from '../components/Misc/Spinner';
-import {itemIsInArray, proxyPrint} from '../utils';
+import {itemIsInArray} from '../utils';
 
 const Lab = () => {
   const location: any = useLocation();
@@ -21,7 +21,9 @@ const Lab = () => {
 
   const [orderItems, setOrderItems] = useState<Array<LabItem>>([]);
   const [restaurants, setRestaurants] = useState<Array<string>>([]);
-  const [itemsToCancel, setItemsToCancel] = useState<Array<string>>([]);
+  const [itemsToCancel, setItemsToCancel] = useState<Array<[string, boolean]>>(
+    []
+  );
   const [dataLoading, setDataLoading] = useState<boolean>(true);
   const [orderIDs, setOrderIDs] = useState<Array<string[]>>([]);
 
@@ -43,6 +45,9 @@ const Lab = () => {
         if (order.modifiedOrder.status === 'Delivered') {
           // if one order has already been delivered, it means that the other orders are being delivered or already delivered
           setIsDelivered(true);
+        } else if (order.modifiedOrder.status === 'Prepared') {
+          // if one order has already been prepared, it means that the other orders are being prepared or already prepared
+          setIsPrepared(true);
         }
       }
 
@@ -150,9 +155,12 @@ const Lab = () => {
     } else {
       // removing the item or uncanceling it
       for (const item_id of item_ids) {
-        if (itemsToCancel.includes(item_id)) {
+        if (
+          itemsToCancel.includes([item_id, false]) ||
+          itemsToCancel.includes([item_id, false])
+        ) {
           const itemsTmp = itemsToCancel.filter(
-            (item: string) => item[0] !== item_id
+            (item: [string, boolean]) => item[0] !== item_id
           );
           setItemsToCancel(itemsTmp);
         } else {

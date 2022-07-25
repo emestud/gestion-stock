@@ -495,7 +495,7 @@ class Store {
    * This function sets the value 'cancled_by_lab' to true for every order-item-container object in the DB which ID is inside the array (param).
    * @param itemsToCancel array of [ID, true|false]
    */
-  async cancelItems(itemsToCancel: Array<string & boolean>) {
+  async cancelItems(itemsToCancel: Array<[string, boolean]>) {
     for (const item of itemsToCancel) {
       await updateItemCancelStatus(item[0], item[1]);
     }
