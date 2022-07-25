@@ -52,6 +52,9 @@ const OrderPage = () => {
             location.state.mode
           );
 
+        store.order.comment = lastModification.comment;
+        setComment(lastModification.comment);
+
         setIsOrdered(lastModification.status !== 'On order'); // updating the component state
         store.order.status = lastModification.status; // updating the status in the store
 

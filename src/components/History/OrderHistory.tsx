@@ -10,6 +10,10 @@ const getStatusText = (status: Status) => {
       return 'Préparée';
     case 'Delivered':
       return 'Livrée';
+    case 'Received':
+      return ''; // cannot reach this state yet (25/07/2022)
+    case null:
+      return ''; // same
   }
 };
 
@@ -23,6 +27,10 @@ const getBadgeColor = (status: Status) => {
       return 'secondary';
     case 'Delivered':
       return 'accent';
+    case 'Received':
+      return ''; // cannot reach this state yet (25/07/2022)
+    case null:
+      return ''; // same
   }
 };
 
