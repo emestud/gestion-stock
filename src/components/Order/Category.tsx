@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {default as ItemComponent} from './Item';
 
 import store from '../../stores/store';
-import {Item} from '../../types';
+import {Item, OrderItem} from '../../types';
 
 interface CategoryProp {
   categoryName: string;
@@ -13,13 +13,13 @@ interface CategoryProp {
 const Category = (props: CategoryProp) => {
   const {categoryName, isOrdered, isEditable} = props;
 
-  const [items, setItems] = useState<Array<Item>>([]);
+  const [items, setItems] = useState<Array<OrderItem>>([]);
 
   useEffect(() => {
     setItems(store.getItemsOfCategory(categoryName));
   }, []);
 
-  const list = items.map((item: Item) => (
+  const list = items.map((item: OrderItem) => (
     <li key={item.name}>
       <ItemComponent
         id={item.id}

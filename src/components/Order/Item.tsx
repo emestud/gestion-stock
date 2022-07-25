@@ -16,10 +16,15 @@ const Item = (props: any) => {
   const containerChanged = oldContainer.name !== newContainer.name;
 
   const handleQuantityChange = (newQuantityValue: string) => {
-    let value = newQuantityValue.replace(/[^0-9]+/g, '');
+    let value = '0';
+    const parsedNewQuantity = parseInt(newQuantityValue);
 
-    if (isNaN(parseInt(value))) {
+    if (isNaN(parsedNewQuantity) || parsedNewQuantity < 0) {
+      // NaN
+      //value = newQuantityValue.replace(/[^0-9]+/g, '');
       value = '0';
+    } else {
+      value = newQuantityValue;
     }
 
     setNewQuantity(value);
@@ -59,7 +64,7 @@ const Item = (props: any) => {
         {name}
       </p>
       <select
-        className={`w-1/3 select select-bordered ${
+        className={`w-1/3 select select-bordered select-sm ${
           containerChanged ? 'bg-yellow-300' : ''
         }`}
         name="Container"
@@ -78,7 +83,7 @@ const Item = (props: any) => {
       </select>
       <input
         id="quantityInput"
-        className={`w-3/12 input input-bordered 
+        className={`w-3/12 input input-bordered input-sm 
                                 ${
                                   quantityDiff > 0
                                     ? 'bg-green-300'
