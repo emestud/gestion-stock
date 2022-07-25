@@ -25,7 +25,7 @@ const Category = (props: CategoryProp) => {
         id={item.id}
         name={item.name}
         containerProp={item.container}
-        priority={item.priority}
+        priority={item.orderPriority}
         quantityProp={item.quantity}
         isOrdered={isOrdered}
         isEditable={isEditable}

@@ -36,7 +36,6 @@ const History = () => {
   };
 
   const getOrders = async () => {
-    //let tmp:Array<Order> = await store.orderStore.getOrders(null);
     const tmp: Array<any> = await getOrdersWithRestaurantName();
     setOrders(tmp);
 
@@ -56,7 +55,6 @@ const History = () => {
   };
 
   const getWastes = async () => {
-    //let tmp: Array<any> = await store.orderStore.getWastes(null);
     const tmp: Array<any> = await getWastesWithRestaurantName();
     setWastes(tmp);
   };

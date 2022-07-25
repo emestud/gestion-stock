@@ -20,7 +20,7 @@ const LogInModal = ({setLogIn}: any) => {
   const tryLogIn = async (username: string, password: string) => {
     if (username.length === 0 || password.length === 0) return; // if either is empty, there is no need to check
 
-    const [user, error] = await logIn(username, password);
+    const [user, error] = await logIn(username.trim(), password.trim());
 
     if (error === '') {
       // login is successful

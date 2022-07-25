@@ -1,5 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 import {
+  Order,
   OrderDB,
   OrderItemContainer,
   Status,
@@ -77,7 +78,13 @@ export const getOrdersWithRestaurantName = async () => {
     )
     .is('original_order', null);
 
-  return data === null ? [] : data;
+  if (data !== null) {
+    return data.sort((a: Order, b: Order) => {
+      return Date.parse(b.created_at) - Date.parse(a.created_at);
+    });
+  } else {
+    return [];
+  }
 };
 
 export const getAllOriginalOrders = async () => {
@@ -166,7 +173,13 @@ export const getWastesWithRestaurantName = async () => {
             )
         `);
 
-  return data === null ? [] : data;
+  if (data !== null) {
+    return data.sort((a: Order, b: Order) => {
+      return Date.parse(b.created_at) - Date.parse(a.created_at);
+    });
+  } else {
+    return [];
+  }
 };
 
 export const sendWastes = async (wastes: Array<WasteDB>) => {
@@ -281,7 +294,8 @@ export const getItemsFromOrder = async (orderID: string) => {
              item:item_id(
                 id,
                 name,
-                priority
+                labPriority,
+                orderPriority
             ),
             container: container_id(
                 id,
@@ -327,7 +341,8 @@ export const getItemsFromWaste = async (wasteID: string) => {
              item:item_id(
                 id,
                 name,
-                priority
+                labPriority,
+                orderPriority
             ),
             container: container_id(
                 id,

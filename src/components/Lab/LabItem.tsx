@@ -40,6 +40,7 @@ interface LabItemProps {
 const LabItem = ({items, addItemToCancel}: LabItemProps) => {
   const [isCanceled, setIsCanceled] = useState<boolean>(items.canceledByLab);
 
+  // sorting the containers based on the restaurants so that containers and quantities are always displayed in the same order
   for (let i = 0; i < items.containers.length; i++) {
     items.containers[i] = items.containers[i].sort(
       (containerA: LabItemContainer, containerB: LabItemContainer) => {
@@ -48,6 +49,7 @@ const LabItem = ({items, addItemToCancel}: LabItemProps) => {
     );
   }
 
+  // same with quantities
   for (let i = 0; i < items.quantities.length; i++) {
     items.quantities[i] = items.quantities[i].sort(
       (quantityA: LabItemQuantity, quantityB: LabItemQuantity) => {

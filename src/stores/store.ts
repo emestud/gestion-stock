@@ -25,12 +25,14 @@ import {
   Item,
   ItemCategory,
   Order,
+  OrderItem,
   OrderItemContainer,
   Restaurant,
   Status,
   User,
   WasteItemContainer,
 } from '../types';
+import {proxyPrint} from '../utils';
 import {OrderStore} from './order-store';
 
 class Store {
@@ -109,10 +111,15 @@ class Store {
             name: item.container === null ? 'Pack' : item.container.name,
           },
         ],
-        priority: item.priority,
+        orderPriority: item.orderPriority,
+        labPriority: item.labPriority,
         category: item.category,
       });
     }
+
+    this.order.items = this.order.items.sort((a: OrderItem, b: OrderItem) => {
+      return a.orderPriority - b.orderPriority;
+    });
   }
 
   /**
@@ -120,11 +127,11 @@ class Store {
    */
   async addItems() {
     // Adding the items to the store
-    let categories = await getItemCategories();
+    const categories = await getItemCategories();
 
-    let items = await getItemsWithContainer();
+    const items = await getItemsWithContainer();
 
-    let listCategories: Array<string> = [];
+    const listCategories: Array<string> = [];
 
     for (const category of categories) {
       if (!listCategories.includes(category)) {
@@ -133,7 +140,7 @@ class Store {
     }
 
     for (const category of listCategories) {
-      let categoryItems: Array<any> = [];
+      const categoryItems: Array<any> = [];
 
       for (const item of items) {
         if (item.category === category) {
@@ -141,7 +148,7 @@ class Store {
         }
       }
 
-      let products: Array<Item> = [];
+      const products: Array<Item> = [];
 
       for (const item of categoryItems) {
         products.push({
@@ -153,7 +160,8 @@ class Store {
             item.container === null
               ? 'b8018542-e927-44c1-b40c-39fc586b74cf'
               : item.container.id,
-          priority: item.priority,
+          labPriority: item.labPriority,
+          orderPriority: item.orderPriority,
         });
       }
 
@@ -162,6 +170,9 @@ class Store {
         items: products,
       });
     }
+    this.itemCategories = this.itemCategories.sort((a, b) => {
+      return a.items[0].orderPriority - b.items[0].orderPriority;
+    })
   }
 
   /**
@@ -296,7 +307,8 @@ class Store {
               item_id: item.id,
               container_id: item.container[1].id,
               quantity: item.quantity[1],
-              priority: item.priority,
+              orderPriority: item.orderPriority,
+              labPriority: item.labPriority,
               order_id: order[0].id,
               canceled_by_lab: false,
             };
@@ -307,7 +319,8 @@ class Store {
               item_id: item.id,
               container_id: item.container[1].id,
               quantity: item.quantity[1],
-              priority: item.priority,
+              orderPriority: item.orderPriority,
+              labPriority: item.labPriority,
               waste_id: order[0].id,
             };
 
@@ -358,7 +371,8 @@ class Store {
           container_id: item.container[1].id,
           order_id: modifiedOrderID,
           quantity: item.quantity[1],
-          priority: item.priority,
+          orderPriority: item.orderPriority,
+          labPriority: item.labPriority,
         };
 
         orderArray.push(orderItem);
@@ -397,6 +411,8 @@ class Store {
 
     if (items !== null) {
       for (const item of items) {
+        let orderPriority = 0;
+        let labPriority = 0;
         for (const orderItem of this.order.items) {
           if (item.item.name === orderItem.name) {
             if (originalOrder) {
@@ -408,6 +424,8 @@ class Store {
               orderItem.container[1].name = item.container.name;
               orderItem.quantity[1] = item.quantity;
             }
+            orderPriority = orderItem.orderPriority;
+            labPriority = orderItem.labPriority;
           }
         }
 
@@ -417,7 +435,8 @@ class Store {
           quantity: item.quantity,
           container: item.container.name,
           container_id: item.container.id,
-          priority: item.item.priority,
+          orderPriority: orderPriority,
+          labPriority: labPriority,
         };
 
         // changing the items inside the "default" list of items (updating quantity and container)

@@ -23,21 +23,17 @@ const Item = (props: any) => {
   const [newContainer, setNewContainer] = useState<Container>(containerProp[1]);
   const containerChanged = oldContainer.name !== newContainer.name;
 
-  const [numberInputIncorrect, setNumberInputIncorrect] =
-    useState<boolean>(false);
+  /*const [numberInputIncorrect, setNumberInputIncorrect] =
+    useState<boolean>(false);*/
 
   const handleQuantityChange = (newQuantityValue: number) => {
+    const input = document.getElementById('quantityInput') as HTMLInputElement;
+
     if (isNaN(newQuantityValue)) {
-      setNumberInputIncorrect(true);
-      return;
-    } else {
-      setNumberInputIncorrect(false);
+      newQuantityValue = 0;
     }
 
     if (newQuantityValue < 0) {
-      const input = document.getElementById(
-        'quantityInput'
-      ) as HTMLInputElement;
       if (input !== null) {
         input.value = '0';
       }
@@ -71,7 +67,7 @@ const Item = (props: any) => {
 
   return (
     <div className="flex justify-center gap-1">
-      <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg select-none">
+      <p className="w-1/3 flex justify-center items-center text-center border border-solid border-slate-300 rounded-lg">
         {name}
       </p>
       <select
@@ -101,11 +97,9 @@ const Item = (props: any) => {
                                     : quantityDiff < 0
                                     ? 'bg-red-500'
                                     : ''
-                                }
-                                ${numberInputIncorrect ? 'bg-red-900' : ''}`}
-        type="text"
+                                }`}
+        type="number"
         min="0"
-        pattern="[0-9]*"
         disabled={isOrdered || !isEditable}
         placeholder={newQuantity.toString()}
         onChange={event => handleQuantityChange(parseInt(event.target.value))}

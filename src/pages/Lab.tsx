@@ -7,7 +7,7 @@ import {LabItem, Order, RestaurantName, _Container, _Quantity} from '../types';
 import Category from '../components/Lab/Category';
 
 import Spinner from '../components/Misc/Spinner';
-import {itemIsInArray} from '../utils';
+import {itemIsInArray, proxyPrint} from '../utils';
 
 const Lab = () => {
   const location: any = useLocation();
@@ -73,7 +73,7 @@ const Lab = () => {
         if (originalItem !== null) {
           orderItemsTmp.push({
             name: item.name,
-            priority: item.priority,
+            priority: item.labPriority,
             containers: [originalItem.containers, item.containers],
             quantities: [originalItem.quantities, item.quantities],
             canceledByLab: item.canceled_by_lab,
@@ -95,13 +95,15 @@ const Lab = () => {
 
           orderItemsTmp.push({
             name: item.name,
-            priority: item.priority,
+            priority: item.labPriority,
             containers: [containers, item.containers],
             quantities: [quantities, item.quantities],
             canceledByLab: item.canceled_by_lab,
           });
         }
       }
+
+      //proxyPrint(orderItemsTmp);
 
       setOrderItems(orderItemsTmp);
       setRestaurants(restaurants);

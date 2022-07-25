@@ -158,7 +158,7 @@ export class OrderStore {
             restaurant: orderItem.restaurant.name,
             name: itemFromDB.name,
             itemCategory: itemFromDB.category,
-            priority: itemFromDB.priority,
+            labPriority: itemFromDB.labPriority,
             container: container,
             quantity: item.quantity,
             canceledByLab: item.canceled_by_lab,
@@ -170,7 +170,7 @@ export class OrderStore {
     }
 
     return newItems.sort((a: ItemWithLabInfo, b: ItemWithLabInfo) => {
-      return a.priority - b.priority;
+      return a.labPriority - b.labPriority;
     });
   }
 
@@ -231,7 +231,7 @@ export class OrderStore {
           name: item.name,
           quantities: quantities,
           containers: containers,
-          priority: item.priority,
+          labPriority: item.labPriority,
         });
       }
 

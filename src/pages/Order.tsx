@@ -10,6 +10,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import Spinner from '../components/Misc/Spinner';
 import GoBack from '../components/Misc/GoBack';
 import {ItemCategory, Order} from '../types';
+import {proxyPrint} from '../utils';
 
 const OrderPage = () => {
   const navigate = useNavigate();
@@ -54,11 +55,8 @@ const OrderPage = () => {
         setIsOrdered(lastModification.status !== 'On order'); // updating the component state
         store.order.status = lastModification.status; // updating the status in the store
 
-        const itemCategories = await store.setOrder(
-          location.state.order_id,
-          true
-        );
-        setItemCategories(itemCategories);
+        const tmp = await store.setOrder(location.state.order_id, true);
+        setItemCategories(tmp);
 
         if (lastModification !== undefined) {
           await store.setOrder(lastModification.id, false);

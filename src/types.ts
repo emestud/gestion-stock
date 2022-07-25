@@ -10,7 +10,8 @@ export type Item = {
   quantity: number;
   container: string;
   container_id: string;
-  priority: number;
+  labPriority: number;
+  orderPriority: number;
 };
 
 export type Container = {
@@ -52,7 +53,8 @@ export type OrderItemContainer = {
   container_id: string;
   order_id: string;
   quantity: number;
-  priority: number;
+  labPriority: number;
+  orderPriority: number;
 };
 
 export type WasteItemContainer = {
@@ -61,7 +63,8 @@ export type WasteItemContainer = {
   container_id: string;
   waste_id: string;
   quantity: number;
-  priority: number;
+  labPriority: number;
+  orderPriority: number;
 };
 
 export type Order = {
@@ -113,7 +116,8 @@ export type OrderItem = {
   name: string;
   quantity: Array<number>;
   container: Array<Container>;
-  priority: number;
+  labPriority: number;
+  orderPriority: number;
   category: string;
 };
 
@@ -153,6 +157,6 @@ export type LabItemQuantity = ItemOrderID & RestaurantName & _Quantity;
 
 export type LabItemContainer = ItemOrderID & RestaurantName & _Container;
 
-export type ItemWithLabInfo = Omit<Item, 'container_id'> &
+export type ItemWithLabInfo = Omit<Item, 'container_id' | 'orderPriority'> &
   RestaurantName &
   CanceledByLab;
