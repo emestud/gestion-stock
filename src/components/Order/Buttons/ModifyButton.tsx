@@ -10,7 +10,7 @@ const ModifyButton = (props: any) => {
 
   return (
     <button
-      className="sticky top-[3%] sm:top-[2.5%] flex text-white justify-center ml-24 md:m-auto p-0 w-8/12 h-fit m-auto text-xl btn btn-warning
+      className="sticky z-10 top-[3%] sm:top-[2.5%] flex text-white justify-center ml-24 md:m-auto p-0 w-8/12 h-fit m-auto text-xl btn btn-warning
                                 md:w-2/3 lg:w-1/2 max-w-2xl"
       onClick={ModifyOrder}
     >

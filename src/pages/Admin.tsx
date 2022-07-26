@@ -2,7 +2,7 @@ import store from '../stores/store';
 import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 
-import Containers from '../components/Admin/Containers/Containes';
+import Containers from '../components/Admin/Containers/Containers';
 import Products from '../components/Admin/Products/Prodcuts';
 import Users from '../components/Admin/Users/Users';
 import Restaurants from '../components/Admin/Restaurants/Restaurants';
