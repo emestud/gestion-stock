@@ -30,6 +30,7 @@ const Category = (props: CategoryProp) => {
         isOrdered={isOrdered}
         isEditable={isEditable}
         item={item}
+        category={categoryName}
       />
     </li>
   ));
