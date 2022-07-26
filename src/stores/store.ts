@@ -18,6 +18,7 @@ import {
   getRestaurantData,
   getRestaurantsName,
   logUserAuth,
+  getAllRestaurants,
 } from '../databaseClient';
 import {
   Container,
@@ -41,6 +42,8 @@ class Store {
   orderStore: OrderStore;
 
   defaultItems: Array<any> = [];
+
+  restaurants: Array<Restaurant> = [];
 
   order: Order = {
     id: '',
@@ -75,8 +78,13 @@ class Store {
 
     this.initDefautItems();
     this.initOrder();
+    this.initRestaurants();
 
     makeAutoObservable(this);
+  }
+
+  async initRestaurants() {
+    this.restaurants = await getAllRestaurants();
   }
 
   async initDefautItems() {

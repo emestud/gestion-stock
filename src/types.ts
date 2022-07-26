@@ -160,3 +160,11 @@ export type LabItemContainer = ItemOrderID & RestaurantName & _Container;
 export type ItemWithLabInfo = Omit<Item, 'container_id' | 'orderPriority'> &
   RestaurantName &
   CanceledByLab;
+
+export type FullUser = {
+  id: string;
+  username: string;
+  password: string;
+  role: Role;
+  restaurant: Restaurant;
+};

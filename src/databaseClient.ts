@@ -361,6 +361,12 @@ export const getItemsFromWaste = async (wasteID: string) => {
 
 /**************************** RESTAURANTS ****************************/
 
+export const getAllRestaurants = async () => {
+  const {data} = await supabase.from('restaurant').select('*');
+
+  return data === null ? [] : data;
+};
+
 export const getRestaurantData = async (restaurantID: string) => {
   const {data: restaurant} = await supabase
     .from('restaurant')
@@ -394,4 +400,37 @@ export const logUserAuth = async (userID: string, logMessage: string) => {
     user_id: userID,
     log_message: logMessage,
   });
+};
+
+/**************************** USERS ****************************/
+
+export const getUsersWithRestaurant = async () => {
+  const {data} = await supabase.from('users').select(`*,
+      restaurant:restaurant_id(
+        *
+      )
+    `);
+
+  return data === null ? [] : data;
+};
+
+export const deleteUserByID = async (userID: string) => {
+  const {data} = await supabase.from('users').delete().eq('id', userID);
+  return data;
+};
+
+export const addUser = async (
+  username: string,
+  password: string,
+  role: string,
+  restaurantID: string
+) => {
+  const {data} = await supabase.from('users').insert([
+    {
+      username: username,
+      password: password,
+      role: role,
+      restaurant_id: restaurantID,
+    },
+  ]);
 };
