@@ -5,6 +5,7 @@ import {useState} from 'react';
 import Containers from '../components/Admin/Containers/Containes';
 import Products from '../components/Admin/Products/Prodcuts';
 import Users from '../components/Admin/Users/Users';
+import Restaurants from '../components/Admin/Restaurants/Restaurants';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -15,14 +16,22 @@ const Admin = () => {
 
   const [currentTab, setCurrentTab] = useState('users');
 
-  const currentActiveTab =
-    currentTab === 'users' ? (
-      <Users />
-    ) : currentTab === 'products' ? (
-      <Products />
-    ) : (
-      <Containers />
-    );
+  let currentActiveTab;
+
+  switch (currentTab) {
+    case 'users':
+      currentActiveTab = <Users />;
+      break;
+    case 'products':
+      currentActiveTab = <Products />;
+      break;
+    case 'containers':
+      currentActiveTab = <Containers />;
+      break;
+    case 'restaurants':
+      currentActiveTab = <Restaurants />;
+      break;
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -30,7 +39,7 @@ const Admin = () => {
       <div>
         <div className="flex m-auto w-10/12 tabs">
           <a
-            className={`w-1/3 tab tab-bordered ${
+            className={`w-1/4 tab tab-bordered ${
               currentTab === 'users' ? 'tab-active' : ''
             }`}
             onClick={() => setCurrentTab('users')}
@@ -38,7 +47,7 @@ const Admin = () => {
             Utilisateurs
           </a>
           <a
-            className={`w-1/3 tab tab-bordered ${
+            className={`w-1/4 tab tab-bordered ${
               currentTab === 'products' ? 'tab-active' : ''
             }`}
             onClick={() => setCurrentTab('products')}
@@ -46,12 +55,20 @@ const Admin = () => {
             Produits
           </a>
           <a
-            className={`w-1/3 tab tab-bordered ${
+            className={`w-1/4 tab tab-bordered ${
               currentTab === 'containers' ? 'tab-active' : ''
             }`}
             onClick={() => setCurrentTab('containers')}
           >
             Récipients
+          </a>
+          <a
+            className={`w-1/4 tab tab-bordered ${
+              currentTab === 'restaurants' ? 'tab-active' : ''
+            }`}
+            onClick={() => setCurrentTab('restaurants')}
+          >
+            Restaurants
           </a>
         </div>
       </div>

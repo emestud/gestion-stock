@@ -393,6 +393,23 @@ export const getRestaurantsName = async () => {
   return tmp;
 };
 
+export const addRestaurant = async (name: string, address: string) => {
+  await supabase.from('restaurant').insert([
+    {
+      name: name,
+      address: address,
+    },
+  ]);
+};
+
+export const deleteRestaurantByID = async (restaurantID: string) => {
+  const {data} = await supabase
+    .from('restaurant')
+    .delete()
+    .eq('id', restaurantID);
+  return data;
+};
+
 /**************************** LOGS ****************************/
 
 export const logUserAuth = async (userID: string, logMessage: string) => {
